@@ -1,0 +1,96 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Disabler\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-24 14:02-0600\n"
+"PO-Revision-Date: 2012-04-24 14:03-0600\n"
+"Last-Translator: Mika Epstein (Ipstenu) <ipstenu@ipstenu.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk\n"
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler.php:74
+msgid "No feeds available."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:26
+msgid "Disabler"
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:28
+msgid "Here's where you can disable whatever you want."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:67
+msgid "Options Updated!"
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:104
+msgid "Front End Settings"
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:106
+msgid "These are settings are changes on the front end. These are the things that affect what your site looks like when other people visit. What THEY see.  While these are actually things that annoy <strong>you</strong>, it all comes back to being things on the forward facing part of your site."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:109
+msgid "Disable Texturization -- smart quotes (a.k.a. curly quotes), em dash, en dash and ellipsis."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:113
+msgid "Disable auto-correction of WordPress capitalization."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:118
+msgid "Disable paragraphs (i.e. &lt;p&gt;  tags) from being automatically inserted in your posts."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:121
+msgid "Back End Settings"
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:123
+msgid "Back End settings affect how WordPress runs. Nothing here will <em>break</em> your install, but some turn off 'desired' functions."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:126
+msgid "Disable self pings (i.e. trackbacks/pings from your own domain)."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:130
+msgid "Disable all RSS feeds."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:134
+msgid "Disable auto-saving of posts."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:138
+msgid "Disable post revisions."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:141
+msgid "Privacy Settings"
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:143
+msgid "These settings help obfuscate information about your blog to the world (inclyding to Wordpress.org). While they don't protect you from anything, they do make it a little harder for people to get information about you and your site."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:146
+msgid "Disable WordPress from printing it's version in your headers (only seen via View Source)."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:150
+msgid "Disable WordPress from sending your URL information when checking for updates."
+msgstr ""
+
+#: /Users/ipstenu/Development/svn/wordpress/plugins/disabler/trunk/disabler_options.php:155
+msgid "Update Options"
+msgstr ""
+
