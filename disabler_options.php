@@ -1,168 +1,155 @@
 <?php
-/*
+class Disabler_Options_Class
+{
+	var $options;
 
-Copyright 2010-12 Mika Epstein (email: ipstenu@ipstenu.org)
+	function __construct()
+	{
+		$this->options = get_option( 'disabler_options' );
 
-    This file is part of Disabler, a plugin for WordPress.
+		add_action( 'admin_menu', array( $this, 'disabler_menu' ) );
+		add_action( 'admin_init' , array( $this, 'disabler_settings' ) );
+	}
 
-    Disabler is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 2 of the License, or
-    (at your option) any later version.
+	// Load the options page
+	function disabler_menu()
+	{
+		$plugin_page = add_options_page( 'Disabler', 'Disabler', 'activate_plugins', 'disabler_options_page', array( $this, 'plugin_options' ) );
+	}
 
-    Disabler is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	function sanitize( $posted_options )
+	{
+		$default_options = array(
+			'disabler_smartquotes' => '0',
+			'disabler_capitalp' => '0',
+			'disabler_autop' => '0',
+			'disabler_selfping' => '0',
+			'disabler_norss' => '0',
+			'disabler_xmlrpc' => '0',
+			'disabler_revisions' => '0',
+			'disabler_autosave' => '0',
+			'disabler_version' => '0',
+			'disabler_nourl' => '0'
+		);
 
-    You should have received a copy of the GNU General Public License
-    along with WordPress.  If not, see <http://www.gnu.org/licenses/>.
+		foreach( $default_options as $key => $value )
+		{
+			if( !isset( $posted_options[$key] ) )
+				$posted_options[$key] = $value;
+		}
 
-*/
+		return $posted_options;
+	}
 
+	function disabler_settings()
+	{
+		register_setting( 'ippy_dis_options', 'disabler_options', array( $this, 'sanitize' ) );
+
+		add_settings_section( 'frontend_settings', __( 'Front End Settings', 'ippy_dis' ), array( $this, 'callback_frontend' ), 'disabler_options_page' );
+		add_settings_field( 'new_smartquotes', __( "Disable Texturization -- smart quotes (a.k.a. curly quotes), em dash, en dash and ellipsis.", 'ippy_dis' ), array( $this, 'smartquotes' ), 'disabler_options_page', 'frontend_settings', array( 'label_for' => 'new_smartquotes' ) );
+		add_settings_field( 'new_capitalp', __( "Disable auto-correction of WordPress capitalization.", 'ippy_dis' ), array( $this, 'capitalp' ), 'disabler_options_page', 'frontend_settings', array( 'label_for' => 'new_capitalp' ) );
+		add_settings_field( 'new_autop', __( "Disable paragraphs (i.e. &lt;p&gt;  tags) from being automatically inserted in your posts.", 'ippy_dis' ), array( $this, 'autop' ), 'disabler_options_page', 'frontend_settings', array( 'label_for' => 'new_autop' ) );
+
+		add_settings_section( 'backend_settings', __( 'Back End Settings', 'ippy_dis' ), array( $this, 'callback_backend' ), 'disabler_options_page' );
+		add_settings_field( 'new_selfping', __( "Disable paragraphs (i.e. &lt;p&gt;  tags) from being automatically inserted in your posts.", 'ippy_dis' ), array( $this, 'selfping' ), 'disabler_options_page', 'backend_settings', array( 'label_for' => 'new_selfping' ) );
+		add_settings_field( 'new_norss', __( "Disable all RSS feeds.", 'ippy_dis' ), array( $this, 'norss' ), 'disabler_options_page', 'backend_settings', array( 'label_for' => 'new_norss' ) );
+		add_settings_field( 'new_xmlrpc', __( "Disable XML-RPC.", 'ippy_dis' ), array( $this, 'xmlrpc' ), 'disabler_options_page', 'backend_settings', array( 'label_for' => 'new_xmlrpc' ) );
+		add_settings_field( 'new_autosave', __( "Disable auto-saving of posts.", 'ippy_dis' ), array( $this, 'autosave' ), 'disabler_options_page', 'backend_settings', array( 'label_for' => 'new_autosave' ) );
+		add_settings_field( 'new_revisions', __( "Disable post revisions.", 'ippy_dis' ), array( $this, 'revisions' ), 'disabler_options_page', 'backend_settings', array( 'label_for' => 'new_revisions' ) );
+
+		add_settings_section( 'privacy_settings', __( 'Privacy Settings', 'ippy_dis' ), array( $this, 'callback_privacy' ), 'disabler_options_page' );
+		add_settings_field( 'new_version', __( "Disable WordPress from printing it's version in your headers (only seen via View Source).", 'ippy_dis' ), array( $this, 'version' ), 'disabler_options_page', 'privacy_settings', array( 'label_for' => 'new_version' ) );
+		add_settings_field( 'new_nourl', __( "Disable WordPress from sending your URL information when checking for updates.", 'ippy_dis' ), array( $this, 'nourl' ), 'disabler_options_page', 'privacy_settings', array( 'label_for' => 'new_nourl' ) );
+	}
+
+	function callback_frontend()
+	{
+		_e( 'These are settings are changes on the front end. These are the things that affect what your site looks like when other people visit. What THEY see.  While these are actually things that annoy <strong>you</strong>, it all comes back to being things on the forward facing part of your site.', 'ippy_dis' );
+	}
+
+	function callback_backend()
+	{
+		_e( "Back End settings affect how WordPress runs. Nothing here will <em>break</em> your install, but some turn off 'desired' functions.", 'ippy_dis' );
+	}
+
+	function callback_privacy()
+	{
+		_e( "These settings help obfuscate information about your blog to the world (inclyding to Wordpress.org). While they don't protect you from anything, they do make it a little harder for people to get information about you and your site.", 'ippy_dis' );
+	}
+
+	function smartquotes()
+	{
+		$checked = checked( $this->options['disabler_smartquotes'], '1', FALSE );
+		echo '<input type="checkbox" id="new_smartquotes" name="disabler_options[disabler_smartquotes]" value="1" ' . $checked . ' />';
+	}
+
+	function capitalp()
+	{
+		$checked = checked( $this->options['disabler_capitalp'], '1', FALSE );
+		echo '<input type="checkbox" id="new_capitalp" name="disabler_options[disabler_capitalp]" value="1" ' . $checked . ' />';
+	}
+
+	function autop()
+	{
+		$checked = checked( $this->options['disabler_autop'], '1', FALSE );
+		echo '<input type="checkbox" id="new_autop" name="disabler_options[disabler_autop]" value="1" ' . $checked . ' />';
+	}
+
+	function selfping()
+	{
+		$checked = checked( $this->options['disabler_selfping'], '1', FALSE );
+		echo '<input type="checkbox" id="new_selfping" name="disabler_options[disabler_selfping]" value="1" ' . $checked . ' />';
+	}
+
+	function norss()
+	{
+		$checked = checked( $this->options['disabler_norss'], '1', FALSE );
+		echo '<input type="checkbox" id="new_norss" name="disabler_options[disabler_norss]" value="1" ' . $checked . ' />';
+	}
+
+	function xmlrpc()
+	{
+		$checked = checked( $this->options['disabler_xmlrpc'], '1', FALSE );
+		echo '<input type="checkbox" id="new_xmlrpc" name="disabler_options[disabler_xmlrpc]" value="1" ' . $checked . ' />';
+	}
+
+	function autosave()
+	{
+		$checked = checked( $this->options['disabler_autosave'], '1', FALSE );
+		echo '<input type="checkbox" id="new_autosave" name="disabler_options[disabler_autosave]" value="1" ' . $checked . ' />';
+	}
+
+	function revisions()
+	{
+		$checked = checked( $this->options['disabler_revisions'], '1', FALSE );
+		echo '<input type="checkbox" id="new_revisions" name="disabler_options[disabler_revisions]" value="1" ' . $checked . ' />';
+	}
+
+	function version()
+	{
+		$checked = checked( $this->options['disabler_version'], '1', FALSE );
+		echo '<input type="checkbox" id="new_version" name="disabler_options[disabler_version]" value="1" ' . $checked . ' />';
+	}
+
+	function nourl()
+	{
+		$checked = checked( $this->options['disabler_nourl'], '1', FALSE );
+		echo '<input type="checkbox" id="new_nourl" name="disabler_options[disabler_nourl]" value="1" ' . $checked . ' />';
+	}
+
+	function plugin_options()
+	{
 ?>
-<div class="wrap">
-
-<h2><?php _e("Disabler", 'ippy_dis'); ?></h2>
-
-<p><?php _e("Here's where you can disable whatever you want.", 'ippy_dis'); ?></p>
-
+		<div class="wrap">
+			<h2><?php _e("Disabler", 'ippy_dis'); ?></h2>
+			<p><?php _e("Here's where you can disable whatever you want.", 'ippy_dis'); ?></p>
+			<form method="post" action="options.php">
+			<?php settings_fields( 'ippy_dis_options' );
+			do_settings_sections( 'disabler_options_page' );
+			submit_button(); ?>
+			</form>
+		</div>
 <?php
-global $wpdb;
-
-        if (isset($_POST['update']))
-        {
-                if ($new_smartquotes = $_POST['new_smartquotes'])       // Texturization
-					{ update_option('disabler_smartquotes', $new_smartquotes); }
-                else { update_option('disabler_smartquotes', '0'); }           
-                if ($new_capitalp = $_POST['new_capitalp'])             // Capital P
-					{ update_option('disabler_capitalp', $new_capitalp); }
-                else { update_option('disabler_capitalp', '0'); }
-                if ($new_autop = $_POST['new_autop'])                	// AutoP
-					{ update_option('disabler_autop', $new_autop); }
-                else { update_option('disabler_autop', '0'); }
-                
-                if ($new_selfping = $_POST['new_selfping'])             // SelfPing
-					{ update_option('disabler_selfping', $new_selfping); }
-                else { update_option('disabler_selfping', '0'); }
-                if ($new_norss = $_POST['new_norss'])             // RSS
-					{ update_option('disabler_norss', $new_norss); }
-                else { update_option('disabler_norss', '0'); }
-				if ($new_xmlrpc = $_POST['new_xmlrpc'])                // AutoSaves
-					{ update_option('disabler_xmlrpc', $new_xmlrpc); }                				
-                else { update_option('disabler_xmlrpc', '0'); }
-                if ($new_autosave = $_POST['new_autosave'])                // AutoSaves
-					{ update_option('disabler_autosave', $new_autosave); }
-                else { update_option('disabler_autosave', '0'); }
-				if ($new_revisions = $_POST['new_revisions'])                // Post Revisions
-					{ update_option('disabler_revisions', $new_revisions); }
-                else { update_option('disabler_revisions', '0'); }
-
-				if ($new_version = $_POST['new_version'])               // Version
-					{ update_option('disabler_version', $new_version); }
-                else { update_option('disabler_version', '0'); }
-				if ($new_nourl = $_POST['new_nourl'])                	// Phone Home URL
-					{ update_option('disabler_nourl', $new_nourl); }
-                else { update_option('disabler_nourl', '0'); }
-
-
-?>
-        <div id="message" class="updated fade"><p><strong><?php _e("Options Updated!", 'ippy_dis'); ?></strong></p></div>
-<?php
-        }
-
-        if (get_option('disabler_smartquotes') != '0' )
-			{ $smartquotes = ' checked="checked"'; } 
-			else { $smartquotes = ''; }
-		if (get_option('disabler_capitalp') != '0' )
-			{ $capitalp = ' checked="checked"'; } 
-			else { $capitalp = ''; }
-		if (get_option('disabler_autop') != '0' )
-			{ $autop = ' checked="checked"'; } 
-			else { $autop = ''; }	
-
-		if (get_option('disabler_selfping') != '0' )
-			{ $selfping = ' checked="checked"'; } 
-			else { $selfping = ''; }
-		if (get_option('disabler_norss') != '0' )
-			{ $norss = ' checked="checked"'; } 
-			else { $norss = ''; }
-		if (get_option('disabler_xmlrpc') != '0' )
-			{ $xmlrpc = ' checked="checked"'; } 
-			else { $xmlrpc = ''; }		 
-		if (get_option('disabler_autosave') != '0' )
-			{ $autosave = ' checked="checked"'; } 
-			else { $autosave = ''; }		
-		if (get_option('disabler_revisions') != '0' )
-			{ $revisions = ' checked="checked"'; } 
-			else { $revisions = ''; }		
-		
-		if (get_option('disabler_version') != '0' )
-			{ $version = ' checked="checked"'; } 
-			else { $version = ''; }		
-		if (get_option('disabler_nourl') != '0' )
-			{ $nourl = ' checked="checked"'; } 
-			else { $nourl = ''; }		
-?>
-
-<form method="post" width='1'>
-
-<h3><?php _e("Front End Settings", 'ippy_dis'); ?></h3>
-
-<p><?php _e("These are settings are changes on the front end. These are the things that affect what your site looks like when other people visit. What THEY see.  While these are actually things that annoy <strong>you</strong>, it all comes back to being things on the forward facing part of your site.", 'ippy_dis'); ?></p>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_smartquotes" name="new_smartquotes" value="1" <?php echo $smartquotes ?> /> <?php _e("Disable Texturization -- smart quotes (a.k.a. curly quotes), em dash, en dash and ellipsis.", 'ippy_dis'); ?></p>
-</fieldset>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_capitalp" name="new_capitalp" value="1" <?php echo $capitalp ?> /> <?php _e("Disable auto-correction of WordPress capitalization.", 'ippy_dis'); ?></p>
-</fieldset>
-
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_autop" name="new_autop" value="1" <?php echo $autop ?> /> <?php _e("Disable paragraphs (i.e. &lt;p&gt;  tags) from being automatically inserted in your posts.", 'ippy_dis'); ?></p>
-</fieldset>
-
-<h3><?php _e("Back End Settings", 'ippy_dis'); ?></h3>
-
-<p><?php _e("Back End settings affect how WordPress runs. Nothing here will <em>break</em> your install, but some turn off 'desired' functions.", 'ippy_dis'); ?></p>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_selfping" name="new_selfping" value="1" <?php echo $selfping ?> /> <?php _e("Disable self pings (i.e. trackbacks/pings from your own domain).", 'ippy_dis'); ?></p>
-</fieldset>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_norss" name="new_norss" value="1" <?php echo $norss ?> /> <?php _e("Disable all RSS feeds.", 'ippy_dis'); ?></p>
-</fieldset>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_xmlrpc" name="new_xmlrpc" value="1" <?php echo $xmlrpc ?> /> <?php _e("Disable XMP-RPC.", 'ippy_dis'); ?></p>
-</fieldset>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_autosave" name="new_autosave" value="1" <?php echo $autosave ?> /> <?php _e("Disable auto-saving of posts.", 'ippy_dis'); ?></p>
-</fieldset>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_revisions" name="new_revisions" value="1" <?php echo $revisions ?> /> <?php _e("Disable post revisions.", 'ippy_dis'); ?></p>
-</fieldset>
-
-<h3><?php _e("Privacy Settings", 'ippy_dis'); ?></h3>
-
-<p><?php _e("These settings help obfuscate information about your blog to the world (inclyding to Wordpress.org). While they don't protect you from anything, they do make it a little harder for people to get information about you and your site.", 'ippy_dis'); ?></p>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_version" name="new_version" value="1" <?php echo $version ?> /> <?php _e("Disable WordPress from printing it's version in your headers (only seen via View Source).", 'ippy_dis'); ?></p>
-</fieldset>
-
-<fieldset class="options">
-<p> <input type="checkbox" id="new_nourl" name="new_nourl" value="1" <?php echo $nourl ?> /> <?php _e("Disable WordPress from sending your URL information when checking for updates.", 'ippy_dis'); ?></p>
-</fieldset>
-
-
-</fieldset>
-        <p class="submit"><input type="submit" name="update" value="<?php _e("Update Options", 'ippy_dis'); ?>" /></p>
-</form>
-
-</div>
+	}
+}
+$disabler_options_class = new Disabler_Options_Class();
