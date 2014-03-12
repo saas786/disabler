@@ -1,14 +1,16 @@
 === Disabler ===
 Tags: disable, options, features
-Contributors: Ipstenu
-Requires at least: 3.0
-Tested up to: 3.7
+Contributors: Ipstenu, jesin
+Requires at least: 3.1
+Tested up to: 3.8
 Donate link: https://www.wepay.com/donations/halfelf-wp
-Stable tag: 2.3.1
+Stable tag: 3.0.0
 
 Instead of installing a million plugins to turn off features you don't want, why not use ONE plugin?
 
 == Description ==
+
+<strong>Attention: This plugin is not actively being worked on. It should still work, and I'm fiddling with a total re-write to address some doing_it_not_right() bits, but don't expect a whole lot right now. If you're interested in taking it over, let me know.</strong>
 
 I don't like certain things, like curly 'smart' quotes and self pings.  Instead of installing six or seven plugins to do this, I thought I'd make one plugin to cover the usual suspects.  Instead of just disabling everything, Disabler lets you pick and choose what settings you want turned off, in a dead simple UI.
 
