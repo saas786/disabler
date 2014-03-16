@@ -1,79 +1,91 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Disabler\n"
-"POT-Creation-Date: 2014-01-02 20:53+0530\n"
-"PO-Revision-Date: 2014-01-02 20:54+0530\n"
-"Last-Translator: Jesin <me@jesin.in>\n"
+"POT-Creation-Date: 2014-03-06 00:27+0530\n"
+"PO-Revision-Date: 2014-03-06 00:27+0530\n"
+"Last-Translator: Jesin A <me@jesin.inn>\n"
 "Language-Team: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../disabler.php:206
+#: ../disabler.php:210
 msgid "No feeds available."
 msgstr ""
 
-#: ../disabler_options.php:48
+#: ../disabler_options.php:57
 msgid "Front End Settings"
 msgstr ""
 
-#: ../disabler_options.php:49
+#: ../disabler_options.php:58
 msgid ""
 "Disable Texturization -- smart quotes (a.k.a. curly quotes), em dash, en "
 "dash and ellipsis."
 msgstr ""
 
-#: ../disabler_options.php:50
+#: ../disabler_options.php:59
 msgid "Disable auto-correction of WordPress capitalization."
 msgstr ""
 
-#: ../disabler_options.php:51 ../disabler_options.php:54
+#: ../disabler_options.php:60 ../disabler_options.php:63
 msgid ""
 "Disable paragraphs (i.e. &lt;p&gt;  tags) from being automatically inserted "
 "in your posts."
 msgstr ""
 
-#: ../disabler_options.php:53
+#: ../disabler_options.php:62
 msgid "Back End Settings"
 msgstr ""
 
-#: ../disabler_options.php:55
+#: ../disabler_options.php:64
 msgid "Disable all RSS feeds."
 msgstr ""
 
-#: ../disabler_options.php:56
+#: ../disabler_options.php:65
 msgid "Disable XML-RPC."
 msgstr ""
 
-#: ../disabler_options.php:57
+#: ../disabler_options.php:66
 msgid "Disable auto-saving of posts."
 msgstr ""
 
-#: ../disabler_options.php:58
-msgid "Disable post revisions."
+#: ../disabler_options.php:67
+msgid "Disable post revisions (existing revisions are NOT removed)."
 msgstr ""
 
-#: ../disabler_options.php:60
+#: ../disabler_options.php:68
+msgid "Disable Google Fonts in the Administration pages (only in /wp-admin)."
+msgstr ""
+
+#: ../disabler_options.php:69
+msgid ""
+"Disable WordPress update notice (only hides the notice you can update from "
+"Dashboard > Updates)."
+msgstr ""
+
+#: ../disabler_options.php:71
 msgid "Privacy Settings"
 msgstr ""
 
-#: ../disabler_options.php:61
+#: ../disabler_options.php:72
 msgid ""
 "Disable WordPress from printing it's version in your headers (only seen via "
 "View Source)."
 msgstr ""
 
-#: ../disabler_options.php:62
+#: ../disabler_options.php:73
 msgid ""
 "Disable WordPress from sending your URL information when checking for "
 "updates."
 msgstr ""
 
-#: ../disabler_options.php:67
+#: ../disabler_options.php:77
 msgid ""
 "These are settings are changes on the front end. These are the things that "
 "affect what your site looks like when other people visit. What THEY see.  "
@@ -81,13 +93,13 @@ msgid ""
 "comes back to being things on the forward facing part of your site."
 msgstr ""
 
-#: ../disabler_options.php:72
+#: ../disabler_options.php:81
 msgid ""
 "Back End settings affect how WordPress runs. Nothing here will <em>break</"
 "em> your install, but some turn off 'desired' functions."
 msgstr ""
 
-#: ../disabler_options.php:77
+#: ../disabler_options.php:85
 msgid ""
 "These settings help obfuscate information about your blog to the world "
 "(inclyding to Wordpress.org). While they don't protect you from anything, "
@@ -95,10 +107,10 @@ msgid ""
 "your site."
 msgstr ""
 
-#: ../disabler_options.php:144
+#: ../disabler_options.php:153
 msgid "Disabler"
 msgstr ""
 
-#: ../disabler_options.php:145
+#: ../disabler_options.php:154
 msgid "Here's where you can disable whatever you want."
 msgstr ""
