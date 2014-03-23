@@ -147,6 +147,7 @@ class Disabler_Base_Class {
 		/* Remove the <p> from being automagically added in posts */
 		if ( isset( $this->options['disabler_autop'] ) && '0' != $this->options['disabler_autop'] ) {
 			remove_filter( 'the_content', 'wpautop' );
+			add_filter( 'tiny_mce_before_init', array( $this, 'tiny_mce_options' ) );
 		}
 
 		/* BACK END SETTINGS */
@@ -275,6 +276,14 @@ class Disabler_Base_Class {
 			header( 'Content-Type: text/css' );
 			die();
 		}
+	}
+
+	//Prevent TinyMCE from stripping manually entered <p> tags - Issue #2
+	function tiny_mce_options( $mceInit ) {
+		$mceInit['wpautop'] = false;
+		$mceInit['apply_source_formatting'] = true;
+		$mceInit['forced_root_block'] = false;
+		return $mceInit;
 	}
 }
 
