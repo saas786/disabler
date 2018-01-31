@@ -1,16 +1,15 @@
 === Disabler ===
+Contributors: saas
 Tags: disable, options, features
-Contributors: Ipstenu, jesin
 Requires at least: 3.1
-Tested up to: 3.8
-Donate link: https://www.wepay.com/donations/halfelf-wp
-Stable tag: 3.0.0
+Tested up to: 4.8
+Requires at least PHP: 5.6
+Stable tag: 3.0.2
+License: GPLv2 or later
 
-Instead of installing a million plugins to turn off features you don't want, why not use ONE plugin?
+Instead of installing million plugins to turn off features you don't want, why not use just ONE plugin?
 
 == Description ==
-
-<strong>Attention: This plugin is not actively being worked on. It should still work, and I'm fiddling with a total re-write to address some doing_it_not_right() bits, but don't expect a whole lot right now. If you're interested in taking it over, let me know.</strong>
 
 I don't like certain things, like curly 'smart' quotes and self pings.  Instead of installing six or seven plugins to do this, I thought I'd make one plugin to cover the usual suspects.  Instead of just disabling everything, Disabler lets you pick and choose what settings you want turned off, in a dead simple UI.
 
@@ -20,7 +19,7 @@ This plugin will let you disable/remove the following features:
 
 * Texturization (including Smart/Curly quotes, EM dash, EN dash, and ellipsis)
 * The automatic capitalization of the P in WordPress (WordPress 3.0+ only)
-* The &lt;p&gt; that is automatically inserted
+* The `<p>` that is automatically inserted
 
 **Back End Settings**
 
@@ -37,13 +36,24 @@ This plugin will let you disable/remove the following features:
 
 All options default to off, and get cleaned up on uninstall.
 
-* [Donate](https://www.wepay.com/donations/halfelf-wp)
-* [Plugin Site](http://halfelf.org/disabler/)
+* [Plugin Site](http://jesin.tk/wordpress-plugins/disabler/)
+
+**Note: Version 3.0.0 is just a rewrite of this plugin with PHP OOP and WordPress [Settings API](http://codex.wordpress.org/Settings_API), the core of the plugin still remains the same. Issues when disabling certain features will be addressed in the subsequent releases.**
 
 ==Changelog==
 A giant thank you to everyone at http://wptavern.com for suggestions about what to add to this plugin.
 
-=2.3.1=
+= 3.0.2 =
+* Some refactoring and fixes for Coding Standards
+
+= 3.0.1 =
+* Some refactoring and tweaks done
+
+= 3.0.0 =
+* Plugin gets a new lease on life notice
+* Admin page redesigned with the [Settings API](http://codex.wordpress.org/Settings_API)
+
+= 2.3.1 =
 * 29 September, 2012 by Ipstenu
 * You'd like to save options, no?
 
@@ -56,7 +66,7 @@ A giant thank you to everyone at http://wptavern.com for suggestions about what 
 * i18n - Probably still doing it wrong.
 * Un/installing the <em>right</em> way.
 
-= 2.1 = 
+= 2.1 =
 * 17 April, 2012 by Ipstenu
 * Readme cleanup, fixing URLs etc.
 
@@ -73,7 +83,7 @@ A giant thank you to everyone at http://wptavern.com for suggestions about what 
 * 2 December, 2010 by Ipstenu
 * Fixed no-RSS option so it would actually uncheck!
 
-= 1.0 = 
+= 1.0 =
 * 24 November, 2010 by Ipstenu
 * Making it copacetic for 3.1!
 * Re-renamed Typography back to Front End
