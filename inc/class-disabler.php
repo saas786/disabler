@@ -36,7 +36,7 @@ final class Plugin {
      * @access public
      * @var    string
      */
-    public $asset_version = '1524555073';
+    public $asset_version = '1524575762';
 
     /**
      * Minimum required PHP version.
