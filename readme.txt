@@ -1,10 +1,10 @@
 === Disabler ===
 Contributors: saas
 Tags: disable, options, features
-Requires at least: 3.1
-Tested up to: 4.8
+Requires at least: 4.9
+Tested up to: 4.9.5
 Requires at least PHP: 5.6
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 
 Instead of installing million plugins to turn off features you don't want, why not use just ONE plugin?
