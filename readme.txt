@@ -1,10 +1,10 @@
 === Disabler ===
 Contributors: saas
 Tags: disable, options, features
-Requires at least: 3.1
-Tested up to: 4.8
+Requires at least: 4.9
+Tested up to: 4.9.5
 Requires at least PHP: 5.6
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 
 Instead of installing million plugins to turn off features you don't want, why not use just ONE plugin?
@@ -36,12 +36,14 @@ This plugin will let you disable/remove the following features:
 
 All options default to off, and get cleaned up on uninstall.
 
-* [Plugin Site](http://jesin.tk/wordpress-plugins/disabler/)
-
-**Note: Version 3.0.0 is just a rewrite of this plugin with PHP OOP and WordPress [Settings API](http://codex.wordpress.org/Settings_API), the core of the plugin still remains the same. Issues when disabling certain features will be addressed in the subsequent releases.**
+* [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
-A giant thank you to everyone at http://wptavern.com for suggestions about what to add to this plugin.
+
+= 3.0.3 =
+* Fixed various issues
+* Now compatible with WordPress v4.9+ and dropping pre WordPress v4.9 support
+* Opt in option, for collectin usage data
 
 = 3.0.2 =
 * Some refactoring and fixes for Coding Standards
@@ -113,7 +115,7 @@ No special instructions needed.
 
 = Will this work on older versions of WordPress? =
 
-I tried to make it backwards compatible (that is, you can't disable the capital P in WordPress checker if you're NOT on WordPress 3.0 or higher), but I didn't bother coding anything for pre-2.8 WordPress.  You should upgrade it you're not at least on the latest main version (which right now is 3.2.x)
+Its compatible with v4.9+. You should upgrade it, if you're not at least on the latest main version (which right now is v4.9.x)
 
 = Will this work on MultiSite? =
 In my rough testing, yes.  It even works network wide AND in the mu-plugins, though personally, I'd let people decide if they want it or not for their blogs. Activate it network wide, let people decide how they want to impliment it.
@@ -127,7 +129,7 @@ Because as of WordPress 3.3 you really need this around to get stuff done.
 Probably. Tell me what you want to add and I'll see if I can do it.
 
 = It's not working!  What do I do? =
-Start with turning off your other plugins.  There are a few that mess with formatting.
+Start with turning off your other plugins. There are a few that mess with formatting.
 
 * "Shortcodes Ultimate" -- You will need to turn on the option in that plugin to "Disable custom formatting - Enable this option if you have some problems with other plugins or content formatting."  From what I can tell, it's overriding the default customs with it's own.
 
