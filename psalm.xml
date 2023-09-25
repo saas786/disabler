@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="5"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    findUnusedBaselineEntry="false"
+>
+    <projectFiles>
+        <directory name="config" />
+        <directory name="inc" />
+    </projectFiles>
+
+    <issueHandlers>
+        <InvalidCatch errorLevel="suppress"/>
+        <InvalidClone errorLevel="suppress"/>
+        <InvalidGlobal errorLevel="suppress"/>
+        <InvalidReturnType errorLevel="suppress"/>
+        <MissingClosureReturnType errorLevel="suppress"/>
+        <MissingDependency errorLevel="suppress"/>
+        <MissingParamType errorLevel="suppress"/>
+        <MissingReturnType errorLevel="suppress"/>
+        <MismatchingDocblockParamType errorLevel="suppress"/>
+        <PossiblyUnusedMethod errorLevel="suppress"/>
+        <PossiblyUnusedProperty errorLevel="suppress"/>
+        <UndefinedClass errorLevel="suppress"/>
+        <UnusedClosureParam errorLevel="suppress"/>
+        <UnusedMethod errorLevel="suppress"/>
+        <UnusedVariable errorLevel="suppress"/>
+        <UndefinedConstant errorLevel="suppress"/>
+        <UndefinedDocblockClass errorLevel="suppress"/>
+        <UndefinedFunction errorLevel="suppress"/>
+        <UndefinedGlobalVariable errorLevel="suppress"/>
+    </issueHandlers>
+</psalm>
