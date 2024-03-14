@@ -1,0 +1,147 @@
+{
+  "name": "hbp/disabler",
+  "description": "Instead of installing million plugins to turn off features you don't want, why not use just ONE plugin?",
+  "license": "GPL-2.0-or-later",
+  "type": "wordpress-plugin",
+  "keywords": [
+    "wordpress"
+  ],
+  "authors": [
+    {
+      "name": "Hybopress Themes",
+      "email": "support@hybopressthemes.com",
+      "homepage": "https://wordpress.org/plugins/disabler/"
+    }
+  ],
+  "homepage": "https://github.com/saas786/disabler",
+  "support": {
+    "issues": "https://github.com/saas786/disabler/issues",
+    "forum": "https://wordpress.org/support/plugin/disabler",
+    "wiki": "https://github.com/saas786/disabler/wiki",
+    "source": "https://github.com/saas786/disabler"
+  },
+  "require": {
+    "php": ">=8.0",
+    "composer/installers": "^1.12 || ^2.0",
+    "sniccowp/php-scoper-wordpress-excludes": "^6.4.1",
+    "sniccwp/php-scoper-woocommerce-excludes": "dev-master",
+    "themehybrid/hybrid-action-scheduler": "dev-main",
+    "themehybrid/hybrid-assets": "dev-main",
+    "themehybrid/hybrid-contracts": "dev-dev as 2.0",
+    "themehybrid/hybrid-core": "dev-dev as 7.0",
+    "themehybrid/hybrid-events": "dev-dev as 1.0",
+    "themehybrid/hybrid-filesystem": "dev-dev as 1.0",
+    "themehybrid/hybrid-log": "dev-main",
+    "themehybrid/hybrid-tools": "dev-dev as 2.0",
+    "themehybrid/hybrid-usage-tracker": "dev-main",
+    "themehybrid/hybrid-view": "dev-dev as 2.0"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "themehybrid/hybrid-dev-tools": "dev-dev",
+    "themehybrid/hybrid-phpcs-rules": "dev-dev as 1.0"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/saas786/hybrid-action-scheduler"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/saas786/hybrid-log"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/saas786/hybrid-usage-tracker"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/saas786/hybrid-assets"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/snicco/php-scoper-woocommerce-excludes"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/themehybrid/hybrid-dev-tools"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/themehybrid/hybrid-phpcs-rules"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "HBP\\Disabler\\": "inc/"
+    }
+  },
+  "autoload-dev": {
+    "classmap": [
+      "bin-dev/"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "8.0"
+    },
+    "prepend-autoloader": false,
+    "process-timeout": 0
+  },
+  "extra": {
+    "hybrid-dev-tools": {
+      "bin-path": "./bin-dev/tools",
+      "configs-path": "./bin-dev/tools/configs",
+      "overwrite-configs": false
+    },
+    "installer-paths": {
+      "vendor/woocommerce/action-scheduler/": [
+        "woocommerce/action-scheduler"
+      ]
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@download-tools"
+    ],
+    "post-update-cmd": [
+      "@download-tools"
+    ],
+    "analyze": [
+      "@pint:analyze",
+      "@psalm:analyze",
+      "@phpcs:analyze"
+    ],
+    "composer:post:prefix": "composer dump-autoload --working-dir disabler-prefixed --classmap-authoritative",
+    "composer:pre:prefix": "composer install --no-dev --prefer-dist --no-scripts",
+    "composer:reset": "composer install --no-scripts",
+    "download-tools": "Hybrid\\DevTools\\Composer\\Actions::downloadTools",
+    "lint:syntax": "@php ./vendor/bin/parallel-lint ./config ./inc --show-deprecated -e php --exclude assets",
+    "lint:syntax:prefixed": "@php ./bin-dev/tools/parallel-lint.phar ./disabler-prefixed/inc ./disabler-prefixed/config --show-deprecated -e php",
+    "phpcs:analyze": "@php ./vendor/bin/phpcs ./config ./inc",
+    "phpcs:fix": "@php ./vendor/bin/phpcbf ./config ./inc",
+    "pint:analyze": "@php ./bin-dev/tools/pint.phar ./config ./inc --config ./bin-dev/tools/configs/pint.json --test",
+    "pint:analyze:prefixed": "@php ./bin-dev/tools/pint.phar ./disabler-prefixed/inc ./disabler-prefixed/config --config ./bin-dev/tools/configs/pint.json --test",
+    "pint:fix": "@php ./bin-dev/tools/pint.phar ./config ./inc --config ./bin-dev/tools/configs/pint.json",
+    "pint:fix:prefixed": "@php ./bin-dev/tools/pint.phar ./disabler-prefixed/inc ./disabler-prefixed/config --config ./bin-dev/tools/configs/pint.json",
+    "prefix": [
+      "rm -rf disabler-prefixed",
+      "@composer:pre:prefix",
+      "@php -d memory_limit=-1 ./bin-dev/tools/php-scoper.phar add-prefix --config ./bin-dev/php-scoper/scoper.inc.php --output-dir disabler-prefixed --force --quiet --ansi",
+      "@pint:fix:prefixed",
+      "@composer:post:prefix",
+      "rm disabler-prefixed/composer.json",
+      "@php ./bin-dev/php-scoper/fix-static-file-autoloader.php disabler-prefixed/vendor/composer || die \"Failed to scope theme\"",
+      "@composer:reset"
+    ],
+    "psalm:analyze": "@php ./bin-dev/tools/psalm.phar --config=./psalm.xml",
+    "psalm:fix": "@php ./bin-dev/tools/psalm.phar --alter --config=./psalm.xml --issues=all"
+  }
+}
