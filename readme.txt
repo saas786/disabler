@@ -1,49 +1,116 @@
 === Disabler ===
 Contributors: saas
 Tags: disable, options, features
-Requires at least: 4.9
-Tested up to: 4.9.5
-Requires at least PHP: 5.6
-Stable tag: 3.0.3
+Requires at least: 6.0
+Tested up to: 6.4.3
+Requires at least PHP: 8.0
+Stable tag: 4.0.0
 License: GPLv2 or later
 
-Instead of installing million plugins to turn off features you don't want, why not use just ONE plugin?
+Instead of installing a million plugins to disable features you don't want, why not use just ONE plugin?
 
 == Description ==
 
-I don't like certain things, like curly 'smart' quotes and self pings.  Instead of installing six or seven plugins to do this, I thought I'd make one plugin to cover the usual suspects.  Instead of just disabling everything, Disabler lets you pick and choose what settings you want turned off, in a dead simple UI.
+I don't like certain things, such as curly "smart" quotes and self-pings. Instead of installing six or seven plugins to handle this, I decided to create one plugin to address the common issues. Disabler allows you to select and deactivate specific settings rather than disabling everything, all through a straightforward UI.
 
-This plugin will let you disable/remove the following features:
+This plugin enables you to disable/remove the following features:
 
-**Front End Settings**
+**Back-End**
+
+* Self Ping
+* Autosaving of Posts etc.
+
+**Front-End**
 
 * Texturization (including Smart/Curly quotes, EM dash, EN dash, and ellipsis)
 * The automatic capitalization of the P in WordPress (WordPress 3.0+ only)
 * The `<p>` that is automatically inserted
+* Disable links to WordPress' internal 'shortlink' URLs for your posts. E.g., <link rel="shortlink" href="https://www.example.com/?p=1" />
 
-**Back End Settings**
+**Performance**
 
-* Self Ping
-* Autosaving of posts
-* Post Revisions
-* RSS Feeds
-* XML-RPC
+* Disable emojis
+* Prevent unauthorized embedding and remove JavaScript requests related to WordPress embeds
+* Control heartbeat rate: Disable it completely, etc.
+* Disable dashboard widgets
+
+**Revisions**
+
+* Disable revisions completely or selectively for each post type.
+
+**Feeds**
+
+WordPress outputs your content in various formats across different URLs, including feeds like RSS and Atom. It's advisable to disable unused formats for better control over your content distribution.
+
+* Redirect feeds (if disabled): Redirects feeds to prevent access.
+* Disable global feed: Removes URLs providing an overview of recent posts.
+* Disable global comment feeds: Removes URLs providing an overview of recent comments.
+* Disable post comments feeds: Removes URLs providing recent comments on each post.
+* Disable post authors feeds: Removes URLs providing recent posts by specific authors.
+* Disable post type feeds: Removes URLs providing recent posts for each post type.
+* Disable category feeds: Removes URLs providing recent posts for each category.
+* Disable tag feeds: Removes URLs providing recent posts for each tag.
+* Disable custom taxonomy feeds: Removes URLs providing recent posts for each custom taxonomy.
+* Disable search results feeds: Removes URLs providing search result information.
+* Disable Atom / RDF feeds: Removes URLs providing alternative formats of the above.
+
+**Rest API**
+
+The REST API in WordPress provides powerful functionality for interacting with your site's data. However, there may be cases where you want to restrict or disable access to this API for security or privacy reasons.
+
+* Disable REST API for visitors: Prevents access to the REST API endpoints for non-authenticated visitors.
+* Disable REST API links: Removes the link tag in the HTML header that points to the REST API endpoint.
+* Disable REST API RSD link: Removes the RSD (Really Simple Discovery) link tag that specifies the REST API endpoint.
+* Disable REST API link in HTTP headers: Removes the HTTP header link that specifies the REST API endpoint.
 
 **Privacy Settings**
 
 * Outputting WordPress version in your blog headers
 * Sending your blog URL to WordPress when checking for updates on core/theme/plugins
 
-All options default to off, and get cleaned up on uninstall.
+**XML-RPC**
+
+* XML-RPC Control: Choose between completely disabling XML-RPC or selectively enabling it.
+* Whitelist IP Addresses: Option to whitelist additional IP addresses.
+* XML RPC Methods: Control which XML-RPC methods are allowed.
+* XML-RPC HTTP Headers: Ability to add or remove custom XML-RPC HTTP headers.
+* Remove RSD, WLW Manifest, Pingback Links: Option to remove these XML-RPC-related links from the website.
+
+**Updates**
+
+* Plugin Updates: Users can choose between manual or automatic updates, or disable updates entirely.
+* Theme Updates: Similar options as plugin updates.
+* Auto and Async Translations Updates: Options to enable auto updates, disable them, or keep the default setting.
+* WordPress Core Updates: Various options to manage updates, including disabling updates, allowing minor or major auto updates, or enabling updates for development installations.
+* Enable updates for VCS Installations: Users can choose to enable or disable updates for installations under version control systems.
+* Updates nags only for Admin: Hides WordPress core update notices for users without update capabilities.
+
+**Usage Tracking**
+
+* This setting enables anonymous usage data collection for the plugin, including WordPress information, installed plugins/themes, and server details.
+
+All options default to off and are cleaned up upon uninstall.
 
 * [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
 
+= 4.0.0 =
+* Revamped the code, now utilizes Composer autoloading and PHP Namespaces
+* Now compatible with WordPress v6.0+ and dropping pre WordPress v6.0 support
+* Added disable embeds control
+* Added disable heartbeat control(s)
+* Added disable dashboard widget(s) control
+* Enhanced disable revisions control(s)
+* Enhanced disable feeds control(s)
+* Added disable rest api control(s)
+* Enhanced disable xml-rpc control(s)
+* Added disable updates (core, theme, plugin and translation) control(s)
+
 = 3.0.3 =
 * Fixed various issues
 * Now compatible with WordPress v4.9+ and dropping pre WordPress v4.9 support
-* Opt in option, for collectin usage data
+* Opt in option, for collection usage data
 
 = 3.0.2 =
 * Some refactoring and fixes for Coding Standards

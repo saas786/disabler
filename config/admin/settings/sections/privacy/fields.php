@@ -7,7 +7,7 @@ return [
         'type'        => 'checkbox', // callback
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'privacy',
-        'after_field' => sprintf( '<code>' . esc_html( '<meta name="generator" content="WordPress %1$s">' ) . '</code>', esc_attr( get_bloginfo( 'version' ) ) ),
+        'after_field' => sprintf( 'Removes the meta tag <code>' . esc_html( '<meta name="generator" content="WordPress %1$s">' ) . '</code>', esc_attr( get_bloginfo( 'version' ) ) ),
         'setting_key' => 'privacy_disable_wp_generator',
     ],
     'fake_user_agent_value' => [
@@ -16,7 +16,7 @@ return [
         'type'        => 'checkbox', // callback
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'privacy',
-        'after_field' => esc_html__( 'It will prevent WordPress from sending your URL information when checking for updates.', 'hbp-disabler' ),
+        'after_field' => esc_html__( 'Prevents WordPress from sending your URL information when checking for updates.', 'hbp-disabler' ),
         'setting_key' => 'privacy_fake_user_agent_value',
     ],
 ];

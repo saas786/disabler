@@ -25,5 +25,5 @@ add_action( 'admin_notices', static function () {
 
     echo '</p></div>';
 
-    // deactivate_plugins( [ 'disabler/plugin.php' ] );
+    // deactivate_plugins( [ 'disabler/disabler.php' ] );
 } );

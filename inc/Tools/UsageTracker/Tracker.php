@@ -13,14 +13,14 @@ class Tracker extends UsageTracker {
      *
      * @var string
      */
-    public $option_name = 'disabler_usage_tracker_last_request';
+    public $option_name = 'hbp_disabler_usage_tracker_last_request';
 
     /**
      * The tracking prefix for cron job.
      *
      * @var string
      */
-    public $cron_prefix = 'disabler_usage_tracker_last_request';
+    public $cron_prefix = 'hbp_disabler_usage_tracker_last_request';
 
     /**
      * Registers all hooks to WordPress.

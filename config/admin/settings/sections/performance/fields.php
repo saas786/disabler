@@ -16,7 +16,7 @@ return [
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'performance',
         'setting_key' => 'performance_disable_embeds',
-        'description' => esc_html__( 'Prevents others from embedding content from your site, prevents you from embedding content from other (non-allowed) sites, and removes JavaScript requests related to WordPress embeds', 'hbp-disabler' ),
+        'description' => esc_html__( 'Prevents others from embedding content from your site and removes JavaScript requests related to WordPress embeds.', 'hbp-disabler' ),
     ],
     'heartbeat'       => [
         'type'   => 'group',
@@ -80,6 +80,7 @@ return [
                 'after_field'     => esc_html__( 'Leave empty for default frequency', 'hbp-disabler' ),
                 'class'           => 'small-text',
                 'container-class' => 'performance_heartbeat_frequency-wrap',
+                /* translators: %1$s is replaced with a line break, %2$s is replaced with <strong> tag opening, %3$s is replaced with </strong> tag closing */
                 'description'     => sprintf( esc_html__( 'We recommend you 60 seconds, default is 20 seconds. %1$s %2$s Note:%3$s When \'Everywhere\' is set, Heartbeat frequency won\'t have any effect.', 'hbp-disabler' ), '<br/>', '<strong>', '</strong>' ),
             ];
 

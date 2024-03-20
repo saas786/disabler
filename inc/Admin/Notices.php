@@ -109,6 +109,29 @@ class Notices {
     }
 
     /**
+     * Remove a given set of notices.
+     *
+     * An array of notice names or a regular expression string can be passed, in the later case
+     * all the notices whose name matches the regular expression will be removed.
+     *
+     * @param array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
+     * @param bool         $force_save Force saving inside this method instead of at the 'shutdown'.
+     * @return void
+     */
+    public static function remove_notices( $names_array_or_regex, $force_save = false ) {
+        if ( ! is_array( $names_array_or_regex ) ) {
+            $names_array_or_regex = array_filter( self::get_notices(), static fn( $notice_name ) => 1 === preg_match( $names_array_or_regex, $notice_name ) );
+        }
+
+        self::set_notices( array_diff( self::get_notices(), $names_array_or_regex ) );
+
+        if ( $force_save ) {
+            // Adding early save to prevent more race conditions with notices.
+            self::store_notices();
+        }
+    }
+
+    /**
      * See if a notice is being shown.
      *
      * @param  string $name Notice name.
@@ -176,7 +199,7 @@ class Notices {
 
         wp_enqueue_style(
             'hbp-disabler-admin-notices',
-            Assets::assetUrl( 'css/admin-notices.css' ),
+            Assets::assetUrl( 'css/admin/notices.css' ),
             [],
             null
         );
