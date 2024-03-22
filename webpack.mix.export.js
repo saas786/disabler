@@ -5,7 +5,8 @@ const { copyItems, removeItems } = require('./bin-dev/copy/fileUtils');
 const exportPath = 'disabler';
 
 const files = [
-  { name: 'plugin.php' },
+  { name: 'disabler.php' },
+  { name: 'uninstall.php' },
   { name: 'LICENSE.md' },
 ];
 

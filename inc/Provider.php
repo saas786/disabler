@@ -19,9 +19,9 @@ class Provider extends ServiceProvider {
      * @throws \Throwable
      */
     public function register() {
-        $this->app->singleton( PluginInstall::class );
-        $this->app->singleton( Notices::class );
         $this->app->singleton( Plugin::class );
+        $this->app->singleton( Notices::class );
+        $this->app->singleton( PluginInstall::class );
 
         $this->app->singleton( 'hbp/disabler/assets', static function ( $app ) {
             $plugin = $app->make( \Hybrid\Assets\Plugin::class );
@@ -46,9 +46,8 @@ class Provider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $this->app->resolve( PluginInstall::class )->boot();
         $this->app->resolve( Notices::class )->boot();
-        $this->app->resolve( Plugin::class )->boot();
+        $this->app->resolve( PluginInstall::class )->boot();
 
         $this->app->resolve( 'disabler/usage/tracker' )->boot();
     }

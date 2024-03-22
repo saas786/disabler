@@ -50,7 +50,6 @@ $woocommerceActionScheduler = array_map(
  * automatically generated exclude files.
  *
  * @link https://github.com/snicco/php-scoper-wordpress-excludes
- * @return array
  */
 function getWordPressStubs( string $name ): array {
     $file     = dirname( __DIR__, 2 ) . '/vendor/sniccowp/php-scoper-wordpress-excludes/generated/' . $name;
@@ -67,7 +66,6 @@ function getWordPressStubs( string $name ): array {
  * automatically generated exclude files.
  *
  * @link https://github.com/snicco/php-scoper-woocommerce-excludes
- * @return array
  */
 function getWooCommerceStubs( string $name ): array {
     $file = dirname( __DIR__, 2 ) . '/vendor/sniccwp/php-scoper-woocommerce-excludes/generated/' . $name;
@@ -82,16 +80,10 @@ function getWooCommerceStubs( string $name ): array {
 return [
     'exclude-classes'         => [
         ...getWordPressStubs( 'exclude-wordpress-classes.json' ),
-        // ...getWordPressStubs( 'exclude-wordpress-constants.json' ),
-        // ...getWordPressStubs( 'exclude-wordpress-functions.json' ),
         ...getWordPressStubs( 'exclude-wordpress-interfaces.json' ),
         ...getWooCommerceStubs( 'exclude-woocommerce-classes.php' ),
-        // ...getWooCommerceStubs( 'exclude-woocommerce-constants.php' ),
-        // ...getWooCommerceStubs( 'exclude-woocommerce-functions.php' ),
         ...getWooCommerceStubs( 'exclude-woocommerce-interfaces.php' ),
         ...getWooCommerceStubs( 'exclude-woocommerce-packages-classes.php' ),
-        // ...getWooCommerceStubs( 'exclude-woocommerce-packages-constants.php' ),
-        // ...getWooCommerceStubs( 'exclude-woocommerce-packages-functions.php' ),
         ...getWooCommerceStubs( 'exclude-woocommerce-packages-interfaces.php' ),
         ...getWooCommerceStubs( 'exclude-woocommerce-packages-traits.php' ),
         ...getWooCommerceStubs( 'exclude-woocommerce-traits.php' ),
@@ -116,7 +108,8 @@ return [
     'exclude-files'           => [
         // these paths are relative to this file location, so it should be in the root directory
         '../../vendor/symfony/deprecation-contracts/function.php',
-        './plugin.php',
+        './disabler.php',
+        './uninstall.php',
         ...$woocommerceActionScheduler,
     ],
     'exclude-functions'       => array_merge(
@@ -189,7 +182,8 @@ return [
                 ])
                 ->in( 'vendor' ),
         Finder::create()->append( [
-            'plugin.php',
+            'disabler.php',
+            'uninstall.php',
             'readme.txt',
             'composer.json',
         ] ),

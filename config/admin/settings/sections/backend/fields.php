@@ -7,7 +7,7 @@ return [
         'type'        => 'checkbox', // callback
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'backend',
-        'after_field' => esc_html__( '(i.e. trackbacks/pings from your own domain).', 'hbp-disabler' ),
+        'after_field' => esc_html__( 'Prevents trackbacks/pings from your own domain.', 'hbp-disabler' ),
         'setting_key' => 'backend_disable_self_ping',
         'events'      => [
             'true'  => [
@@ -28,7 +28,7 @@ return [
         'setting_key'     => 'backend_disable_self_ping_urls',
         'container-class' => 'backend_disable_self_ping_urls-wrap',
         /* translators: %s: Ping-back URL of website */
-        'description'     => sprintf( esc_html__( 'By default, No Self Pings will exclude pings for this site (%s) but you can supply additional URLs below. Separate multiple URLs with line breaks.', 'hbp-disabler' ), esc_url( home_url() ) ),
+        'description'     => sprintf( esc_html__( 'By default, the "No Self Pings" setting will exclude pings for this site (%s) but you can provide additional URLs below. Separate multiple URLs with line breaks.', 'hbp-disabler' ), esc_url( home_url() ) ),
     ],
     'disable_autosave'       => [
         'id'          => 'disable_autosave',
@@ -36,7 +36,7 @@ return [
         'type'        => 'checkbox', // callback
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'backend',
-        'after_field' => esc_html__( 'It will disable autosave feature for posts etc.', 'hbp-disabler' ),
+        'after_field' => esc_html__( 'Disables the autosave feature for posts, etc.', 'hbp-disabler' ),
         'setting_key' => 'backend_disable_autosave',
     ],
 ];

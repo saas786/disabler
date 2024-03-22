@@ -9,7 +9,8 @@ return [
         'type'         => 'select',
         'page'         => 'settings_page_hbp-disabler-settings',
         'section'      => 'revisions',
-        'before_field' => sprintf( esc_html__( '%1$s To select multiple post types, hold ctrl key while selecting. Do not select a post type if you are not sure about it. %2$s', 'hbp-disabler' ), '<p>', '</p><br/>' ),
+        /* translators: %1$s is replaced with <p> tag opening, %2$s is replaced with closing tags */
+        'before_field' => sprintf( esc_html__( '%1$s To select multiple post types, hold ctrl key while selecting. Do not select a post type if you are unsure. %2$s', 'hbp-disabler' ), '<p>', '</p><br/>' ),
         'setting_key'  => 'revisions_disable_revisions',
         'multiple'     => true,
         'choices'      => static function () {
@@ -63,7 +64,7 @@ return [
                 'container-class' => 'revisions_limit_description-wrap',
                 'callback'        => static fn() => printf(
                     /* translators: %s Section Description. %s */
-                    esc_html__( '%1$s Set the revisions limit for each post type listed (if revisions are not disabled above). Leave the field empty for default behaviour. %2$s', 'hbp-disabler' ),
+                    esc_html__( '%1$s Set the revisions limit for each selected post type. Leave the field empty for default behavior. %2$s', 'hbp-disabler' ),
                     '<p class="description">',
                     '</p>'
                 ),

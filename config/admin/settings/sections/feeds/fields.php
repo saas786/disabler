@@ -19,7 +19,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Disable URLs which provide an overview of your recent posts. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Feed" href="https://www.example.com/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing an overview of recent posts. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Feed" href="https://www.example.com/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_global',
     ],
     'disable_feed_global_comments'   => [
@@ -28,7 +28,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide an overview of recent comments on your site. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Comments Feed" href="https://www.example.com/comments/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( ' Removes URLs providing an overview of recent comments. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Comments Feed" href="https://www.example.com/comments/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_global_comments',
         'description' => esc_html__( 'Also disables post comment feeds.', 'hbp-disabler' ),
     ],
@@ -38,7 +38,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about recent comments on each post. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Example post Comments Feed" href="https://www.example.com/example-post/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing recent comments on each post. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Example post Comments Feed" href="https://www.example.com/example-post/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_post_comments',
     ],
     'disable_feed_authors'           => [
@@ -47,7 +47,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about recent posts by specific authors. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Posts by Example Author Feed" href="https://www.example.com/author/example-author/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing recent posts by specific authors. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Posts by Example Author Feed" href="https://www.example.com/author/example-author/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_authors',
     ],
     'disable_feed_post_types'        => [
@@ -56,7 +56,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about your recent posts, for each post type. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Movies Feed" href="https://www.example.com/movies/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing recent posts for each post type. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Movies Feed" href="https://www.example.com/movies/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_post_types',
     ],
     'disable_feed_categories'        => [
@@ -65,7 +65,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about your recent posts, for each category. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - News Category Feed" href="https://www.example.com/category/news/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing recent posts for each category. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - News Category Feed" href="https://www.example.com/category/news/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_categories',
     ],
     'disable_feed_tags'              => [
@@ -74,7 +74,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about your recent posts, for each tag. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Blue Tag Feed" href="https://www.example.com/tag/blue/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing recent posts for each tag. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Blue Tag Feed" href="https://www.example.com/tag/blue/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_tags',
     ],
     'disable_feed_custom_taxonomies' => [
@@ -83,7 +83,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about your recent posts, for each custom taxonomy. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Large size Feed" href="https://www.example.com/size/large/feed/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing recent posts for each custom taxonomy. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Large size Feed" href="https://www.example.com/size/large/feed/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_custom_taxonomies',
     ],
     'disable_feed_search'            => [
@@ -92,7 +92,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide information about your search results. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Search Results for \'example\' Feed" href="https://www.example.com/search/example/feed/rss2/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs providing search result information. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Search Results for \'example\' Feed" href="https://www.example.com/search/example/feed/rss2/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_feed_search',
     ],
     'disable_atom_rdf_feeds'         => [
@@ -101,7 +101,7 @@ return [
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'feeds',
-        'after_field' => sprintf( 'Remove URLs which provide alternative (legacy) formats of all of the above. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Feed" href="https://www.example.com/feed/atom/" />' ) . '</code>' ),
+        'after_field' => sprintf( 'Removes URLs that provide alternative (legacy) formats of the above. E.g., %1$s', '<br/><code>' . esc_html( '<link rel="alternate" type="application/rss+xml" title="Example Website - Feed" href="https://www.example.com/feed/atom/" />' ) . '</code>' ),
         'setting_key' => 'feeds_disable_atom_rdf_feeds',
     ],
 ];
