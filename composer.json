@@ -23,7 +23,7 @@
   "require": {
     "php": ">=8.0",
     "composer/installers": "^1.12 || ^2.0",
-    "sniccowp/php-scoper-wordpress-excludes": "^6.4.1",
+    "sniccowp/php-scoper-wordpress-excludes": "^6.5.2",
     "sniccwp/php-scoper-woocommerce-excludes": "dev-master",
     "themehybrid/hybrid-action-scheduler": "dev-main",
     "themehybrid/hybrid-assets": "dev-main",

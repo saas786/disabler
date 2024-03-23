@@ -10,12 +10,12 @@ class Plugin {
     /**
      * The current version of the plugin.
      */
-    const VERSION = '4.0.0-RC.3';
+    const VERSION = '4.0.0-RC.4';
 
     /**
      * The current db version of the plugin.
      */
-    const DB_VERSION = '4.0.0-RC.3';
+    const DB_VERSION = '4.0.0-RC.4';
 
     /**
      * The current release date of the plugin.
