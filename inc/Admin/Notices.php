@@ -114,8 +114,8 @@ class Notices {
      * An array of notice names or a regular expression string can be passed, in the later case
      * all the notices whose name matches the regular expression will be removed.
      *
-     * @param array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
-     * @param bool         $force_save Force saving inside this method instead of at the 'shutdown'.
+     * @param  array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
+     * @param  bool         $force_save           Force saving inside this method instead of at the 'shutdown'.
      * @return void
      */
     public static function remove_notices( $names_array_or_regex, $force_save = false ) {

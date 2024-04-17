@@ -28,15 +28,9 @@ class PluginInstall {
      * @var array
      */
     private static $db_updates = [
-        '3.0.0'      => [
-            __NAMESPACE__ . '\update_3_0_0_options',
-            __NAMESPACE__ . '\update_3_0_0_db_version',
-        ],
-        '3.0.3'      => [
-            __NAMESPACE__ . '\update_3_0_3_options',
-            __NAMESPACE__ . '\update_3_0_3_db_version',
-        ],
         '4.0.0-RC.2' => [
+            __NAMESPACE__ . '\update_3_0_0_options',
+            __NAMESPACE__ . '\update_3_0_3_options',
             __NAMESPACE__ . '\update_4_0_0_RC_2_options',
             __NAMESPACE__ . '\update_4_0_0_RC_2_db_version',
         ],
@@ -66,7 +60,20 @@ class PluginInstall {
      */
     public static function init_plugin_version() {
         if ( self::is_new_install() && is_null( get_option( 'hbp_disabler_db_version', null ) ) ) {
-            self::update_db_version( '2.3.1' );
+            // Since v1.
+            $v2_settings = get_option( 'disabler_autop', null );
+
+            // Since v3.
+            $v3_settings = get_option( 'disabler_options', null );
+
+            // Since v3.0.3.
+            $v3_0_3_settings = get_option( 'disabler_settings', null );
+
+            if ( ! is_null( $v3_0_3_settings ) || ! is_null( $v3_settings ) || ! is_null( $v2_settings ) ) {
+                self::update_db_version( '4.0.0-RC.1' );
+            } else {
+                self::update_db_version( '4.0.0' );
+            }
         }
     }
 
@@ -243,11 +250,24 @@ class PluginInstall {
      * @return bool
      */
     public static function is_new_install() {
+        // Since v1.
+        $v2_settings = get_option( 'disabler_autop', null );
+
+        // Since v3.
+        $v3_settings = get_option( 'disabler_options', null );
+
+        // Since v3.0.3.
+        $v3_0_3_settings = get_option( 'disabler_settings', null );
+
+        // Since v3.1.
         $settings = get_option( 'hbp_disabler_settings', null );
         $version  = get_option( 'hbp_disabler_version', null );
 
-        return is_null( $version )
-            || is_null( $settings );
+        return is_null( $v2_settings )
+            || is_null( $v3_settings )
+            || is_null( $v3_0_3_settings )
+            || is_null( $settings )
+            || is_null( $version );
     }
 
     /**

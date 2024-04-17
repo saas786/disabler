@@ -74,7 +74,3 @@ function update_3_0_3_options() {
     delete_option( 'disabler_options' );
     delete_option( 'disabler_plugin_version' );
 }
-
-function update_3_0_3_db_version() {
-    PluginInstall::update_db_version( '3.0.3' );
-}

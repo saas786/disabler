@@ -9,7 +9,7 @@ function update_3_0_0_options() {
 
     if ( ! $options ) {
         Log::info(
-            'Bail early, as newer settings detected',
+            'Bail early, as newer settings detected.',
             [ 'source' => __NAMESPACE__ . '\update_3_0_0_options' ]
         );
 
@@ -128,8 +128,4 @@ function update_3_0_0_options() {
     delete_option( 'disabler_revisions' );
     delete_option( 'disabler_nourl' );
     delete_option( 'disabler_smartquotes' );
-}
-
-function update_3_0_0_db_version() {
-    PluginInstall::update_db_version( '3.0.0' );
 }
