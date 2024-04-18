@@ -30,7 +30,7 @@ trait TabbedSections {
             'hbp-disabler-wp-admin-tabs',
             Assets::assetUrl( 'js/admin/tabs.js' ),
             [],
-            null,
+            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
             true
         );
     }

@@ -10,16 +10,16 @@ class Plugin {
     /**
      * The current version of the plugin.
      */
-    const VERSION = '4.0.0-RC.4';
+    const VERSION = '4.0.0';
 
     /**
      * The current db version of the plugin.
      */
-    const DB_VERSION = '4.0.0-RC.4';
+    const DB_VERSION = '4.0.0';
 
     /**
      * The current release date of the plugin.
      */
-    const RELEASE_DATE = '21 March, 2024 6:00PM (GMT + 5)';
+    const RELEASE_DATE = '18 April, 2024 1:00PM (GMT + 5)';
 
 }

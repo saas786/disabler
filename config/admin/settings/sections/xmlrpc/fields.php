@@ -80,7 +80,7 @@ return [
                 'page'            => 'settings_page_hbp-disabler-settings',
                 'section'         => 'xmlrpc',
                 'setting_key'     => 'xmlrpc_custom_xmlrpc_whitelist_ips',
-                /* translators: %s: XML-RPC custom whitelist IP's */
+                /* Translators: %s XML-RPC custom whitelist IP's. */
                 'description'     => esc_html__( 'Separate multiple IP\'s with line breaks.', 'hbp-disabler' ),
                 'container-class' => 'xmlrpc_custom_xmlrpc_whitelist_ips-wrap',
             ];
@@ -123,7 +123,7 @@ return [
                 'page'            => 'settings_page_hbp-disabler-settings',
                 'section'         => 'xmlrpc',
                 'setting_key'     => 'xmlrpc_custom_xmlrpc_methods',
-                /* translators: %s: XML-RPC custom methods */
+                /* Translators: %s XML-RPC custom methods. */
                 'description'     => esc_html__( 'Separate multiple methods with line breaks.', 'hbp-disabler' ),
                 'container-class' => 'xmlrpc_custom_xmlrpc_methods-wrap',
             ];
@@ -159,7 +159,7 @@ return [
                 'page'            => 'settings_page_hbp-disabler-settings',
                 'section'         => 'xmlrpc',
                 'setting_key'     => 'xmlrpc_custom_xmlrpc_headers',
-                /* translators: %s: XML-RPC custom headers */
+                /* Translators: %s XML-RPC custom headers. */
                 'description'     => esc_html__( 'Separate multiple headers with line breaks.', 'hbp-disabler' ),
                 'container-class' => 'xmlrpc_custom_xmlrpc_headers-wrap',
             ];

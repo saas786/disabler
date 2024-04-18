@@ -201,7 +201,7 @@ class Notices {
             'hbp-disabler-admin-notices',
             Assets::assetUrl( 'css/admin/notices.css' ),
             [],
-            null
+            null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
         );
 
         // Add RTL support.

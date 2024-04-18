@@ -238,7 +238,7 @@ class Performance implements Bootable {
             'hbp-disabler-disable-embeds',
             Assets::assetUrl( 'js/blocks/disable-embeds/index.js' ),
             [ 'wp-blocks', 'wp-dom-ready', 'wp-polyfill' ],
-            null,
+            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
             true
         );
     }

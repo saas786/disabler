@@ -184,7 +184,8 @@ return [
         Finder::create()->append( [
             'disabler.php',
             'uninstall.php',
-            'readme.txt',
+            'README.txt',
+            'LICENSE.txt',
             'composer.json',
         ] ),
     ],

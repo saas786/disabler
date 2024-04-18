@@ -208,7 +208,7 @@ class OptionsPage {
             return call_user_func( [ $this, $method ], $field );
         }
 
-        echo $this->renderField( $field );
+        echo $this->renderField( $field ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**
@@ -220,8 +220,6 @@ class OptionsPage {
         ?>
         <div class="wrap hbp-disabler-form-wrap">
             <h1><?php esc_html_e( 'Settings', 'hbp-disabler' ); ?></h1>
-
-            <?php // settings_errors(); // not needed on options.php page ?>
 
             <form method="post" action="options.php">
                 <?php settings_fields( $this->option_key ); ?>
@@ -238,7 +236,7 @@ class OptionsPage {
             'hbp-disabler-wp-admin-settings',
             Assets::assetUrl( 'js/admin/settings.js' ),
             [],
-            null,
+            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
             true
         );
 
@@ -246,7 +244,7 @@ class OptionsPage {
             'hbp-disabler-wp-admin-settings',
             Assets::assetUrl( 'css/admin/settings.css' ),
             [],
-            null
+            null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
         );
     }
 
