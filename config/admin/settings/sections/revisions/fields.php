@@ -9,7 +9,7 @@ return [
         'type'         => 'select',
         'page'         => 'settings_page_hbp-disabler-settings',
         'section'      => 'revisions',
-        /* translators: %1$s is replaced with <p> tag opening, %2$s is replaced with closing tags */
+        /* Translators: %1$s will be replaced with the opening <p> tag, %2$s will be replaced with closing tags and a line break. */
         'before_field' => sprintf( esc_html__( '%1$s To select multiple post types, hold ctrl key while selecting. Do not select a post type if you are unsure. %2$s', 'hbp-disabler' ), '<p>', '</p><br/>' ),
         'setting_key'  => 'revisions_disable_revisions',
         'multiple'     => true,
@@ -63,7 +63,7 @@ return [
                 'setting_key'     => 'revisions_limit_description',
                 'container-class' => 'revisions_limit_description-wrap',
                 'callback'        => static fn() => printf(
-                    /* translators: %s Section Description. %s */
+                /* Translators: %1$s will be replaced with the opening paragraph tag, %2$s will be replaced with the closing paragraph tag. */
                     esc_html__( '%1$s Set the revisions limit for each selected post type. Leave the field empty for default behavior. %2$s', 'hbp-disabler' ),
                     '<p class="description">',
                     '</p>'

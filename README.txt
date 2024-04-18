@@ -2,10 +2,11 @@
 Contributors: saas
 Tags: disable, options, features
 Requires at least: 6.0
-Tested up to: 6.4.3
-Requires at least PHP: 8.0
+Tested up to: 6.5
+Requires PHP: 8.0
 Stable tag: 4.0.0
-License: GPLv2 or later
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Instead of installing a million plugins to disable features you don't want, why not use just ONE plugin?
 
@@ -182,7 +183,7 @@ No special instructions needed.
 
 = Will this work on older versions of WordPress? =
 
-Its compatible with v4.9+. You should upgrade it, if you're not at least on the latest main version (which right now is v4.9.x)
+Its compatible with v6.0+. You should upgrade it, if you're not at least on the latest main version (which right now is v6.5.x)
 
 = Will this work on MultiSite? =
 In my rough testing, yes.  It even works network wide AND in the mu-plugins, though personally, I'd let people decide if they want it or not for their blogs. Activate it network wide, let people decide how they want to impliment it.
@@ -201,8 +202,16 @@ Start with turning off your other plugins. There are a few that mess with format
 * "Shortcodes Ultimate" -- You will need to turn on the option in that plugin to "Disable custom formatting - Enable this option if you have some problems with other plugins or content formatting."  From what I can tell, it's overriding the default customs with it's own.
 
 == Screenshots ==
-1. Standard View
-2. Options checked
+1. Back-end settings
+2. Front-end settings
+3. Performance settings
+4. Revisions settings
+5. Feeds settings
+6. Rest API settings
+7. Privacy settings
+8. XML-RPC settings
+9. Updates settings
+10. Usage Tracking setting
 
 == Upgrade Notice ==
 

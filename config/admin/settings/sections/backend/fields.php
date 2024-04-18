@@ -27,7 +27,7 @@ return [
         // 'after_field' => esc_html__( '(i.e. trackbacks/pings from your own domain).', 'hbp-disabler' ),
         'setting_key'     => 'backend_disable_self_ping_urls',
         'container-class' => 'backend_disable_self_ping_urls-wrap',
-        /* translators: %s: Ping-back URL of website */
+        /* Translators: %s Ping-back URL of website. */
         'description'     => sprintf( esc_html__( 'By default, the "No Self Pings" setting will exclude pings for this site (%s) but you can provide additional URLs below. Separate multiple URLs with line breaks.', 'hbp-disabler' ), esc_url( home_url() ) ),
     ],
     'disable_autosave'       => [

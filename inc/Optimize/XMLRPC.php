@@ -95,7 +95,12 @@ class XMLRPC implements Bootable {
             $custom_methods = array_merge( Options::get( 'xmlrpc_xmlrpc_methods', [] ), $custom_methods );
 
             if ( in_array( $method, $custom_methods ) ) {
-                wp_die( sprintf( 'XML-RPC\'s method %1$s is not supported', $method ), 'Not Allowed!', [ 'response' => 403 ] );
+                wp_die(
+                    /* Translators: %1$s XML RPC method name. */
+                    sprintf( esc_html__( 'XML-RPC\'s method %1$s is not supported', 'hbp-disabler' ), $method ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    'Not Allowed!',
+                    [ 'response' => 403 ]
+                );
             }
         }
     }
