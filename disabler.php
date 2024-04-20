@@ -3,7 +3,7 @@
  * Plugin Name:       Disabler
  * Plugin URI:        https://wordpress.org/plugins/disabler/
  * Description:       Why install a million plugins to disable features you don't want when you can use just ONE plugin?
- * Version:           4.0.0
+ * Version:           4.0.1
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Hybopress Themes

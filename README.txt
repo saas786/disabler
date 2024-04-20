@@ -4,7 +4,7 @@ Tags: disable, options, features
 Requires at least: 6.0
 Tested up to: 6.5
 Requires PHP: 8.0
-Stable tag: 4.0.0
+Stable tag: 4.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -95,6 +95,9 @@ All options default to off and are cleaned up upon uninstall.
 * [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
+
+= 4.0.1 =
+* Added current_user_can check to PluginInstall::install_actions
 
 = 4.0.0 =
 * Revamped the code, now utilizes Composer autoloading and PHP Namespaces

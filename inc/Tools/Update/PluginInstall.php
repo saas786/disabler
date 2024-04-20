@@ -170,14 +170,21 @@ class PluginInstall {
     }
 
     /**
-     * Install actions when a update button is clicked within the admin area.
+     * Install actions to handle update button clicks within the admin area.
      *
-     * This function is hooked into admin_init to affect admin only.
+     * This function is hooked into admin_init to affect the admin only.
      */
     public static function install_actions() {
         if ( ! empty( $_GET['do_update_hbp_disabler'] ) ) { // WPCS: input var ok.
             check_admin_referer( 'hbp_disabler_db_update', 'hbp_disabler_db_update_nonce' );
+
+            // Check if the current user has permission to manage options.
+            if ( ! current_user_can( 'manage_options' ) ) {
+                wp_die( esc_html__( 'You do not have permission to manage disabler\'s DB updates.', 'hbp-disabler' ) );
+            }
+
             self::update();
+
             Notices::add_notice( 'update', true );
         }
     }
@@ -356,7 +363,7 @@ class PluginInstall {
             }
         }
 
-        // After the callbacks finish, update the db version to the current WC version.
+        // After the callbacks finish, update the db version to the current Plugin version.
         $current_version = Plugin::VERSION;
         if ( version_compare( $current_db_version, $current_version, '<' ) &&
             ! queue()->get_next( 'hbp_disabler_update_db_to_current_version' ) ) {
