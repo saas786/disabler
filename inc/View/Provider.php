@@ -6,8 +6,8 @@
 namespace HBP\Disabler\View;
 
 use Hybrid\Core\ServiceProvider;
-use Hybrid\View\Facades\View;
 use function Hybrid\public_path;
+use function Hybrid\Tools\WordPress\get_child_theme_file_path;
 
 /**
  * View service provider.
@@ -18,10 +18,14 @@ class Provider extends ServiceProvider {
      * Boot.
      */
     public function boot() {
-        // Add view paths.
-        // View::addLocation( resource_path( 'views' ), 50 );
-        View::addLocation( public_path( 'views' ), 50 );
-        // $this->loadViewsFrom( public_path( 'views' ), 'HBP/Disabler');
+        $this->loadViewsFrom(
+            [
+                get_child_theme_file_path( 'views/hbp-disabler' ),
+                get_parent_theme_file_path( 'views/hbp-disabler' ),
+                public_path( 'views' ),
+            ],
+            'HBP/Disabler'
+        );
     }
 
 }

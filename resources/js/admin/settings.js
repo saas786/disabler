@@ -4,9 +4,9 @@
       const events = $(fieldSelector).data('events');
       const mergedActions = {};
 
-	  if (!Array.isArray(selectedValues)) {
-		  selectedValues = [selectedValues];
-	  }
+      if (!Array.isArray(selectedValues)) {
+        selectedValues = [selectedValues];
+      }
 
       // Merge actions for all selected values
       selectedValues.forEach((selectedValue) => {

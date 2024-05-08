@@ -23,5 +23,6 @@ array_map(
         'functions-update/functions-update-3_0_0',
         'functions-update/functions-update-3_0_3',
         'functions-update/functions-update-4_0_0_RC_2',
+        'functions-update/functions-update-4_0_2',
     ]
 );

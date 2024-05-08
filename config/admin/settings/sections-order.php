@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'editor',
     'backend',
     'frontend',
     'performance',

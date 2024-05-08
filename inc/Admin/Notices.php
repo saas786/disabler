@@ -242,7 +242,7 @@ class Notices {
                     $notice_html = get_option( 'hbp_disabler_admin_notice_' . $notice );
 
                     if ( $notice_html ) {
-                        View\display( 'admin/html-notice-custom', [
+                        View\display( 'HBP/Disabler::admin/html-notice-custom', [
                             'notice'      => $notice,
                             'notice_html' => $notice_html,
                         ] );
@@ -260,12 +260,12 @@ class Notices {
             $next_scheduled_date = queue()->get_next( 'hbp_disabler_run_update_callback', null, 'hbp-disabler-db-updates' );
 
             if ( $next_scheduled_date || ! empty( $_GET['do_update_hbp_disabler'] ) ) { // WPCS: input var ok, CSRF ok.
-                View\display( 'admin/html-notice-updating' );
+                View\display( 'HBP/Disabler::admin/html-notice-updating' );
             } else {
-                View\display( 'admin/html-notice-update' );
+                View\display( 'HBP/Disabler::admin/html-notice-update' );
             }
         } else {
-            View\display( 'admin/html-notice-updated' );
+            View\display( 'HBP/Disabler::admin/html-notice-updated' );
         }
     }
 

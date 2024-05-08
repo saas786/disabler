@@ -32,8 +32,8 @@ return [
                 'setting_key' => 'performance_heartbeat_info',
                 'class'       => '',
                 'callback'    => static fn() => printf(
-                /* Translators: %1$s will be replaced with the opening paragraph tag, %2$s will be replaced with the closing paragraph tag. */
-                    esc_html__( '%1$s The WordPress Heartbeat API uses /wp-admin/admin-ajax.php to run AJAX calls from the web-browser. While this is great and all it can also cause high CPU usage and crazy amounts of PHP calls. For example, if you leave your dashboard open it will keep sending POST requests to this file on a regular interval, every 15 seconds. Here is an example below of it happening. %2$s', 'hbp-disabler' ),
+                    /* Translators: %1$s will be replaced with the opening paragraph tag, %2$s will be replaced with the closing paragraph tag. */
+                    esc_html__( '%1$s The WordPress Heartbeat API uses /wp-admin/admin-ajax.php to run AJAX calls from the web-browser. While this is great and all it can also cause high CPU usage and crazy amounts of PHP calls. For example, if you leave your dashboard open it will keep sending POST requests to this file on a regular interval, every 15 seconds. %2$s', 'hbp-disabler' ),
                     '<p class="description">',
                     '</p>'
                 ),
@@ -81,7 +81,7 @@ return [
                 'class'           => 'small-text',
                 'container-class' => 'performance_heartbeat_frequency-wrap',
                 /* Translators: %1$s will be replaced with a line break, %2$s will be replaced with the opening <strong> tag, and %3$s will be replaced with the closing </strong> tag. */
-                'description'     => sprintf( esc_html__( 'We recommend you 60 seconds, default is 20 seconds. %1$s %2$s Note:%3$s When \'Everywhere\' is set, Heartbeat frequency won\'t have any effect.', 'hbp-disabler' ), '<br/>', '<strong>', '</strong>' ),
+                'description'     => sprintf( esc_html__( 'We recommend you 60 seconds, default is 15 seconds. %1$s %2$s Note:%3$s When \'Everywhere\' is set, Heartbeat frequency won\'t have any effect.', 'hbp-disabler' ), '<br/>', '<strong>', '</strong>' ),
             ];
 
             return $fields;

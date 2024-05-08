@@ -34,6 +34,10 @@ class PluginInstall {
             __NAMESPACE__ . '\update_4_0_0_RC_2_options',
             __NAMESPACE__ . '\update_4_0_0_RC_2_db_version',
         ],
+        '4.0.2'      => [
+            __NAMESPACE__ . '\update_4_0_2_options',
+            __NAMESPACE__ . '\update_4_0_2_db_version',
+        ],
     ];
 
     /**

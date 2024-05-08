@@ -8,6 +8,7 @@ const files = [
   { name: 'disabler.php' },
   { name: 'uninstall.php' },
   { name: 'LICENSE.md' },
+  { name: 'composer.json' },
 ];
 
 // Call the asynchronous function.

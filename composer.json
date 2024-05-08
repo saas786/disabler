@@ -23,18 +23,18 @@
   "require": {
     "php": ">=8.0",
     "composer/installers": "^1.12 || ^2.0",
-    "sniccowp/php-scoper-wordpress-excludes": "^6.5.2",
+    "sniccowp/php-scoper-wordpress-excludes": "^6.5.3",
     "sniccwp/php-scoper-woocommerce-excludes": "dev-master",
     "themehybrid/hybrid-action-scheduler": "dev-main",
-    "themehybrid/hybrid-assets": "dev-main",
-    "themehybrid/hybrid-contracts": "dev-dev as 2.0",
-    "themehybrid/hybrid-core": "dev-dev as 7.0",
-    "themehybrid/hybrid-events": "dev-dev as 1.0",
-    "themehybrid/hybrid-filesystem": "dev-dev as 1.0",
-    "themehybrid/hybrid-log": "dev-main",
-    "themehybrid/hybrid-tools": "dev-dev as 2.0",
-    "themehybrid/hybrid-usage-tracker": "dev-main",
-    "themehybrid/hybrid-view": "dev-dev as 2.0"
+    "themehybrid/hybrid-assets": "^1.0.0-alpha.1",
+    "themehybrid/hybrid-contracts": "^2.0.1",
+    "themehybrid/hybrid-core": "^7.0.3",
+    "themehybrid/hybrid-events": "^1.0.1",
+    "themehybrid/hybrid-filesystem": "^1.0.1",
+    "themehybrid/hybrid-log": "^1.0.0-beta.2",
+    "themehybrid/hybrid-tools": "^2.0.2",
+    "themehybrid/hybrid-usage-tracker": "^1.0",
+    "themehybrid/hybrid-view": "^2.0.1"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
