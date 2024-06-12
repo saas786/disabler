@@ -34,7 +34,7 @@
     "clean:post:export": "del-cli -f ./disabler/composer.json",
     "i18n": "npm run i18n:textdomain && npm run i18n:pot",
     "i18n:textdomain": "npx wpi18n addtextdomain --textdomain=hbp-disabler --glob-pattern={*.php,**/*.php} --exclude=bin-dev,disabler-prefixed,disabler,vendor,node_modules",
-    "i18n:pot": "wp i18n make-pot . ./public/lang/hbp-disabler.pot --slug=disabler --domain=hbp-disabler --exclude=bin-dev,.vscode,public/css,public/js,public/lang,resources/scss,eslint.config.js,webpack*.js"
+    "i18n:pot": "wp i18n make-pot . ./public/lang/hbp-disabler.pot --slug=disabler --domain=hbp-disabler --exclude=bin-dev,disabler-prefixed,disabler,.vscode,public/css,public/js,public/lang,resources/scss,eslint.config.js,webpack*.js"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",
