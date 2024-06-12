@@ -11,7 +11,6 @@ mix.setPublicPath('public');
  * @see https://github.com/webpack-contrib/terser-webpack-plugin#options
  */
 mix.options({
-
   postCss: [require('postcss-preset-env')()],
   processCssUrls: false,
   terser: {

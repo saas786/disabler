@@ -27,11 +27,6 @@ class Backend implements Bootable {
         if ( Options::get( 'backend_disable_self_ping' ) ) {
             add_action( 'pre_ping', [ $this, 'noSelfPing' ] );
         }
-
-        // Post Auto Saves.
-        if ( Options::get( 'backend_disable_autosave' ) ) {
-            add_action( 'wp_print_scripts', [ $this, 'disableAutosave' ] );
-        }
     }
 
     public function noSelfPing( &$links ) {
@@ -48,10 +43,6 @@ class Backend implements Bootable {
                 }
             }
         }
-    }
-
-    public function disableAutosave() {
-        wp_deregister_script( 'autosave' );
     }
 
 }

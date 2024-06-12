@@ -16,6 +16,7 @@ class Provider extends ServiceProvider {
      * @throws \Throwable
      */
     public function register() {
+        $this->app->singleton( Editor::class );
         $this->app->singleton( Backend::class );
         $this->app->singleton( Frontend::class );
         $this->app->singleton( Privacy::class );
@@ -33,6 +34,7 @@ class Provider extends ServiceProvider {
      * @return void
      */
     public function boot() {
+        $this->app->resolve( Editor::class )->boot();
         $this->app->resolve( Backend::class )->boot();
         $this->app->resolve( Frontend::class )->boot();
         $this->app->resolve( Privacy::class )->boot();

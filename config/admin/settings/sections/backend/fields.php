@@ -30,13 +30,4 @@ return [
         /* Translators: %s Ping-back URL of website. */
         'description'     => sprintf( esc_html__( 'By default, the "No Self Pings" setting will exclude pings for this site (%s) but you can provide additional URLs below. Separate multiple URLs with line breaks.', 'hbp-disabler' ), esc_url( home_url() ) ),
     ],
-    'disable_autosave'       => [
-        'id'          => 'disable_autosave',
-        'title'       => esc_html__( 'Disable auto-saving', 'hbp-disabler' ),
-        'type'        => 'checkbox', // callback
-        'page'        => 'settings_page_hbp-disabler-settings',
-        'section'     => 'backend',
-        'after_field' => esc_html__( 'Disables the autosave feature for posts, etc.', 'hbp-disabler' ),
-        'setting_key' => 'backend_disable_autosave',
-    ],
 ];

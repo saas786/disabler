@@ -9,6 +9,12 @@ module.exports = {
 			{
 				"camelCaseSvgKeywords": true
 			}
-		]
+		],
+		'rule-empty-line-before': [
+			'always',
+			{
+				ignore: ['after-comment', 'first-nested'],
+			},
+		],
 	}
 }

@@ -2,9 +2,9 @@
 Contributors: saas
 Tags: disable, options, features
 Requires at least: 6.0
-Tested up to: 6.5
+Tested up to: 6.5.4
 Requires PHP: 8.0
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -95,6 +95,17 @@ All options default to off and are cleaned up upon uninstall.
 * [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
+
+= 4.0.2 =
+* Removed unnecessary `.env` file not found warning
+* Added control for disabling classic theme styles
+* Introduced autosave interval control
+* Added missing default values for various controls
+* Created a new Editor Controls section and moved relevant controls from the Backend and Frontend sections to it
+* Prefixed disabler views with a namespace to avoid conflicts with other plugins
+* Added fallback view paths to allow changes to disabler templates if necessary
+* Cleaned up and removed legacy helper functions
+* Designed a new banner and icon for the plugin
 
 = 4.0.1 =
 * Added current_user_can check to PluginInstall::install_actions
