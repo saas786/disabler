@@ -16,16 +16,20 @@ I don't like certain things, such as curly "smart" quotes and self-pings. Instea
 
 This plugin enables you to disable/remove the following features:
 
-**Back-End**
+**Editor**
 
-* Self Ping
-* Autosaving of Posts etc.
-
-**Front-End**
-
+* Classic theme styles
 * Texturization (including Smart/Curly quotes, EM dash, EN dash, and ellipsis)
 * The automatic capitalization of the P in WordPress (WordPress 3.0+ only)
 * The `<p>` that is automatically inserted
+* Autosaving of Posts etc
+
+**Back-End**
+
+* Self Ping
+
+**Front-End**
+
 * Disable links to WordPress' internal 'shortlink' URLs for your posts. E.g., <link rel="shortlink" href="https://www.example.com/?p=1" />
 
 **Performance**
