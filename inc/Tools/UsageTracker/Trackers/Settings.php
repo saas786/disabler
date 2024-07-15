@@ -2,21 +2,22 @@
 
 namespace HBP\Disabler\Tools\UsageTracker\Trackers;
 
+use HBP\Disabler\Admin\Options;
 use Hybrid\Usage\Tracker\Contracts\CollectionInterface;
 use Hybrid\Usage\Tracker\Contracts\Tracker;
 
 /**
- * Settings.
+ * Settings tracker for usage tracking.
  */
 class Settings implements CollectionInterface, Tracker {
 
     /**
-     * Returns the tracker data.
+     * Retrieve the settings tracker data.
      *
-     * @return array
+     * @return array The merged array of options and defaults.
      */
     public function get() {
-        return [];
+        return [ 'disabler' => Options::all() ];
     }
 
 }

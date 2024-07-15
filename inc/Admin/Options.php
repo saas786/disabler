@@ -11,6 +11,8 @@ use function Hybrid\Tools\config;
 
 /**
  * Options class.
+ *
+ *  Provides methods for retrieving plugin options.
  */
 class Options {
 
@@ -22,11 +24,12 @@ class Options {
     /**
      * Gets an option by name. If name is omitted, returns all options.
      *
-     * @param  string $name
-     * @return mixed
+     * @param  string $name    The name of the option to retrieve. Optional.
+     * @param  mixed  $default Default value to return if the option does not exist.
+     * @return mixed|null The value of the option, or all options if $name is empty.
      */
     public static function get( $name = '', $default = null ) {
-        $settings = wp_parse_args( get_option( self::$option_key, [] ), static::defaults() );
+        $settings = self::all();
 
         if ( ! $name ) {
             return $settings;
@@ -38,10 +41,19 @@ class Options {
     /**
      * Returns an array of all default options.
      *
-     * @return array
+     * @return array The default options.
      */
     public static function defaults() {
         return config( 'admin.settings.defaults', [] );
+    }
+
+    /**
+     * Retrieves all options merged with defaults.
+     *
+     * @return array The merged array of options.
+     */
+    public static function all() {
+        return wp_parse_args( get_option( self::$option_key, [] ), static::defaults() );
     }
 
 }
