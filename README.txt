@@ -16,16 +16,20 @@ I don't like certain things, such as curly "smart" quotes and self-pings. Instea
 
 This plugin enables you to disable/remove the following features:
 
-**Back-End**
+**Editor**
 
-* Self Ping
-* Autosaving of Posts etc.
-
-**Front-End**
-
+* Classic theme styles
 * Texturization (including Smart/Curly quotes, EM dash, EN dash, and ellipsis)
 * The automatic capitalization of the P in WordPress (WordPress 3.0+ only)
 * The `<p>` that is automatically inserted
+* Autosaving of Posts etc
+
+**Back-End**
+
+* Self Ping
+
+**Front-End**
+
 * Disable links to WordPress' internal 'shortlink' URLs for your posts. E.g., <link rel="shortlink" href="https://www.example.com/?p=1" />
 
 **Performance**
@@ -216,16 +220,17 @@ Start with turning off your other plugins. There are a few that mess with format
 * "Shortcodes Ultimate" -- You will need to turn on the option in that plugin to "Disable custom formatting - Enable this option if you have some problems with other plugins or content formatting."  From what I can tell, it's overriding the default customs with it's own.
 
 == Screenshots ==
-1. Back-end settings
-2. Front-end settings
-3. Performance settings
-4. Revisions settings
-5. Feeds settings
-6. Rest API settings
-7. Privacy settings
-8. XML-RPC settings
-9. Updates settings
-10. Usage Tracking setting
+1. Editor settings
+2. Back-end settings
+3. Front-end settings
+4. Performance settings
+5. Revisions settings
+6. Feeds settings
+7. Rest API settings
+8. Privacy settings
+9. XML-RPC settings
+10. Updates settings
+11. Usage Tracking setting
 
 == Upgrade Notice ==
 
