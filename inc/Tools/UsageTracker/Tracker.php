@@ -35,7 +35,7 @@ class Tracker extends UsageTracker {
         parent::boot();
 
         // Add an action hook that will be triggered at the specified time by `wp_schedule_single_event()`.
-        add_action( 'disabler_send_tracking_data_after_core_update', [ $this, 'send' ] );
+        add_action( 'hbp_disabler_send_tracking_data_after_core_update', [ $this, 'send' ] );
 
         // Call `wp_schedule_single_event()` after a WordPress core update.
         add_action( 'upgrader_process_complete', [ $this, 'schedule_tracking_data_sending' ], 10, 2 );
@@ -76,12 +76,12 @@ class Tracker extends UsageTracker {
          * needs to receive the same arguments as those used when originally
          * scheduling the event otherwise it will always return false.
          */
-        if ( ! wp_next_scheduled( 'disabler_send_tracking_data_after_core_update', [ true ] ) ) {
+        if ( ! wp_next_scheduled( 'hbp_disabler_send_tracking_data_after_core_update', [ true ] ) ) {
             /*
              * Schedule sending of data tracking 6 hours after a WordPress core
              * update. Pass a `true` parameter for the callback `$force` argument.
              */
-            wp_schedule_single_event( time() + ( HOUR_IN_SECONDS * 6 ), 'disabler_send_tracking_data_after_core_update', [ true ] );
+            wp_schedule_single_event( time() + ( HOUR_IN_SECONDS * 6 ), 'hbp_disabler_send_tracking_data_after_core_update', [ true ] );
         }
     }
 
