@@ -2,9 +2,9 @@
 Contributors: saas
 Tags: disable, options, features
 Requires at least: 6.0
-Tested up to: 6.5.4
+Tested up to: 6.5.5
 Requires PHP: 8.0
-Stable tag: 4.0.2
+Stable tag: 4.0.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -99,6 +99,17 @@ All options default to off and are cleaned up upon uninstall.
 * [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
+
+= 4.0.3 =
+* Add new banner and icon images for the WordPress plugin repository
+* Add `all()` method to `Options` class
+* Add disabler settings to Usage Tracker data for tracking
+* Prefix action hooks to maintain consistency across actions and filters naming
+* Update `devDependencies` to the latest versions for enhanced security and functionality
+* Improve lint scripts in `package.json` to run concurrently for better performance
+* Exclude `disabler` and `disabler-prefixed` folders from POT file generation
+* Update `README` to include a new **Editor** section and move relevant fields from other sections to the Editor section
+* Update the screenshots section to include Editor settings and screenshots
 
 = 4.0.2 =
 * Removed unnecessary `.env` file not found warning
