@@ -37,27 +37,27 @@
     "i18n:pot": "wp i18n make-pot . ./public/lang/hbp-disabler.pot --slug=disabler --domain=hbp-disabler --exclude=bin-dev,disabler-prefixed,disabler,.vscode,public/css,public/js,public/lang,resources/scss,eslint.config.js,webpack*.js"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.22.0",
+    "@antfu/eslint-config": "^2.26.1",
     "@babel/plugin-transform-class-properties": "^7.24.7",
-    "@babel/plugin-transform-react-jsx": "^7.24.7",
+    "@babel/plugin-transform-react-jsx": "^7.25.2",
     "@babel/preset-react": "^7.24.7",
-    "@babel/runtime": "^7.24.8",
-    "@commitlint/cli": "^19.3.0",
+    "@babel/runtime": "^7.25.0",
+    "@commitlint/cli": "^19.4.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@wordpress/browserslist-config": "^6.3.0",
+    "@wordpress/browserslist-config": "^6.5.0",
     "concurrently": "^8.2.2",
     "del": "^7.1.0",
     "del-cli": "^5.1.0",
-    "eslint": "^9.7.0",
+    "eslint": "^9.9.0",
     "fs-extra": "^11.2.0",
     "laravel-mix": "^6.0.49",
     "laravel-mix-merge-manifest": "^2.1.0",
     "node-wp-i18n": "^1.2.7",
-    "postcss-preset-env": "^9.6.0",
+    "postcss-preset-env": "^10.0.2",
     "sass": "^1.77.8",
-    "sass-loader": "^14.2.1",
-    "stylelint": "^16.7.0",
+    "sass-loader": "^16.0.1",
+    "stylelint": "^16.8.2",
     "stylelint-config-twbs-bootstrap": "^14.2.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   }
 }

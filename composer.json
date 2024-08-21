@@ -26,15 +26,15 @@
     "sniccowp/php-scoper-wordpress-excludes": "^6.5.3",
     "sniccwp/php-scoper-woocommerce-excludes": "dev-master",
     "themehybrid/hybrid-action-scheduler": "dev-main",
-    "themehybrid/hybrid-assets": "^1.0.0-alpha.1",
-    "themehybrid/hybrid-contracts": "^2.0.1",
-    "themehybrid/hybrid-core": "^7.0.3",
-    "themehybrid/hybrid-events": "^1.0.1",
-    "themehybrid/hybrid-filesystem": "^1.0.1",
-    "themehybrid/hybrid-log": "^1.0.0-beta.2",
-    "themehybrid/hybrid-tools": "^2.0.2",
+    "themehybrid/hybrid-assets": "^1.0.0-alpha.2",
+    "themehybrid/hybrid-contracts": "^2.0.2",
+    "themehybrid/hybrid-core": "^7.0.34",
+    "themehybrid/hybrid-events": "^1.0.2",
+    "themehybrid/hybrid-filesystem": "^1.0.3",
+    "themehybrid/hybrid-log": "^1.0.0-beta.4",
+    "themehybrid/hybrid-tools": "^2.0.3",
     "themehybrid/hybrid-usage-tracker": "^1.0",
-    "themehybrid/hybrid-view": "^2.0.1"
+    "themehybrid/hybrid-view": "^2.0.2"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
