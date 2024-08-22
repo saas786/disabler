@@ -141,7 +141,7 @@ class OptionsPage {
     /**
      * Sanitizes the settings.
      *
-     * @param  array $settings
+     * @param array $settings
      * @return array
      */
     public function sanitizeSettings( $settings ) {
@@ -164,7 +164,7 @@ class OptionsPage {
                         $setting_value = $settings[ $setting_key ] ?? '';
 
                         if ( $settings[ $setting_key ] ?? 'checkbox' === $groupField['type'] ) {
-                            $settings[ $setting_key ] = $this->{'sanitizeField' . ucfirst( $groupField['type'] ) }( $setting_value );
+                            $settings[ $setting_key ] = $this->{'sanitizeField' . ucfirst( $groupField['type'] )}( $setting_value );
                         }
                     }
                 } else {
@@ -172,7 +172,7 @@ class OptionsPage {
                     $setting_value = $settings[ $setting_key ] ?? '';
 
                     if ( $settings[ $setting_key ] ?? 'checkbox' === $field['type'] ) {
-                        $settings[ $setting_key ] = $this->{'sanitizeField' . ucfirst( $field['type'] ) }( $setting_value );
+                        $settings[ $setting_key ] = $this->{'sanitizeField' . ucfirst( $field['type'] )}( $setting_value );
                     }
                 }
             }
@@ -184,7 +184,7 @@ class OptionsPage {
     /**
      * Compile HTML needed for displaying the field.
      *
-     * @param  array $field Field settings.
+     * @param array $field Field settings.
      * @return string HTML to be displayed
      */
     public function renderField( array $field ): string {
@@ -192,13 +192,13 @@ class OptionsPage {
             return call_user_func_array( $field['render'], [ $field ] );
         }
 
-        return $this->{'renderField' . ucfirst( $field['type'] ) }( $field );
+        return $this->{'renderField' . ucfirst( $field['type'] )}( $field );
     }
 
     /**
      * Output the field.
      *
-     * @param  array $field Field to be rendered.
+     * @param array $field Field to be rendered.
      * @return void
      */
     public function outputField( $field ) {
@@ -223,11 +223,21 @@ class OptionsPage {
 
             <form method="post" action="options.php">
                 <?php settings_fields( $this->option_key ); ?>
-                <?php $this->renderTabbedSections( $this->settings_page ); ?>
+                <?php
+                $general = \Hybrid\Tools\config('admin.settings.data', []);
+
+                $this->renderTabbedSections(
+                    $this->settings_page,
+                    [
+                        'tab-orientation' => $general['tab-orientation'],
+                        'sections-order' => $general['sections-order'],
+                    ]
+                );
+                ?>
                 <?php submit_button( esc_attr__( 'Save Settings', 'hbp-disabler' ), 'primary' ); ?>
             </form>
-
         </div><!-- wrap -->
+
         <?php
     }
 

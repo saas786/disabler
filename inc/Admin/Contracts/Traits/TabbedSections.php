@@ -9,6 +9,7 @@
 namespace HBP\Disabler\Admin\Contracts\Traits;
 
 use HBP\Disabler\Facades\Assets;
+use HBP\Disabler\Tools\SVG;
 use function Hybrid\Tools\config;
 
 trait TabbedSections {
@@ -40,11 +41,11 @@ trait TabbedSections {
      *
      * This function operates the same as do_settings_sections() as part of the Settings API.
      *
+     * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
      * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
-     * @global array $wp_settings_fields   Storage array of settings fields and info about their pages/sections.
      * @param string $page The slug name of the page whose settings sections you want to output.
      */
-    public function renderTabbedSections( $page ) {
+    public function renderTabbedSections( $page, $args = [] ) {
         global $wp_settings_sections, $wp_settings_fields;
 
         if ( ! isset( $wp_settings_sections[ $page ] ) ) {
@@ -52,8 +53,7 @@ trait TabbedSections {
         }
 
         $sections = (array) $wp_settings_sections[ $page ];
-
-        $sections_order = config( 'admin.settings.sections-order', [] );
+        $sections_order = $args['sections-order'];
 
         // Sort the array by the specified key order.
         usort( $sections, static function ( $a, $b ) use ( $sections_order ) {
@@ -70,8 +70,14 @@ trait TabbedSections {
             return;
         }
 
-        // Render the list of tabs, then each section.
-        echo '<nav class="nav-tab-wrapper hide-if-no-js" role="tablist">';
+        echo '<div class="nav-tabs nav-tabs-orientation-' . $args['tab-orientation'] . '">';
+
+        echo '<div class="nav-tabs-container">';
+        echo '<button class="scroll-arrow prev-arrow" aria-label="Previous" hidden>';
+        echo SVG::render( 'arrow-prev-small' );
+        echo '</button>';
+        echo '<div class="tabs-wrapper">';
+        echo '<nav class="nav-tab-wrapper hide-if-no-js" role="tablist" aria-orientation="' . $args['tab-orientation'] . '">';
 
         foreach ( $sections as $section ) {
             printf(
@@ -81,7 +87,14 @@ trait TabbedSections {
             );
         }
 
-        echo '</nav>';
+        echo '</nav><!-- .nav-tab-wrapper -->';
+        echo '</div><!-- .tabs-wrapper -->';
+        echo '<button class="scroll-arrow next-arrow" aria-label="Next" hidden>';
+        echo SVG::render( 'arrow-next-small' );
+        echo '</button>';
+        echo '</div><!-- .nav-tabs-container -->';
+
+        echo '<div class="nav-tab-content">';
 
         foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
             printf( '<section id="tab-%1$s" class="hide-if-js" role="tabpanel" aria-labelledby="nav-tab-%1$s">', esc_attr( $section['id'] ) );
@@ -102,6 +115,10 @@ trait TabbedSections {
 
             echo '</section>';
         }
+
+        echo '</div><!-- .nav-tab-content -->';
+
+        echo '</div><!-- .nav-tabs -->';
 
         // Finally, ensure the necessary scripts are enqueued.
         wp_enqueue_script( 'hbp-disabler-wp-admin-tabs' );
