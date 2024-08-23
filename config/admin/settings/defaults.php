@@ -22,4 +22,6 @@ return [
     'performance_disable_heartbeat'       => 'no',
     'performance_heartbeat_frequency'     => '',
     'performance_disable_widgets'         => 'no',
+
+    'admin_bar_disable_admin_bar'         => 'no',
 ];

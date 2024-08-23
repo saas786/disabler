@@ -10,6 +10,7 @@ return [
     'restapi',
     'privacy',
     'xmlrpc',
+    'admin_bar',
     'updates',
     'tracking',
 ];

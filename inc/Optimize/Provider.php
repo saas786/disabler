@@ -26,6 +26,7 @@ class Provider extends ServiceProvider {
         $this->app->singleton( RestAPI::class );
         $this->app->singleton( Feeds::class );
         $this->app->singleton( Updates::class );
+        $this->app->singleton( AdminBar::class );
     }
 
     /**
@@ -44,6 +45,7 @@ class Provider extends ServiceProvider {
         $this->app->resolve( RestAPI::class )->boot();
         $this->app->resolve( Feeds::class )->boot();
         $this->app->resolve( Updates::class )->boot();
+        $this->app->resolve( AdminBar::class )->boot();
     }
 
 }
