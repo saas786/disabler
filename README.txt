@@ -2,7 +2,7 @@
 Contributors: saas
 Tags: disable, options, features
 Requires at least: 6.0
-Tested up to: 6.5.5
+Tested up to: 6.7.2
 Requires PHP: 8.0
 Stable tag: 4.0.3
 License: GPLv3
