@@ -3,6 +3,8 @@
 namespace HBP\Disabler;
 
 use Hybrid\Core\Application;
+use Hybrid\Log\LogServiceProvider;
+use Hybrid\View\ViewServiceProvider;
 use function Hybrid\app;
 use function Hybrid\booted;
 
@@ -19,11 +21,11 @@ do_action( 'hbp/disabler/before/providers/register', $disabler );
 
 $disabler->register( \Hybrid\Action\Scheduler\Provider::class );
 $disabler->register( \Hybrid\Assets\Provider::class );
-$disabler->register( \Hybrid\Log\Provider::class );
-$disabler->register( \Hybrid\View\Provider::class );
-$disabler->register( \HBP\Disabler\View\Provider::class );
-$disabler->register( \HBP\Disabler\Admin\Provider::class );
-$disabler->register( \HBP\Disabler\Optimize\Provider::class );
+$disabler->register( LogServiceProvider::class );
+$disabler->register( ViewServiceProvider::class );
+$disabler->register( View\Provider::class );
+$disabler->register( Admin\Provider::class );
+$disabler->register( Optimize\Provider::class );
 $disabler->register( Provider::class );
 
 do_action( 'hbp/disabler/after/providers/register', $disabler );
