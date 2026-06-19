@@ -29,6 +29,8 @@ class Editor implements Bootable {
      */
     private function initializeHooks(): void {
         $this->disableClassicThemeStyles();
+        $this->disableCoreBlockPatterns();
+        $this->disableRemoteBlockPatterns();
         $this->disableTexturization();
         $this->disableCapitalPFilter();
         $this->disableAutoParagraph();
@@ -41,6 +43,28 @@ class Editor implements Bootable {
         if ( Options::get( 'editor_disable_classic_theme_styles' ) ) {
             remove_action( 'wp_enqueue_scripts', 'wp_enqueue_classic_theme_styles' );
             remove_filter( 'block_editor_settings_all', 'wp_add_editor_classic_theme_styles' );
+        }
+    }
+
+    /**
+     * Disable core block patterns.
+     *
+     * @see https://developer.wordpress.org/themes/features/block-patterns/#removing-core-patterns
+     */
+    private function disableCoreBlockPatterns(): void {
+        if ( Options::get( 'editor_disable_core_block_patterns' ) ) {
+            remove_theme_support( 'core-block-patterns' );
+        }
+    }
+
+    /**
+     * Disable remote block patterns.
+     *
+     * @see https://developer.wordpress.org/themes/features/block-patterns/#disabling-remote-patterns
+     */
+    private function disableRemoteBlockPatterns(): void {
+        if ( Options::get( 'editor_disable_remote_block_patterns' ) ) {
+            add_filter( 'should_load_remote_block_patterns', '__return_false' );
         }
     }
 

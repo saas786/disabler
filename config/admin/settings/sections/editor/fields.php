@@ -14,6 +14,22 @@ return [
         ),
         'setting_key' => 'editor_disable_classic_theme_styles',
     ],
+    'disable_core_block_patterns' => [
+        'id'          => 'disable_core_block_patterns',
+        'title'       => esc_html__( 'Disable Core Block Patterns', 'hbp-disabler' ),
+        'type'        => 'checkbox',
+        'page'        => 'settings_page_hbp-disabler-settings',
+        'section'     => 'editor',
+        'setting_key' => 'editor_disable_core_block_patterns',
+    ],
+    'disable_remote_block_patterns' => [
+        'id'          => 'disable_remote_block_patterns',
+        'title'       => esc_html__( 'Disable Remote Block Patterns', 'hbp-disabler' ),
+        'type'        => 'checkbox',
+        'page'        => 'settings_page_hbp-disabler-settings',
+        'section'     => 'editor',
+        'setting_key' => 'editor_disable_remote_block_patterns',
+    ],
     'disable_texturization'        => [
         'id'          => 'disable_texturization',
         'title'       => esc_html__( 'Disable Texturization (Classic Editor)', 'hbp-disabler' ),
