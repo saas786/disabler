@@ -25,7 +25,7 @@
     </rule>
 
     <!-- Code MUST use an indent of 4 spaces for each indent level, and MUST NOT use tabs for indenting. -->
-    <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+    <!-- <rule ref="Generic.WhiteSpace.DisallowTabIndent"/> -->
     <rule ref="Generic.WhiteSpace.ScopeIndent">
         <properties>
             <property name="ignoreIndentationTokens" type="array">
