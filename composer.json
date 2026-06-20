@@ -21,7 +21,7 @@
     "source": "https://github.com/saas786/disabler"
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.2",
     "composer/installers": "^1.12 || ^2.0",
     "sniccowp/php-scoper-wordpress-excludes": "^6.5.3",
     "sniccwp/php-scoper-woocommerce-excludes": "dev-master",
@@ -90,7 +90,7 @@
     },
     "optimize-autoloader": true,
     "platform": {
-      "php": "8.0"
+      "php": "8.2"
     },
     "prepend-autoloader": false,
     "process-timeout": 0
