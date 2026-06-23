@@ -3,10 +3,11 @@
 return [
     'tab-orientation' => 'horizontal', // Options: vertical, horizontal
     'sections-order' => [
-        'editor',
+        'editor', // Block Editor / Classic Editor
         'backend',
         'frontend',
         'performance',
+        'media', // Image, Lazyload
         'revisions',
         'feeds',
         'restapi',

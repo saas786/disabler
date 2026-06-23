@@ -14,6 +14,7 @@ return [
     'editor_disable_texturization'         => 0,
     'editor_disable_capital_p'             => 0,
     'editor_disable_autop'                 => 0,
+    'editor_disable_wp_img_auto_sizes_contain' => 0,
     'privacy_hide_wp_version'              => 0,
     'privacy_fake_user_agent_value'        => 0,
     'tracking_allow_usage_tracking'        => 0,
