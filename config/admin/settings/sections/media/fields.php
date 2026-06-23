@@ -21,7 +21,7 @@ return [
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'media',
         'after_field' => sprintf(
-        /* Translators: %s is a placeholder for a link to a relevant code on GitHub. */
+            /* Translators: %s is a placeholder for a link to a relevant code on GitHub. */
             esc_html__( 'Prevents WordPress from automatically adding \'auto\' sizing to lazy-loaded images. Automatically disables CSS containment as well. %s', 'hbp-disabler' ),
             '<a href="https://github.com/WordPress/WordPress/blob/7.0/wp-includes/media.php#L2016" target="_blank">See</a>'
         ),

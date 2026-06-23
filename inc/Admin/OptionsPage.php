@@ -224,13 +224,13 @@ class OptionsPage {
             <form method="post" action="options.php">
                 <?php settings_fields( $this->option_key ); ?>
                 <?php
-                $general = \Hybrid\Tools\config('admin.settings.data', []);
+                $general = \Hybrid\Tools\config( 'admin.settings.data', [] );
 
                 $this->renderTabbedSections(
                     $this->settings_page,
                     [
                         'tab-orientation' => $general['tab-orientation'],
-                        'sections-order' => $general['sections-order'],
+                        'sections-order'  => $general['sections-order'],
                     ]
                 );
                 ?>

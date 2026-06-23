@@ -15,7 +15,7 @@ return [
                 'setting_key' => 'admin_bar_info',
                 'class'       => '',
                 'callback'    => static fn() => printf(
-                /* Translators: %1$s will be replaced with the opening paragraph tag, %2$s will be replaced with the closing paragraph tag. */
+                    /* Translators: %1$s will be replaced with the opening paragraph tag, %2$s will be replaced with the closing paragraph tag. */
                     esc_html__( '%1$s It\'s recommended not to modify the Admin Bar, as it\'s essential for completing various tasks efficiently. %2$s', 'hbp-disabler' ),
                     '<p class="description">',
                     '</p>'

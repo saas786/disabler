@@ -2,7 +2,7 @@
 
 return [
     'tab-orientation' => 'horizontal', // Options: vertical, horizontal
-    'sections-order' => [
+    'sections-order'  => [
         'editor', // Block Editor / Classic Editor
         'backend',
         'frontend',

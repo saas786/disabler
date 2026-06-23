@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Until core lands this patch, utilize this code.
  *
@@ -10,7 +11,6 @@ namespace HBP\Disabler\Admin\Contracts\Traits;
 
 use HBP\Disabler\Facades\Assets;
 use HBP\Disabler\Tools\SVG;
-use function Hybrid\Tools\config;
 
 trait TabbedSections {
 
@@ -52,7 +52,7 @@ trait TabbedSections {
             return;
         }
 
-        $sections = (array) $wp_settings_sections[ $page ];
+        $sections       = (array) $wp_settings_sections[ $page ];
         $sections_order = $args['sections-order'];
 
         // Sort the array by the specified key order.

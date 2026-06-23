@@ -69,18 +69,18 @@
   } );
 }( window, document ) );
 
-document.addEventListener('DOMContentLoaded', function() {
-  const container = document.querySelector('.nav-tabs-container');
-  const tabsWrapper = container.querySelector('.tabs-wrapper');
-  const tabs = container.querySelector('.nav-tab-wrapper');
-  const prevArrow = container.querySelector('.prev-arrow');
-  const nextArrow = container.querySelector('.next-arrow');
+document.addEventListener( 'DOMContentLoaded', () => {
+  const container = document.querySelector( '.nav-tabs-container' );
+  const tabsWrapper = container.querySelector( '.tabs-wrapper' );
+  const tabs = container.querySelector( '.nav-tab-wrapper' );
+  const prevArrow = container.querySelector( '.prev-arrow' );
+  const nextArrow = container.querySelector( '.next-arrow' );
 
   // Check overflow and update arrow visibility.
   const updateArrows = () => {
     const isOverflowing = tabs.scrollWidth > tabsWrapper.clientWidth;
     const atStart = tabsWrapper.scrollLeft === 0;
-    const atEnd = Math.ceil(tabsWrapper.scrollLeft + tabsWrapper.clientWidth) >= tabs.scrollWidth;
+    const atEnd = Math.ceil( tabsWrapper.scrollLeft + tabsWrapper.clientWidth ) >= tabs.scrollWidth;
 
     // Show or hide arrows based on overflow and position.
     prevArrow.style.visibility = isOverflowing && !atStart ? 'visible' : 'hidden';
@@ -88,29 +88,29 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   // Scroll tabs left or right.
-  const scrollTabs = (direction) => {
+  const scrollTabs = ( direction ) => {
     const scrollAmount = tabsWrapper.clientWidth * 0.8;
-    tabsWrapper.scrollBy({ left: direction === 'right' ? scrollAmount : -scrollAmount, behavior: 'smooth' });
+    tabsWrapper.scrollBy( { left: direction === 'right' ? scrollAmount : -scrollAmount, behavior: 'smooth' } );
   };
 
   // Arrow event listeners.
-  prevArrow.addEventListener('click', (e) => {
+  prevArrow.addEventListener( 'click', ( e ) => {
     e.preventDefault();
-    scrollTabs('left');
-  });
+    scrollTabs( 'left' );
+  } );
 
-  nextArrow.addEventListener('click', (e) => {
+  nextArrow.addEventListener( 'click', ( e ) => {
     e.preventDefault();
-    scrollTabs('right');
-  });
+    scrollTabs( 'right' );
+  } );
 
   // Event listeners to check visibility on scroll and resize.
-  tabsWrapper.addEventListener('scroll', updateArrows);
-  window.addEventListener('resize', updateArrows);
+  tabsWrapper.addEventListener( 'scroll', updateArrows );
+  window.addEventListener( 'resize', updateArrows );
 
   // Initial check for arrow visibility.
   updateArrows();
-});
+} );
 
 /*
 document.addEventListener('DOMContentLoaded', function() {
@@ -149,6 +149,3 @@ document.addEventListener('DOMContentLoaded', function() {
   updateArrows();
 });
 */
-
-
-

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'disable_classic_theme_styles' => [
+    'disable_classic_theme_styles'  => [
         'id'          => 'disable_classic_theme_styles',
         'title'       => esc_html__( 'Disable Classic Theme Styles (experimental)', 'hbp-disabler' ),
         'type'        => 'checkbox',
@@ -14,7 +14,7 @@ return [
         ),
         'setting_key' => 'editor_disable_classic_theme_styles',
     ],
-    'disable_core_block_patterns' => [
+    'disable_core_block_patterns'   => [
         'id'          => 'disable_core_block_patterns',
         'title'       => esc_html__( 'Disable Core Block Patterns', 'hbp-disabler' ),
         'type'        => 'checkbox',
@@ -30,7 +30,7 @@ return [
         'section'     => 'editor',
         'setting_key' => 'editor_disable_remote_block_patterns',
     ],
-    'disable_texturization'        => [
+    'disable_texturization'         => [
         'id'          => 'disable_texturization',
         'title'       => esc_html__( 'Disable Texturization (Classic Editor)', 'hbp-disabler' ),
         'type'        => 'checkbox',
@@ -39,7 +39,7 @@ return [
         'after_field' => esc_html__( 'Disables smart quotes (a.k.a. curly quotes), em dash, en dash, and ellipsis.', 'hbp-disabler' ),
         'setting_key' => 'editor_disable_texturization',
     ],
-    'disable_capital_p'            => [
+    'disable_capital_p'             => [
         'id'          => 'disable_capital_p',
         'title'       => esc_html__( 'Disable Capital P (Classic Editor)', 'hbp-disabler' ),
         'type'        => 'checkbox',
@@ -48,7 +48,7 @@ return [
         'after_field' => esc_html__( 'Disables auto-correction of WordPress capitalization.', 'hbp-disabler' ),
         'setting_key' => 'editor_disable_capital_p',
     ],
-    'disable_autop'                => [
+    'disable_autop'                 => [
         'id'          => 'disable_autop',
         'title'       => esc_html__( 'Disable paragraphs (Classic Editor)', 'hbp-disabler' ),
         'type'        => 'checkbox',
@@ -57,7 +57,7 @@ return [
         'after_field' => esc_html__( 'Prevents <p> tags from being automatically inserted in your posts.', 'hbp-disabler' ),
         'setting_key' => 'editor_disable_autop',
     ],
-    'autosave'                     => [
+    'autosave'                      => [
         'type'   => 'group',
         'fields' => static function () {
             $fields = [];

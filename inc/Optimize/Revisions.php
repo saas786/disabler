@@ -28,7 +28,7 @@ class Revisions implements Bootable {
      *
      * Overrides the value of WP_POST_REVISIONS.
      *
-     * @param int      $num  Number of revisions to store.
+     * @param int      $num Number of revisions to store.
      * @param \WP_Post $post Post object.
      */
     public function revisionsToKeep( $num, $post ) {

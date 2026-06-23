@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Helper functions for handling plugin options.
  */
@@ -8,7 +9,7 @@ namespace HBP\Disabler;
 /**
  * Define a constant if it is not already defined.
  *
- * @param string $name  Constant name.
+ * @param string $name Constant name.
  * @param string $value Value.
  */
 function maybe_define_constant( $name, $value ) {

@@ -5,7 +5,7 @@ namespace HBP\Disabler\Facades;
 use Hybrid\Core\Facades\Facade;
 
 /**
- * @see \Hybrid\Assets\Component
+ * @see Component
  *
  * @method static string assetUrl(string $file)
  * @method static string assetPath(string $file)

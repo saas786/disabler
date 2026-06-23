@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WP and PHP compatibility.
  */

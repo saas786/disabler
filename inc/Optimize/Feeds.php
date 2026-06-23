@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @see https://github.com/Yoast/wordpress-seo/blob/bbfd0653cbb0926171c0987acfad2976be0b258e/src/integrations/admin/crawl-settings-integration.php#L119
  */
@@ -123,7 +124,7 @@ class Feeds implements Bootable {
     /**
      * Redirect a feed result to somewhere else.
      *
-     * @param string $url    The location we're redirecting to.
+     * @param string $url The location we're redirecting to.
      * @param string $reason The reason we're redirecting.
      */
     private function redirectFeedOrDie( $url, $reason ) {

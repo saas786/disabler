@@ -72,7 +72,7 @@ class Performance implements Bootable {
     /**
      * Filter function used to remove the tinymce emoji plugin.
      *
-     * @param  array $plugins
+     * @param array $plugins
      * @return array
      */
     private function removeEmojisTinymce( $plugins ) {
@@ -83,7 +83,7 @@ class Performance implements Bootable {
      * Remove the core s.w.org hint as it's only used for emoji stuff we don't use (if disabled).
      *
      * @see https://github.com/Yoast/wordpress-seo/blob/f6179b04ebc359c9975513e1dad1bc0718fef98e/src/integrations/front-end/crawl-cleanup-basic.php#L111
-     * @param  array $hints The hints we're adding to.
+     * @param array $hints The hints we're adding to.
      * @return array
      */
     private function resourceHintsPlainCleanup( $hints ) {
@@ -171,7 +171,7 @@ class Performance implements Bootable {
     /**
      * Remove the oembed/1.0/embed REST route.
      *
-     * @param  array $endpoints Registered REST API endpoints.
+     * @param array $endpoints Registered REST API endpoints.
      * @return array Filtered REST API endpoints.
      */
     private function disableEmbedEndpoint( $endpoints ) {
@@ -183,7 +183,7 @@ class Performance implements Bootable {
     /**
      * Disables sending internal oEmbed response data in proxy endpoint.
      *
-     * @param  array $data The response data.
+     * @param array $data The response data.
      * @return array|false Response data or false if in a REST API context.
      */
     private function emptyOembedResponseData( $data ) {
@@ -197,7 +197,7 @@ class Performance implements Bootable {
     /**
      * Disable all rewrite rules related to embeds.
      *
-     * @param  array $rules WordPress rewrite rules.
+     * @param array $rules WordPress rewrite rules.
      * @return array Rewrite rules without embeds rules.
      */
     private function disableEmbedsRewriteRules( $rules ) {

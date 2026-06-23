@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Implementation of Assets interface to handle plugin assets.
  */
@@ -16,7 +17,7 @@ class Component implements Assets {
     /**
      * Retrieve the absolute filesystem path of a file within the plugin.
      *
-     * @param  string $file File path within the plugin.
+     * @param string $file File path within the plugin.
      * @return string Absolute filesystem path of the file.
      */
     public function path( $file = '' ) {
@@ -32,7 +33,7 @@ class Component implements Assets {
     /**
      * Retrieve the URL for a file within the plugin.
      *
-     * @param  string $file File path within the plugin.
+     * @param string $file File path within the plugin.
      * @return string URL of the file.
      */
     public function url( $file = '' ) {

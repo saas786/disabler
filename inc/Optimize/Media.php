@@ -36,11 +36,10 @@ class Media implements Bootable {
      * for lazy-loaded image auto-sizing.
      *
      * @see https://make.wordpress.org/core/2024/10/18/auto-sizes-for-lazy-loaded-images-in-wordpress-6-7/
-     * @return void
      */
     private function disableWPImgAutoSizesContain(): void {
         if ( Options::get( 'editor_disable_wp_img_auto_sizes_contain' ) ) {
-            wp_dequeue_style('wp-img-auto-sizes-contain');
+            wp_dequeue_style( 'wp-img-auto-sizes-contain' );
         }
     }
 

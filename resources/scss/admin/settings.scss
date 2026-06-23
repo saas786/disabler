@@ -1,135 +1,135 @@
 .hbp-disabler-form-wrap {
-	.tabbed-section-heading {
-		width: 1px !important;
-		height: 1px !important;
-		padding: 0 !important;
-		margin: -1px !important;
-		overflow: hidden !important;
-		clip: rect(0, 0, 0, 0) !important;
-		white-space: nowrap !important;
-		border: 0 !important;
-	}
+  .tabbed-section-heading {
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
 
-	.description {
-		margin: 1em 0;
-	}
+  .description {
+    margin: 1em 0;
+  }
 
-	.nav-tab-wrapper {
-		width: fit-content;
-	}
+  .nav-tab-wrapper {
+    width: fit-content;
+  }
 
-	.nav-tab-content {
-		padding-left: 32px;
-		padding-right: 32px;
-	}
+  .nav-tab-content {
+    padding-right: 32px;
+    padding-left: 32px;
+  }
 
-	.submit {
-		margin-left: 32px;
-	}
+  .submit {
+    margin-left: 32px;
+  }
 }
 
 .nav-tabs-orientation-vertical {
-	display: flex;
-	align-items: flex-start;
+  display: flex;
+  align-items: flex-start;
 
-	.nav-tab-wrapper {
-		display: flex;
-		flex-direction: column;
-		flex-wrap: wrap;
-		border-bottom: 0;
+  .nav-tab-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border-bottom: 0;
 
-		.nav-tab {
-			margin-left: 0;
-			border-bottom-color: #c3c4c7;
-		}
+    .nav-tab {
+      margin-left: 0;
+      border-bottom-color: #c3c4c7;
+    }
 
-		.nav-tab-active,
-		.nav-tab-active:focus,
-		.nav-tab-active:focus:active,
-		.nav-tab-active:hover {
-			border-right: 1px solid #f0f0f1;
-		}
+    .nav-tab-active,
+    .nav-tab-active:focus,
+    .nav-tab-active:focus:active,
+    .nav-tab-active:hover {
+      border-right: 1px solid #f0f0f1;
+    }
 
-		// Fix focus issue.
-		a:focus {
-			position: relative;
-			z-index: 100000;
-		}
-	}
+    // Fix focus issue.
+    a:focus {
+      position: relative;
+      z-index: 100000;
+    }
+  }
 
-	.nav-tab-content {
-		margin: 1rem;
-	}
+  .nav-tab-content {
+    margin: 1rem;
+  }
 }
 
 .nav-tabs-orientation-horizontal {
-	.nav-tabs-container {
-		display: flex;
-		align-items: center;
-		position: relative;
-	}
+  .nav-tabs-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
 
-	.tabs-wrapper {
-		overflow-x: hidden;
-		flex: 1;
-		padding: 4px 0; // Adds space for focus outline or shadow effect to prevent it from being cut off.
-	}
+  .tabs-wrapper {
+    flex: 1;
+    padding: 4px 0; // Adds space for focus outline or shadow effect to prevent it from being cut off.
+    overflow-x: hidden;
+  }
 
-	.nav-tab-wrapper {
-		display: flex;
-		white-space: nowrap;
-		transition: transform 0.3s ease;
-		scroll-behavior: smooth;
-		padding-top: 0 !important;
-	}
+  .nav-tab-wrapper {
+    display: flex;
+    padding-top: 0 !important;
+    white-space: nowrap;
+    transition: transform .3s ease;
+    scroll-behavior: smooth;
+  }
 
-	.scroll-arrow {
-		background: none;
-		border: none;
-		font-size: 1.5rem;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		padding: 0 10px;
-		visibility: hidden;
-	}
+  .scroll-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    visibility: hidden;
+    background: none;
+    border: none;
+  }
 
-	.scroll-arrow:enabled {
-		visibility: visible;
-	}
+  .scroll-arrow:enabled {
+    visibility: visible;
+  }
 
-	.nav-tab {
-		padding: 6px 16px !important;
-		cursor: pointer;
-	}
+  .nav-tab {
+    padding: 6px 16px !important;
+    cursor: pointer;
+  }
 
-	.scroll-arrow {
-		padding: 12px 4px !important;
-		cursor: pointer;
-	}
+  .scroll-arrow {
+    padding: 12px 4px !important;
+    cursor: pointer;
+  }
 
-	.scroll-arrow {
-		position: relative;
+  .scroll-arrow {
+    position: relative;
 
-		&.next-arrow::before,
-		&.prev-arrow::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 40px; /* Width of fade effect */
-			pointer-events: none;
-			z-index: 1;
-		}
+    &.next-arrow::before,
+    &.prev-arrow::after {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+      width: 40px; /* Width of fade effect */
+      pointer-events: none;
+      content: "";
+    }
 
-		&.next-arrow::before {
-			left: -38px;
-			background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 100%);
-		}
+    &.next-arrow::before {
+      left: -38px;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 100%);
+    }
 
-		&.prev-arrow::after {
-			right: -38px;
-			background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 100%);
-		}
-	}
+    &.prev-arrow::after {
+      right: -38px;
+      background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 100%);
+    }
+  }
 }
