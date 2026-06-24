@@ -14,22 +14,24 @@ trim_trailing_whitespace = true
 indent_style = tab
 
 [{*.css,*.scss}]
+indent_style = space
 indent_size = 2
 
-[{*.json,.babelrc,.browserslistrc}]
+[{.babelrc,.browserslistrc}]
 indent_size = unset
 indent_style = space
 
-[composer.json]
-indent_size = 4
+[{package.json,composer.json}]
+indent_style = space
+indent_size = unset
+
+# need to configure it in eslint.config.js as well, as default rules force space with 2 size
+[{src/styles/**/*.json,src/theme.json}]
+indent_style = tab
 
 [*.xml]
 indent_style = space
 indent_size = 4
-
-[eslint.config.js]
-indent_style = space
-indent_size = 2
 
 [*.txt]
 end_of_line = crlf
@@ -37,11 +39,13 @@ end_of_line = crlf
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{php,json}]
+[*.php]
 indent_style = space
 indent_size = 4
 
-[{*.js,eslint.config.js}]
+[composer.json]
+indent_size = 4
+
+[{*.js,*.mjs,eslint.config.js}]
 indent_style = space
 indent_size = 2
-
