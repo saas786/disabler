@@ -1,10 +1,10 @@
 === Disabler ===
 Contributors: saas
 Tags: disable, options, features
-Requires at least: 6.0
-Tested up to: 6.7.2
-Requires PHP: 8.0
-Stable tag: 4.0.3
+Requires at least: 7.0
+Tested up to: 7.0
+Requires PHP: 8.2
+Stable tag: 4.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,6 +23,28 @@ This plugin enables you to disable/remove the following features:
 * The automatic capitalization of the P in WordPress (WordPress 3.0+ only)
 * The `<p>` that is automatically inserted
 * Autosaving of Posts etc
+* Remove WordPress core block patterns from the block pattern picker.
+* Prevent WordPress from loading block patterns from remote sources.
+
+**Media**
+
+Lazy-Loaded Image Auto-Sizing (WordPress 6.7+)
+
+WordPress 6.7 introduced automatic sizing for lazy-loaded images. Use the following options to disable this behavior:
+
+* Disable Image Sizing CSS Containment - Removes the CSS containment rule applied to lazy-loaded images.
+* Disable Auto Sizing Attribute on Images - Prevents WordPress from adding the sizes="auto" attribute to lazy-loaded images. This also removes the CSS containment rule.
+
+**Admin Bar**
+
+* Disable Admin Bar - Hide the WordPress Admin Bar for all users or selected user roles.
+  - No: Keep Admin Bar visible.
+  - All: Hide Admin Bar for everyone.
+  - Selective: Hide Admin Bar for selected roles.
+
+* Roles - Select the user roles for which the Admin Bar should be hidden on the frontend.
+
+Note: Disabling the Admin Bar may affect access to certain WordPress features and shortcuts.
 
 **Back-End**
 
@@ -99,6 +121,17 @@ All options default to off and are cleaned up upon uninstall.
 * [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
+
+= 4.0.4 =
+
+* Updated Composer and npm dependencies, including Hybrid Core add-ons.
+* Updated the README with new Media and Admin Bar settings documentation.
+* Improved the settings screen tab layout with horizontal scrolling to reduce clutter.
+* Improved ESLint configuration and code formatting standards.
+* Increased the minimum PHP requirement to 8.2.
+* Added options to disable admin bar on frontend conditionally.
+* Added options to disable WordPress core and remote block patterns.
+* Added options to disable lazy-loaded image CSS containment and the `sizes="auto"` attribute introduced in WordPress 6.7.
 
 = 4.0.3 =
 * Add new banner and icon images for the WordPress plugin repository
@@ -219,9 +252,6 @@ In my rough testing, yes.  It even works network wide AND in the mu-plugins, tho
 
 Remember, EVEN if you activate this site wide, the DEFAULT per blog is for the settings to be OFF. So if you want them on for each site without the option to change, then this is NOT the plugin for you. Sorry.
 
-= Why doesn't this disable the admin bar any more? =
-Because as of WordPress 3.3 you really need this around to get stuff done.
-
 = Can you add in Feature X? =
 Probably. Tell me what you want to add and I'll see if I can do it.
 
@@ -232,16 +262,18 @@ Start with turning off your other plugins. There are a few that mess with format
 
 == Screenshots ==
 1. Editor settings
-2. Back-end settings
-3. Front-end settings
+2. Backend settings
+3. Frontend settings
 4. Performance settings
-5. Revisions settings
-6. Feeds settings
-7. Rest API settings
-8. Privacy settings
-9. XML-RPC settings
-10. Updates settings
-11. Usage Tracking setting
+5. Media settings
+6. Revisions settings
+7. Feeds settings
+8. Rest API settings
+9. Privacy settings
+10. XML-RPC settings
+11. Admin bar settings
+12. Updates settings
+13. Usage Tracking setting
 
 == Upgrade Notice ==
 

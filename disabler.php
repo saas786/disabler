@@ -4,9 +4,9 @@
  * Plugin Name:       Disabler
  * Plugin URI:        https://wordpress.org/plugins/disabler/
  * Description:       Why install a million plugins to disable features you don't want when you can use just ONE plugin?
- * Version:           4.0.3
- * Requires at least: 6.0
- * Requires PHP:      8.0
+ * Version:           4.0.4
+ * Requires at least: 7.0
+ * Requires PHP:      8.2
  * Author:            HyboPress Themes
  * Author URI:        https://wordpress.org/plugins/disabler/
  * Text Domain:       hbp-disabler
@@ -37,7 +37,7 @@ if ( ! defined( 'DISABLER_BASENAME' ) ) {
  *
  * Check that the site meets the minimum requirements for the plugin.
  */
-if ( version_compare( $GLOBALS['wp_version'], '6.0.0', '<' ) || version_compare( PHP_VERSION, '8.2', '<' ) ) {
+if ( version_compare( $GLOBALS['wp_version'], '7.0', '<' ) || version_compare( PHP_VERSION, '8.2', '<' ) ) {
     require_once DISABLER_DIR . '/inc/bootstrap-compat.php';
 
     return;
