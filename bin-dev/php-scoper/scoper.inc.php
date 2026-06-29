@@ -28,9 +28,9 @@ $polyfillsBootstraps = array_map(
     static fn( SplFileInfo $fileInfo ) => $fileInfo->getPathname(),
     iterator_to_array(
         Finder::create()
-                ->files()
-                ->in( dirname( __DIR__, 2 ) . '/vendor/symfony/polyfill-*' )
-                ->name( 'bootstrap*.php' ),
+            ->files()
+            ->in( dirname( __DIR__, 2 ) . '/vendor/symfony/polyfill-*' )
+            ->name( 'bootstrap*.php' ),
         false
     )
 );
@@ -39,20 +39,20 @@ $woocommerceActionScheduler = array_map(
     static fn( SplFileInfo $fileInfo ) => $fileInfo->getPathname(),
     iterator_to_array(
         Finder::create()
-                ->files()
-                ->in( dirname( __DIR__, 2 ) . '/vendor/woocommerce/action-scheduler' ),
+            ->files()
+            ->in( dirname( __DIR__, 2 ) . '/vendor/woocommerce/action-scheduler' ),
         false
     )
 );
 
 /**
- * Exclude WordPress classes/functions/constants from scoping via
+ * Exclude classes/functions/constants from scoping via
  * automatically generated exclude files.
  *
  * @link https://github.com/snicco/php-scoper-wordpress-excludes
  */
-function getWordPressStubs( string $name ): array {
-    $file     = dirname( __DIR__, 2 ) . '/vendor/sniccowp/php-scoper-wordpress-excludes/generated/' . $name;
+function getCustomStubs( string $name ): array {
+    $file     = dirname( __DIR__, 2 ) . '/vendor/saas786/php-scoper-wp-excludes/generated/' . $name;
     $contents = file_get_contents( $file );
     if ( false === $contents ) {
         throw new \RuntimeException( "Could not get contents of file {$file}" );
@@ -61,46 +61,29 @@ function getWordPressStubs( string $name ): array {
     return json_decode( $contents, true, JSON_THROW_ON_ERROR );
 }
 
-/**
- * Exclude WooCommerce classes/functions/constants from scoping via
- * automatically generated exclude files.
- *
- * @link https://github.com/snicco/php-scoper-woocommerce-excludes
- */
-function getWooCommerceStubs( string $name ): array {
-    $file = dirname( __DIR__, 2 ) . '/vendor/sniccwp/php-scoper-woocommerce-excludes/generated/' . $name;
-
-    if ( file_exists( $file ) ) {
-        return require_once $file;
-    }
-
-    return [];
-}
-
 return [
     'exclude-classes'         => [
-        ...getWordPressStubs( 'exclude-wordpress-classes.json' ),
-        ...getWordPressStubs( 'exclude-wordpress-interfaces.json' ),
-        ...getWooCommerceStubs( 'exclude-woocommerce-classes.php' ),
-        ...getWooCommerceStubs( 'exclude-woocommerce-interfaces.php' ),
-        ...getWooCommerceStubs( 'exclude-woocommerce-packages-classes.php' ),
-        ...getWooCommerceStubs( 'exclude-woocommerce-packages-interfaces.php' ),
-        ...getWooCommerceStubs( 'exclude-woocommerce-packages-traits.php' ),
-        ...getWooCommerceStubs( 'exclude-woocommerce-traits.php' ),
+        ...getCustomStubs( 'exclude-wordpress-classes.json' ),
+        ...getCustomStubs( 'exclude-wordpress-interfaces.json' ),
+        ...getCustomStubs( 'exclude-wordpress-traits.json' ),
+        ...getCustomStubs( 'exclude-woocommerce-classes.json' ),
+        ...getCustomStubs( 'exclude-woocommerce-interfaces.json' ),
+        ...getCustomStubs( 'exclude-woocommerce-packages-classes.json' ),
+        ...getCustomStubs( 'exclude-woocommerce-packages-interfaces.json' ),
+        ...getCustomStubs( 'exclude-woocommerce-traits.json' ),
     ],
     'exclude-constants'       => array_merge(
-    // ['VENDOR_CAPS_PLUGIN_ENV', 'VENDOR_CAPS_DELETE_DATA_ON_DELETION', 'VENDOR_CAPS_PLUGIN_DEBUG', 'WP_CLI'],
-    // ['/^SYMFONY\_[\p{L}_]+$/'],
-    // [ 'STDIN' ],
-    // Monolog
+        // ['VENDOR_CAPS_PLUGIN_ENV', 'VENDOR_CAPS_DELETE_DATA_ON_DELETION', 'VENDOR_CAPS_PLUGIN_DEBUG', 'WP_CLI'],
+        // ['/^SYMFONY\_[\p{L}_]+$/'],
+        // [ 'STDIN' ],
+        // Monolog
         [ '#^ZEND\_MONITOR\_EVENT\_SEVERITY\_[\p{L}_]+$#' ],
         // @see https://github.com/WordPress/WordPress/blob/bbe67a01472b10a83181b126d5edadf4f6caff0c/wp-includes/cron.php#L997
         [ 'DISABLE_WP_CRON' ],
         // Disabler plugin
         [ '#^Disabler\_[\p{L}_]+$#' ],
-        getWordPressStubs( 'exclude-wordpress-constants.json' ),
-        getWooCommerceStubs( 'exclude-woocommerce-constants.php' ),
-        getWooCommerceStubs( 'exclude-woocommerce-packages-constants.php' )
+        getCustomStubs( 'exclude-woocommerce-constants.json' ),
+        getCustomStubs( 'exclude-wordpress-globals-constants.json' )
     ),
 
     // List of excluded files, i.e. files for which the content will be left untouched.
@@ -113,9 +96,9 @@ return [
         ...$woocommerceActionScheduler,
     ],
     'exclude-functions'       => array_merge(
-        getWordPressStubs( 'exclude-wordpress-functions.json' ),
-        getWooCommerceStubs( 'exclude-woocommerce-functions.php' ),
-        getWooCommerceStubs( 'exclude-woocommerce-packages-functions.php' )
+        getCustomStubs( 'exclude-wordpress-functions.json' ),
+        getCustomStubs( 'exclude-woocommerce-functions.json' ),
+        getCustomStubs( 'exclude-woocommerce-packages-functions.json' )
     ),
 
     // List of symbols to consider internal i.e. to leave untouched.
@@ -158,29 +141,29 @@ return [
         Finder::create()->files()->in( 'inc' ),
         Finder::create()->files()->in( 'public/views' ),
         Finder::create()
-                ->files()
-                ->ignoreVCS( true )
-                ->notName( '/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/' )
-                ->exclude( [
-                    'doc',
-                    'test',
-                    'test_old',
-                    'tests',
-                    'Tests',
-                    'vendor-bin',
-                ] )
-                ->notPath([
-                    // Exclude all libraries for WordPress, WooCommerce
-                    // '#woocommerce/action-scheduler/#',
-                    // Exclude libraries
-                    // '#symfony/deprecation-contracts/#',
-                    // Exclude tests from libraries
-                    '#psr/log/Psr/Log/Test/#',
-                    // Exclude php-scoper exclusion package(s)
-                    '#sniccowp/#',
-                    '#sniccwp/#',
-                ])
-                ->in( 'vendor' ),
+            ->files()
+            ->ignoreVCS( true )
+            ->notName( '/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/' )
+            ->exclude( [
+                'doc',
+                'test',
+                'test_old',
+                'tests',
+                'Tests',
+                'vendor-bin',
+            ] )
+            ->notPath( [
+                // Exclude all libraries for WordPress, WooCommerce
+                // '#woocommerce/action-scheduler/#',
+                // Exclude libraries
+                // '#symfony/deprecation-contracts/#',
+                // Exclude tests from libraries
+                '#psr/log/Psr/Log/Test/#',
+                // Exclude php-scoper exclusion package(s)
+                '#sniccowp/#',
+                '#sniccwp/#',
+            ] )
+            ->in( 'vendor' ),
         Finder::create()->append( [
             'disabler.php',
             'uninstall.php',
@@ -206,23 +189,27 @@ return [
             // as they can be registered as string,
             // so php-scoper won't be able to prefix them,
             // so manually prefixing it via patchers.
-            if ( ! str_ends_with( $filePath, 'hybrid-core/src/Core/Bootstrap/RegisterFacades.php' ) ) {
-                return $content;
-            }
-
-            $content = str_replace(
-                'AliasLoader::getInstance($aliases)->register();',
-                sprintf(
-                    '$prefixed_aliases=[];
+            if ( str_ends_with( $filePath, 'hybrid-core/src/Core/Bootstrap/RegisterFacades.php' ) ) {
+                $content = str_replace(
+                    'AliasLoader::getInstance($aliases)->register();',
+                    sprintf(
+                        '$prefixed_aliases=[];
 					foreach( $aliases as $alias=>$class){
+						if ( str_starts_with( $alias, "%1$s\\\\" ) ) {
+                            $prefixed_aliases[$alias] = $class;
+
+                            continue;
+                        }
+
 						$prefixed_aliases["%s\\\\".$alias]=$class;
 					}
 					$aliases=$prefixed_aliases;
 					AliasLoader::getInstance( $aliases )->register();',
-                    $prefix
-                ),
-                $content
-            );
+                        $prefix
+                    ),
+                    $content
+                );
+            }
 
             return $content;
         },
