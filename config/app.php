@@ -16,7 +16,16 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
-    'providers' => ServiceProvider::defaultProviders()->merge( [] )->toArray(),
+    'providers' => ServiceProvider::defaultProviders()->merge( [
+        // Package Service Providers...
+    ] )->merge( [
+        // Application Service Providers...
+
+        // App\Providers\AppServiceProvider::class,
+        // App\Providers\EventServiceProvider::class,
+    ] )->merge( [
+        // Added Service Providers (Do not remove this line)...
+    ] )->toArray(),
 
     /*
     |--------------------------------------------------------------------------
