@@ -11,6 +11,7 @@ namespace HBP\Disabler\Admin\Contracts\Traits;
 
 use HBP\Disabler\Facades\Assets;
 use HBP\Disabler\Tools\SVG;
+use function Hybrid\Tools\value;
 
 trait TabbedSections {
 
@@ -83,7 +84,7 @@ trait TabbedSections {
             printf(
                 '<a href="#%1$s" id="nav-tab-%1$s" class="nav-tab" role="tab">%2$s</a>',
                 esc_attr( $section['id'] ),
-                esc_html( $section['title'] )
+                esc_html( value( $section['title'] ) )
             );
         }
 
@@ -99,8 +100,9 @@ trait TabbedSections {
         foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
             printf( '<section id="tab-%1$s" class="hide-if-js" role="tabpanel" aria-labelledby="nav-tab-%1$s">', esc_attr( $section['id'] ) );
 
-            if ( $section['title'] ) {
-                printf( '<h2 class="tabbed-section-heading">%1$s</h2>%2$s', esc_html( $section['title'] ), PHP_EOL );
+            $section_title = value( $section['title'] );
+            if ( $section_title ) {
+                printf( '<h2 class="tabbed-section-heading">%1$s</h2>%2$s', esc_html( $section_title ), PHP_EOL );
             }
 
             if ( is_callable( $section['callback'] ) ) {

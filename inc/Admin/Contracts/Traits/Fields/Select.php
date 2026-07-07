@@ -3,6 +3,7 @@
 namespace HBP\Disabler\Admin\Contracts\Traits\Fields;
 
 use HBP\Disabler\Admin\Options;
+use function Hybrid\Tools\value;
 
 trait Select {
 
@@ -11,8 +12,8 @@ trait Select {
         $type         = $field['type'] ?? null;
         $section      = $field['section'] ?? null;
         $description  = $field['description'] ?? null;
-        $before_field = $field['before_field'] ?? null;
-        $after_field  = $field['after_field'] ?? null;
+        $before_field = $field['before_field'] ?? '';
+        $after_field  = $field['after_field'] ?? '';
         $setting_key  = $field['setting_key'] ?? $section . '_' . $id;
         $class        = 'hbp-disabler-form-field ' . $setting_key . ' ' . ( $field['class'] ?? '' );
         $choices      = $field['choices'] ?? [];
@@ -48,16 +49,17 @@ trait Select {
 
         $output = sprintf(
             '%1$s <select name="%2$s" id="%2$s" class="%3$s" data-events=\'%4$s\' %5$s>%6$s</select> %7$s',
-            wp_kses_post( $before_field ),
+            wp_kses_post( value( $before_field ) ),
             $multiple ? esc_attr( $name . '[]' ) : esc_attr( $name ),
             esc_attr( $class ),
             wp_json_encode( $events ),
             $multiple ? esc_attr( 'multiple="multiple"' ) : '',
             $select_options,
-            wp_kses_post( $after_field )
+            wp_kses_post( value( $after_field ) )
         );
 
-        if ( ! empty( $description ) ) {
+        $description = value( $description );
+        if ( $description ) {
             $output .= wp_kses_post( sprintf( '<p class="description">%s</p>', $description ) );
         }
 

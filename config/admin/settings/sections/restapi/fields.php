@@ -3,7 +3,7 @@
 return [
     'disable_rest_api_for_visitors'    => [
         'id'          => 'disable_rest_api_for_visitors',
-        'title'       => esc_html__( 'Disable REST API for visitors', 'hbp-disabler' ),
+        'title'       => static fn() => esc_html__( 'Disable REST API for visitors', 'hbp-disabler' ),
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'restapi',
@@ -11,7 +11,7 @@ return [
     ],
     'disable_rest_api_links'           => [
         'id'          => 'disable_rest_api_links',
-        'title'       => esc_html__( 'Disable REST API links', 'hbp-disabler' ),
+        'title'       => static fn() => esc_html__( 'Disable REST API links', 'hbp-disabler' ),
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'restapi',
@@ -20,7 +20,7 @@ return [
     ],
     'disable_rest_api_rsd_link'        => [
         'id'          => 'disable_rest_api_rsd_link',
-        'title'       => esc_html__( 'Disable Rest API RSD link', 'hbp-disabler' ),
+        'title'       => static fn() => esc_html__( 'Disable Rest API RSD link', 'hbp-disabler' ),
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'restapi',
@@ -29,7 +29,7 @@ return [
     ],
     'disable_rest_api_link_in_headers' => [
         'id'          => 'disable_rest_api_link_in_headers',
-        'title'       => esc_html__( 'Disable REST API link in HTTP headers', 'hbp-disabler' ),
+        'title'       => static fn() => esc_html__( 'Disable REST API link in HTTP headers', 'hbp-disabler' ),
         'type'        => 'checkbox',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'restapi',

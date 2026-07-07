@@ -10,6 +10,7 @@ use HBP\Disabler\Admin\Contracts\Traits\Fields;
 use HBP\Disabler\Admin\Contracts\Traits\TabbedSections;
 use HBP\Disabler\Facades\Assets;
 use function Hybrid\config;
+use function Hybrid\Tools\value;
 
 /**
  * Sets up and handles the plugin settings screen.
@@ -82,7 +83,7 @@ class OptionsPage {
         foreach ( config( 'admin.settings.sections' ) as $section ) {
             add_settings_section(
                 $section['data']['id'],
-                $section['data']['title'],
+                value( $section['data']['title'] ),
                 $section['data']['callback'],
                 $section['data']['page']
             );
@@ -103,7 +104,7 @@ class OptionsPage {
                     foreach ( $fields as $groupField ) {
                         add_settings_field(
                             $groupField['id'],
-                            $groupField['title'],
+                            value( $groupField['title'] ),
                             ( $groupField['callback'] ?? [
                                 $this,
                                 'outputField',
@@ -120,7 +121,7 @@ class OptionsPage {
                 } else {
                     add_settings_field(
                         $field['id'],
-                        $field['title'],
+                        value( $field['title'] ),
                         ( $field['callback'] ?? [
                             $this,
                             'outputField',

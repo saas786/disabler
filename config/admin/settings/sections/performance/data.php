@@ -2,7 +2,7 @@
 
 return [
     'id'       => 'performance',
-    'title'    => esc_html__( 'Performance', 'hbp-disabler' ),
+    'title'    => static fn() => esc_html__( 'Performance', 'hbp-disabler' ),
     'callback' => static fn() => '',
     'page'     => 'settings_page_hbp-disabler-settings',
 ];

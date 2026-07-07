@@ -8,7 +8,7 @@ return [
 
             $fields['admin_bar_info'] = [
                 'id'          => 'admin_bar_info',
-                'title'       => esc_html__( 'Caution!', 'hbp-disabler' ),
+                'title'       => static fn() => esc_html__( 'Caution!', 'hbp-disabler' ),
                 'type'        => 'html',
                 'page'        => 'settings_page_hbp-disabler-settings',
                 'section'     => 'admin_bar',
@@ -24,17 +24,17 @@ return [
 
             $fields['disable_admin_bar'] = [
                 'id'              => 'disable_admin_bar',
-                'title'           => esc_html__( 'Disable Admin Bar', 'hbp-disabler' ),
+                'title'           => static fn() => esc_html__( 'Disable Admin Bar', 'hbp-disabler' ),
                 'type'            => 'radio',
                 'page'            => 'settings_page_hbp-disabler-settings',
                 'section'         => 'admin_bar',
                 'setting_key'     => 'admin_bar_disable_admin_bar',
                 'container-class' => 'admin_bar_disable_admin_bar-wrap',
                 'value'           => 'no',
-                'choices'         => [
-                    'no'        => 'No',
-                    'all'       => 'All',
-                    'selective' => 'Selective',
+                'choices'         => static fn() => [
+                    'no'        => esc_html__( 'No', 'hbp-disabler' ),
+                    'all'       => esc_html__( 'All', 'hbp-disabler' ),
+                    'selective' => esc_html__( 'Selective', 'hbp-disabler' ),
                 ],
                 'events'          => [
                     'no'        => [
@@ -51,7 +51,7 @@ return [
 
             $fields['admin_bar_roles'] = [
                 'id'              => 'admin_bar_roles',
-                'title'           => esc_html__( 'Roles', 'hbp-disabler' ),
+                'title'           => static fn() => esc_html__( 'Roles', 'hbp-disabler' ),
                 'type'            => 'multiCheckbox',
                 'page'            => 'settings_page_hbp-disabler-settings',
                 'section'         => 'admin_bar',
@@ -59,7 +59,7 @@ return [
                 'choices'         => wp_roles()->get_names(),
                 'class'           => 'small-text',
                 'container-class' => 'admin_bar_admin_bar_roles-wrap',
-                'description'     => esc_html__( 'The Admin Bar will be disabled on the frontend for the selected WordPress roles.', 'hbp-disabler' ),
+                'description'     => static fn() => esc_html__( 'The Admin Bar will be disabled on the frontend for the selected WordPress roles.', 'hbp-disabler' ),
             ];
 
             return $fields;

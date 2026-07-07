@@ -3,6 +3,7 @@
 namespace HBP\Disabler\Admin\Contracts\Traits\Fields;
 
 use HBP\Disabler\Admin\Options;
+use function Hybrid\Tools\value;
 
 trait Checkbox {
 
@@ -11,8 +12,8 @@ trait Checkbox {
         $type         = $field['type'] ?? null;
         $section      = $field['section'] ?? null;
         $description  = $field['description'] ?? null;
-        $before_field = $field['before_field'] ?? null;
-        $after_field  = $field['after_field'] ?? null;
+        $before_field = $field['before_field'] ?? '';
+        $after_field  = $field['after_field'] ?? '';
         $setting_key  = $field['setting_key'] ?? $section . '_' . $id;
         $class        = 'hbp-disabler-form-field ' . $setting_key . ' ' . ( $field['class'] ?? '' );
         $events       = $field['events'] ?? [];
@@ -34,15 +35,16 @@ trait Checkbox {
 
         $output = sprintf(
             '<label>%1$s <input type="checkbox" name="%2$s" id="%2$s" class="%3$s" value="1" data-events=\'%4$s\' %5$s /> %6$s</label>',
-            wp_kses_post( $before_field ),
+            wp_kses_post( value( $before_field ) ),
             esc_attr( $name ),
             esc_attr( $class ),
             wp_json_encode( $events ),
             checked( $value, 1, false ),
-            wp_kses_post( $after_field )
+            wp_kses_post( value( $after_field ) )
         );
 
-        if ( ! empty( $description ) ) {
+        $description = value( $description );
+        if ( $description ) {
             $output .= wp_kses_post( sprintf( '<p class="description">%s</p>', $description ) );
         }
 
