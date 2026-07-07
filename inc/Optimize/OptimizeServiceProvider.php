@@ -7,7 +7,7 @@ use Hybrid\Core\ServiceProvider;
 /**
  * Plugin service provider.
  */
-class Provider extends ServiceProvider {
+class OptimizeServiceProvider extends ServiceProvider {
 
     /**
      * Register.

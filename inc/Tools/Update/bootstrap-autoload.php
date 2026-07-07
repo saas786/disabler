@@ -18,7 +18,7 @@ namespace HBP\Disabler\Tools\Update;
 // files to the array without the `.php` extension.
 array_map(
     static function ( $file ) {
-        require_once dirname( DISABLER_FILE ) . "/inc/Tools/Update/{$file}.php";
+        require_once DISABLER_DIR . "/inc/Tools/Update/{$file}.php";
     },
     [
         'functions-update/functions-update-3_0_0',

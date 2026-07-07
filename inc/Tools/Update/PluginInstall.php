@@ -129,7 +129,7 @@ class PluginInstall {
      * @param string $update_callback Callback name.
      */
     public static function run_update_callback( $update_callback ) {
-        include_once dirname( DISABLER_FILE ) . '/inc/Tools/Update/bootstrap-autoload.php';
+        include_once DISABLER_DIR . '/inc/Tools/Update/bootstrap-autoload.php';
 
         if ( is_callable( $update_callback ) ) {
             self::run_update_callback_start( $update_callback );
