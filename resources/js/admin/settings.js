@@ -51,7 +51,7 @@
               } ).trigger( 'change' );
               break;
             default:
-              console.error( 'Unsupported input type:', inputType );
+              console.info( 'Unsupported input type:', inputType );
           }
           break;
         case 'select':
@@ -63,7 +63,7 @@
           break;
           // Add more cases as needed for other field types
         default:
-          console.error( 'Unsupported field type:', fieldType );
+          console.info( 'Unsupported field type:', fieldType );
       }
     }
 
