@@ -7,6 +7,7 @@ const [ scriptConfig ] = require( '@wordpress/scripts/config/webpack.config' );
 
 // Plugins.
 const RemoveEmptyScriptsPlugin        = require( 'webpack-remove-empty-scripts' );
+const CopyPlugin                      = require('copy-webpack-plugin');
 const RtlCssPlugin    = require( '@wordpress/scripts/plugins/rtlcss-webpack-plugin' );
 
 // Utilities.
@@ -45,6 +46,17 @@ module.exports = ( () => {
           new RemoveEmptyScriptsPlugin( {
             stage: RemoveEmptyScriptsPlugin.STAGE_AFTER_PROCESS_PLUGINS,
           } ),
+
+          // Copies any assets that don't need to be processed to
+          // the output folder.
+          new CopyPlugin({
+            patterns: [
+              {
+                from: './resources/svg',
+                to: './svg'
+              }
+            ]
+          })
         ],
       },
     },

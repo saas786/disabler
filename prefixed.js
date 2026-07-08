@@ -5,6 +5,7 @@ const exportPath = 'disabler-prefixed';
 const folders = [
   { name: 'public/css' },
   { name: 'public/js' },
+  { name: 'public/svg' },
   { name: 'public/lang' },
   // { name: 'public', trimPath: 'public' },
 ];

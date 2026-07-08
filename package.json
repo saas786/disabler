@@ -30,7 +30,7 @@
     "build:prefixed": "@composer prefix",
     "build:pre": "composer install --no-dev -o --no-scripts",
     "build:post": "composer install --no-scripts",
-    "clean:build": "del-cli -f ./disabler ./public/css ./public/js ./public/lang ./public/**/*.asset.php",
+    "clean:build": "del-cli -f ./disabler ./public/css ./public/js ./public/svg ./public/lang ./public/**/*.asset.php",
     "clean:post:export": "del-cli -f ./disabler/composer.json",
     "i18n": "npm run i18n:textdomain && npm run i18n:pot",
     "i18n:textdomain": "npx wpi18n addtextdomain --textdomain=hbp-disabler --glob-pattern={*.php,**/*.php} --exclude=bin-dev,disabler-prefixed,disabler,vendor,node_modules",
