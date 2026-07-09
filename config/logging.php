@@ -3,7 +3,7 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
-use Monolog\Processor\PsrLogMessageProcessor;
+use Monolog\Logger;
 use function Hybrid\storage_path;
 use function Hybrid\Tools\env;
 
@@ -53,32 +53,29 @@ return [
     'channels'     => [
         'stack'      => [
             'driver'            => 'stack',
-            'channels'          => [ 'single' ],
+            'channels'          => explode( ',', (string) env( 'LOG_STACK', 'single' ) ), // sentry
             'ignore_exceptions' => false,
         ],
 
         'single'     => [
-            'driver'               => 'single',
-            'path'                 => storage_path( 'logs/disabler.log' ),
-            'level'                => env( 'LOG_LEVEL', 'debug' ),
-            'replace_placeholders' => true,
+            'driver' => 'single',
+            'path'   => storage_path( 'logs/disabler.log' ),
+            'level'  => env( 'LOG_LEVEL', 'debug' ),
         ],
 
         'daily'      => [
-            'driver'               => 'daily',
-            'path'                 => storage_path( 'logs/disabler.log' ),
-            'level'                => env( 'LOG_LEVEL', 'debug' ),
-            'days'                 => 14,
-            'replace_placeholders' => true,
+            'driver' => 'daily',
+            'path'   => storage_path( 'logs/disabler.log' ),
+            'level'  => env( 'LOG_LEVEL', 'debug' ),
+            'days'   => 14,
         ],
 
         'slack'      => [
-            'driver'               => 'slack',
-            'url'                  => env( 'LOG_SLACK_WEBHOOK_URL' ),
-            'username'             => 'disabler Log',
-            'emoji'                => ':boom:',
-            'level'                => env( 'LOG_LEVEL', 'critical' ),
-            'replace_placeholders' => true,
+            'driver'   => 'slack',
+            'url'      => env( 'LOG_SLACK_WEBHOOK_URL' ),
+            'username' => 'Disabler Log',
+            'emoji'    => ':boom:',
+            'level'    => env( 'LOG_LEVEL', 'critical' ),
         ],
 
         'papertrail' => [
@@ -90,31 +87,26 @@ return [
                 'port'             => env( 'PAPERTRAIL_PORT' ),
                 'connectionString' => 'tls://' . env( 'PAPERTRAIL_URL' ) . ':' . env( 'PAPERTRAIL_PORT' ),
             ],
-            'processors'   => [ PsrLogMessageProcessor::class ],
         ],
 
         'stderr'     => [
-            'driver'     => 'monolog',
-            'level'      => env( 'LOG_LEVEL', 'debug' ),
-            'handler'    => StreamHandler::class,
-            'formatter'  => env( 'LOG_STDERR_FORMATTER' ),
-            'with'       => [
+            'driver'       => 'monolog',
+            'level'        => env( 'LOG_LEVEL', 'debug' ),
+            'handler'      => StreamHandler::class,
+            'handler_with' => [
                 'stream' => 'php://stderr',
             ],
-            'processors' => [ PsrLogMessageProcessor::class ],
+            'formatter'    => env( 'LOG_STDERR_FORMATTER' ),
         ],
 
         'syslog'     => [
-            'driver'               => 'syslog',
-            'level'                => env( 'LOG_LEVEL', 'debug' ),
-            'facility'             => LOG_USER,
-            'replace_placeholders' => true,
+            'driver' => 'syslog',
+            'level'  => env( 'LOG_LEVEL', 'debug' ),
         ],
 
         'errorlog'   => [
-            'driver'               => 'errorlog',
-            'level'                => env( 'LOG_LEVEL', 'debug' ),
-            'replace_placeholders' => true,
+            'driver' => 'errorlog',
+            'level'  => env( 'LOG_LEVEL', 'debug' ),
         ],
 
         'null'       => [
@@ -124,6 +116,16 @@ return [
 
         'emergency'  => [
             'path' => storage_path( 'logs/disabler.log' ),
+        ],
+        'cache'      => [
+            'driver' => 'single',
+            'path'   => storage_path( 'logs/cache.log' ),
+            'level'  => env( 'LOG_LEVEL', 'debug' ),
+        ],
+        'sentry'     => [
+            'driver' => 'sentry',
+            'level'  => Logger::ERROR, // The minimum monolog logging level at which this handler will be triggered
+            'bubble' => true, // Whether the messages that are handled can bubble up the stack or not
         ],
     ],
 

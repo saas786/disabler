@@ -3,6 +3,7 @@
 namespace HBP\Disabler\Admin\Contracts\Traits\Fields;
 
 use HBP\Disabler\Admin\Options;
+use function Hybrid\Tools\value;
 
 trait MultiCheckbox {
 
@@ -12,8 +13,8 @@ trait MultiCheckbox {
         $type         = $field['type'] ?? null;
         $section      = $field['section'] ?? null;
         $description  = $field['description'] ?? null;
-        $before_field = $field['before_field'] ?? null;
-        $after_field  = $field['after_field'] ?? null;
+        $before_field = $field['before_field'] ?? '';
+        $after_field  = $field['after_field'] ?? '';
         $setting_key  = $field['setting_key'] ?? $section . '_' . $id;
         $choices      = $field['choices'] ?? [];
         $class        = 'hbp-disabler-form-field ' . $setting_key . ' ' . ( $field['class'] ?? '' );
@@ -39,7 +40,7 @@ trait MultiCheckbox {
         $name = $this->option_key . '[' . $setting_key . ']';
 
         $output  = '<fieldset>';
-        $output .= sprintf( '<legend class="screen-reader-text"><span>%1$s</span></legend>', $title );
+        $output .= sprintf( '<legend class="screen-reader-text"><span>%1$s</span></legend>', value( $title ) );
 
         foreach ( $choices as $key => $label ) {
             $checked = is_array( $value )
@@ -48,20 +49,21 @@ trait MultiCheckbox {
 
             $output .= sprintf(
                 '<label>%1$s <input type="checkbox" name="%2$s[]" id="%2$s" class="%3$s" value="%4$s" data-events=\'%5$s\' %6$s /><span>%7$s</span> %8$s</label><br/>',
-                wp_kses_post( $before_field ),
+                wp_kses_post( value( $before_field ) ),
                 esc_attr( $name ),
                 esc_attr( $class ),
                 esc_attr( $key ),
                 wp_json_encode( $events ),
                 $checked,
                 esc_attr( $label ),
-                wp_kses_post( $after_field )
+                wp_kses_post( value( $after_field ) )
             );
         }
 
         $output .= '</fieldset>';
 
-        if ( ! empty( $description ) ) {
+        $description = value( $description );
+        if ( $description ) {
             $output .= wp_kses_post( sprintf( '<p class="description">%s</p>', $description ) );
         }
 

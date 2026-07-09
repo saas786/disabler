@@ -1,4 +1,5 @@
 <?php
+
 /**
  * View service provider.
  */
@@ -12,7 +13,7 @@ use function Hybrid\Tools\WordPress\get_child_theme_file_path;
 /**
  * View service provider.
  */
-class Provider extends ServiceProvider {
+class ViewServiceProvider extends ServiceProvider {
 
     /**
      * Boot.

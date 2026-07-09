@@ -2,34 +2,31 @@
  * Scripting for WP-Admin Tabs.
  */
 
-'use strict';
-
-(function (window, document) {
-  const tabWrapper = document.querySelector('.nav-tab-wrapper');
-  const tabs = tabWrapper.querySelectorAll('.nav-tab');
-  const panels = document.querySelectorAll('section[role="tabpanel"]');
+( function ( window, document ) {
+  const tabWrapper = document.querySelector( '.nav-tab-wrapper' );
+  const tabs = tabWrapper.querySelectorAll( '.nav-tab' );
+  const panels = document.querySelectorAll( 'section[role="tabpanel"]' );
 
   /**
    * Set the current tab by its ID.
    *
    * @param {string} tabId - The ID of the active tab.
    */
-  function setActiveTab(tabId) {
-    tabs.forEach((tab) => {
+  function setActiveTab( tabId ) {
+    tabs.forEach( ( tab ) => {
       const current = tab.id === tabId;
-      tab.classList.toggle('nav-tab-active', current);
-      tab.setAttribute('aria-selected', current);
-    });
+      tab.classList.toggle( 'nav-tab-active', current );
+      tab.setAttribute( 'aria-selected', current );
+    } );
 
-    panels.forEach((panel) => {
-      if (panel.getAttribute('aria-labelledby') === tabId) {
-        panel.removeAttribute('hidden');
-        panel.classList.remove('hide-if-js');
+    panels.forEach( ( panel ) => {
+      if ( panel.getAttribute( 'aria-labelledby' ) === tabId ) {
+        panel.removeAttribute( 'hidden' );
+        panel.classList.remove( 'hide-if-js' );
+      } else {
+        panel.setAttribute( 'hidden', true );
       }
-      else {
-        panel.setAttribute('hidden', true);
-      }
-    });
+    } );
   }
 
   /**
@@ -38,36 +35,117 @@
    * @return {string} The ID of the active tab.
    */
   function getActiveTab() {
-    const active = tabWrapper.querySelector('.nav-tab-active') || tabs[0];
+    const active = tabWrapper.querySelector( '.nav-tab-active' ) || tabs[0];
 
     return active.id || '';
   }
 
   // Return early if there are no tabs on the page.
-  if (!tabs || !panels) {
+  if ( !tabs || !panels ) {
     return;
   }
 
   // Determine which tab should be selected.
-  let currentTab = window.location.hash.substr(1);
-  currentTab = currentTab ? `nav-tab-${currentTab}` : tabs[0].getAttribute('id');
+  let currentTab = window.location.hash.substr( 1 );
+  currentTab = currentTab ? `nav-tab-${currentTab}` : tabs[0].getAttribute( 'id' );
 
   // Set the current tab and register the event listeners.
-  setActiveTab(currentTab);
-  tabWrapper.addEventListener('click', (e) => {
-    if (e.target.tagName !== 'A') {
+  setActiveTab( currentTab );
+  tabWrapper.addEventListener( 'click', ( e ) => {
+    if ( e.target.tagName !== 'A' ) {
       return;
     }
 
-    setActiveTab(e.target.id);
-  });
+    setActiveTab( e.target.id );
+  } );
 
   // Listen for other changes to the window hash.
-  window.addEventListener('hashchange', () => {
-    const id = window.location.hash.substr(1);
+  window.addEventListener( 'hashchange', () => {
+    const id = window.location.hash.substr( 1 );
 
-    if (id !== getActiveTab()) {
-      setActiveTab(`nav-tab-${id}`);
+    if ( id !== getActiveTab() ) {
+      setActiveTab( `nav-tab-${id}` );
     }
-  });
-}(window, document));
+  } );
+}( window, document ) );
+
+document.addEventListener( 'DOMContentLoaded', () => {
+  const container = document.querySelector( '.nav-tabs-container' );
+  const tabsWrapper = container.querySelector( '.tabs-wrapper' );
+  const tabs = container.querySelector( '.nav-tab-wrapper' );
+  const prevArrow = container.querySelector( '.prev-arrow' );
+  const nextArrow = container.querySelector( '.next-arrow' );
+
+  // Check overflow and update arrow visibility.
+  const updateArrows = () => {
+    const isOverflowing = tabs.scrollWidth > tabsWrapper.clientWidth;
+    const atStart = tabsWrapper.scrollLeft === 0;
+    const atEnd = Math.ceil( tabsWrapper.scrollLeft + tabsWrapper.clientWidth ) >= tabs.scrollWidth;
+
+    // Show or hide arrows based on overflow and position.
+    prevArrow.style.visibility = isOverflowing && !atStart ? 'visible' : 'hidden';
+    nextArrow.style.visibility = isOverflowing && !atEnd ? 'visible' : 'hidden';
+  };
+
+  // Scroll tabs left or right.
+  const scrollTabs = ( direction ) => {
+    const scrollAmount = tabsWrapper.clientWidth * 0.8;
+    tabsWrapper.scrollBy( { left: direction === 'right' ? scrollAmount : -scrollAmount, behavior: 'smooth' } );
+  };
+
+  // Arrow event listeners.
+  prevArrow.addEventListener( 'click', ( e ) => {
+    e.preventDefault();
+    scrollTabs( 'left' );
+  } );
+
+  nextArrow.addEventListener( 'click', ( e ) => {
+    e.preventDefault();
+    scrollTabs( 'right' );
+  } );
+
+  // Event listeners to check visibility on scroll and resize.
+  tabsWrapper.addEventListener( 'scroll', updateArrows );
+  window.addEventListener( 'resize', updateArrows );
+
+  // Initial check for arrow visibility.
+  updateArrows();
+} );
+
+/*
+document.addEventListener('DOMContentLoaded', function() {
+  const container = document.querySelector('.scrollable-tabs-container');
+  const tabsWrapper = container.querySelector('.tabs-wrapper');
+  const tabs = container.querySelector('.tabs');
+  const prevArrow = container.querySelector('.prev-arrow');
+  const nextArrow = container.querySelector('.next-arrow');
+
+  // Check overflow and update arrow visibility
+  const updateArrows = () => {
+    const isOverflowing = tabs.scrollWidth > tabsWrapper.clientWidth;
+    const atStart = tabsWrapper.scrollLeft === 0;
+    const atEnd = Math.ceil(tabsWrapper.scrollLeft + tabsWrapper.clientWidth) >= tabs.scrollWidth;
+
+    // Show or hide arrows based on overflow and position
+    prevArrow.style.visibility = isOverflowing && !atStart ? 'visible' : 'hidden';
+    nextArrow.style.visibility = isOverflowing && !atEnd ? 'visible' : 'hidden';
+  };
+
+  // Scroll tabs left or right
+  const scrollTabs = (direction) => {
+    const scrollAmount = tabsWrapper.clientWidth * 0.8;
+    tabsWrapper.scrollBy({ left: direction === 'right' ? scrollAmount : -scrollAmount, behavior: 'smooth' });
+  };
+
+  // Arrow event listeners
+  prevArrow.addEventListener('click', () => scrollTabs('left'));
+  nextArrow.addEventListener('click', () => scrollTabs('right'));
+
+  // Event listeners to check visibility on scroll and resize
+  tabsWrapper.addEventListener('scroll', updateArrows);
+  window.addEventListener('resize', updateArrows);
+
+  // Initial check for arrow visibility
+  updateArrows();
+});
+*/

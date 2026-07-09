@@ -21,34 +21,29 @@
     "source": "https://github.com/saas786/disabler"
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.2",
     "composer/installers": "^1.12 || ^2.0",
-    "sniccowp/php-scoper-wordpress-excludes": "^6.5.3",
-    "sniccwp/php-scoper-woocommerce-excludes": "dev-master",
-    "themehybrid/hybrid-action-scheduler": "dev-main",
-    "themehybrid/hybrid-assets": "^1.0.0-alpha.1",
-    "themehybrid/hybrid-contracts": "^2.0.1",
-    "themehybrid/hybrid-core": "^7.0.3",
-    "themehybrid/hybrid-events": "^1.0.1",
-    "themehybrid/hybrid-filesystem": "^1.0.1",
-    "themehybrid/hybrid-log": "^1.0.0-beta.2",
-    "themehybrid/hybrid-tools": "^2.0.2",
+    "saas786/php-scoper-wp-excludes": "dev-main",
+    "themehybrid/hybrid-action-scheduler": "^1.0",
+    "themehybrid/hybrid-assets": "^1.0",
+    "themehybrid/hybrid-contracts": "^2.0",
+    "themehybrid/hybrid-core": "^7.0",
+    "themehybrid/hybrid-events": "^1.0",
+    "themehybrid/hybrid-filesystem": "^1.0",
+    "themehybrid/hybrid-log": "^1.0",
+    "themehybrid/hybrid-tools": "^2.0",
     "themehybrid/hybrid-usage-tracker": "^1.0",
-    "themehybrid/hybrid-view": "^2.0.1"
+    "themehybrid/hybrid-view": "^2.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "themehybrid/hybrid-dev-tools": "dev-dev",
-    "themehybrid/hybrid-phpcs-rules": "dev-dev as 1.0"
+    "themehybrid/hybrid-dev-tools": "^1.0",
+    "themehybrid/hybrid-phpcs-rules": "^1.0"
   },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/saas786/hybrid-action-scheduler"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/saas786/hybrid-log"
     },
     {
       "type": "vcs",
@@ -60,7 +55,7 @@
     },
     {
       "type": "vcs",
-      "url": "https://github.com/snicco/php-scoper-woocommerce-excludes"
+      "url": "https://github.com/saas786/php-scoper-wp-excludes"
     },
     {
       "type": "vcs",
@@ -90,7 +85,7 @@
     },
     "optimize-autoloader": true,
     "platform": {
-      "php": "8.0"
+      "php": "8.2"
     },
     "prepend-autoloader": false,
     "process-timeout": 0

@@ -5,9 +5,9 @@ namespace HBP\Disabler\Admin;
 use Hybrid\Core\ServiceProvider;
 
 /**
- * Plugin service provider.
+ * Admin service provider.
  */
-class Provider extends ServiceProvider {
+class AdminServiceProvider extends ServiceProvider {
 
     /**
      * Register.

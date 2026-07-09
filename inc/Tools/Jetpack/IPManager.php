@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/class-jetpack-ip-manager.php
  */
@@ -97,11 +98,11 @@ class IPManager {
      * @see wp_remote_request()
      * @see https://docs.wpvip.com/technical-references/code-quality-and-best-practices/retrieving-remote-data/ Fetching Remote Data
      * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L920
-     * @param string         $url            URL to request
+     * @param string         $url URL to request
      * @param string         $fallback_value Optional. Set a fallback value to be returned if the external request fails.
-     * @param int            $threshold      Optional. The number of fails required before subsequent requests automatically return the fallback value. Defaults to 3, with a maximum of 10.
-     * @param int            $timeout        Optional. Number of seconds before the request times out. Valid values 1-5; defaults to 1.
-     * @param int            $retry          Optional. Number of seconds before resetting the fail counter and the number of seconds to delay making new requests after the fail threshold is reached. Defaults to 20, with a minimum of 10.
+     * @param int            $threshold Optional. The number of fails required before subsequent requests automatically return the fallback value. Defaults to 3, with a maximum of 10.
+     * @param int            $timeout Optional. Number of seconds before the request times out. Valid values 1-5; defaults to 1.
+     * @param int            $retry Optional. Number of seconds before resetting the fail counter and the number of seconds to delay making new requests after the fail threshold is reached. Defaults to 20, with a minimum of 10.
      * @param array Optional. Set other arguments to be passed to wp_remote_request().
      * @return string|\WP_Error|array Array of results. If fail counter is met, returns the $fallback_value, otherwise return WP_Error.
      */

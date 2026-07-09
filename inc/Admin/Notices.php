@@ -80,7 +80,7 @@ class Notices {
     /**
      * Show a notice.
      *
-     * @param string $name       Notice name.
+     * @param string $name Notice name.
      * @param bool   $force_save Force saving inside this method instead of at the 'shutdown'.
      */
     public static function add_notice( $name, $force_save = false ) {
@@ -95,7 +95,7 @@ class Notices {
     /**
      * Remove a notice from being displayed.
      *
-     * @param string $name       Notice name.
+     * @param string $name Notice name.
      * @param bool   $force_save Force saving inside this method instead of at the 'shutdown'.
      */
     public static function remove_notice( $name, $force_save = false ) {
@@ -114,8 +114,8 @@ class Notices {
      * An array of notice names or a regular expression string can be passed, in the later case
      * all the notices whose name matches the regular expression will be removed.
      *
-     * @param  array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
-     * @param  bool         $force_save           Force saving inside this method instead of at the 'shutdown'.
+     * @param array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
+     * @param bool         $force_save Force saving inside this method instead of at the 'shutdown'.
      * @return void
      */
     public static function remove_notices( $names_array_or_regex, $force_save = false ) {
@@ -134,7 +134,7 @@ class Notices {
     /**
      * See if a notice is being shown.
      *
-     * @param  string $name Notice name.
+     * @param string $name Notice name.
      * @return bool
      */
     public static function has_notice( $name ) {
@@ -221,7 +221,7 @@ class Notices {
     /**
      * Add a custom notice.
      *
-     * @param string $name        Notice name.
+     * @param string $name Notice name.
      * @param string $notice_html Notice HTML.
      */
     public static function add_custom_notice( $name, $notice_html ): void {

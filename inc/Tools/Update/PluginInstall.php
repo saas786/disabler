@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Installation related functions and actions.
  */
@@ -128,7 +129,7 @@ class PluginInstall {
      * @param string $update_callback Callback name.
      */
     public static function run_update_callback( $update_callback ) {
-        include_once dirname( DISABLER_FILE ) . '/inc/Tools/Update/bootstrap-autoload.php';
+        include_once DISABLER_DIR . '/inc/Tools/Update/bootstrap-autoload.php';
 
         if ( is_callable( $update_callback ) ) {
             self::run_update_callback_start( $update_callback );
@@ -150,7 +151,7 @@ class PluginInstall {
      * Triggered when a callback has ran.
      *
      * @param string $callback Callback name.
-     * @param bool   $result   Return value from callback. Non-false need to run again.
+     * @param bool   $result Return value from callback. Non-false need to run again.
      */
     protected static function run_update_callback_end( $callback, $result ) {
         if ( $result ) {
@@ -385,7 +386,7 @@ class PluginInstall {
     /**
      * Add more cron schedules.
      *
-     * @param  array $schedules List of WP scheduled cron jobs.
+     * @param array $schedules List of WP scheduled cron jobs.
      * @return array
      */
     public static function cron_schedules( $schedules ) {

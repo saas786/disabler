@@ -383,7 +383,7 @@ class Updates implements Bootable {
      * Disable the ability to update themes from single
      * site and multisite bulk actions.
      *
-     * @param  array $actions All the bulk actions.
+     * @param array $actions All the bulk actions.
      * @return array $actions  The remaining actions
      */
     private function disableBulkActionsThemes( $actions ) {
@@ -436,7 +436,7 @@ class Updates implements Bootable {
     /**
      * Return an empty array of items requiring update for themes.
      *
-     * @param  array $items All the items being passed for update.
+     * @param array $items All the items being passed for update.
      * @return array An empty array, or the original items if not enabled.
      */
     private function removeUpdateThemesArray( $items ) {
@@ -488,7 +488,7 @@ class Updates implements Bootable {
      * Disable the ability to update plugins from single
      * site and multisite bulk actions.
      *
-     * @param  array $actions All the bulk actions.
+     * @param array $actions All the bulk actions.
      * @return array $actions  The remaining actions
      */
     private function disableBulkActionsPlugins( $actions ) {
@@ -546,7 +546,7 @@ class Updates implements Bootable {
     /**
      * Return an empty array of items requiring update for both plugins.
      *
-     * @param  array $items All the items being passed for update.
+     * @param array $items All the items being passed for update.
      * @return array An empty array, or the original items if not enabled.
      */
     private function removePluginsUpdateArray( $items ) {

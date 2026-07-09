@@ -3,16 +3,16 @@
 return [
     'disable_xmlrpc' => [
         'id'          => 'disable_xmlrpc',
-        'title'       => esc_html__( 'Disable XML-RPC', 'hbp-disabler' ),
+        'title'       => static fn() => esc_html__( 'Disable XML-RPC', 'hbp-disabler' ),
         'type'        => 'radio',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'xmlrpc',
         'setting_key' => 'xmlrpc_disable_xmlrpc',
         'value'       => 'no',
-        'choices'     => [
-            'no'         => 'No',
-            'completely' => 'Completely',
-            'selective'  => 'Selective',
+        'choices'     => static fn() => [
+            'no'         => esc_html__( 'No', 'hbp-disabler' ),
+            'completely' => esc_html__( 'Completely', 'hbp-disabler' ),
+            'selective'  => esc_html__( 'Selective', 'hbp-disabler' ),
         ],
         'events'      => [
             'no'         => [
@@ -81,7 +81,7 @@ return [
                 'section'         => 'xmlrpc',
                 'setting_key'     => 'xmlrpc_custom_xmlrpc_whitelist_ips',
                 /* Translators: %s XML-RPC custom whitelist IP's. */
-                'description'     => esc_html__( 'Separate multiple IP\'s with line breaks.', 'hbp-disabler' ),
+                'description'     => static fn() => esc_html__( 'Separate multiple IP\'s with line breaks.', 'hbp-disabler' ),
                 'container-class' => 'xmlrpc_custom_xmlrpc_whitelist_ips-wrap',
             ];
 
@@ -124,7 +124,7 @@ return [
                 'section'         => 'xmlrpc',
                 'setting_key'     => 'xmlrpc_custom_xmlrpc_methods',
                 /* Translators: %s XML-RPC custom methods. */
-                'description'     => esc_html__( 'Separate multiple methods with line breaks.', 'hbp-disabler' ),
+                'description'     => static fn() => esc_html__( 'Separate multiple methods with line breaks.', 'hbp-disabler' ),
                 'container-class' => 'xmlrpc_custom_xmlrpc_methods-wrap',
             ];
 
@@ -160,7 +160,7 @@ return [
                 'section'         => 'xmlrpc',
                 'setting_key'     => 'xmlrpc_custom_xmlrpc_headers',
                 /* Translators: %s XML-RPC custom headers. */
-                'description'     => esc_html__( 'Separate multiple headers with line breaks.', 'hbp-disabler' ),
+                'description'     => static fn() => esc_html__( 'Separate multiple headers with line breaks.', 'hbp-disabler' ),
                 'container-class' => 'xmlrpc_custom_xmlrpc_headers-wrap',
             ];
 

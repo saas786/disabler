@@ -5,12 +5,13 @@ namespace HBP\Disabler;
 use HBP\Disabler\Admin\Notices;
 use HBP\Disabler\Tools\Update\PluginInstall;
 use HBP\Disabler\Tools\UsageTracker\Tracker;
+use Hybrid\Assets\Plugin as AssetsPlugin;
 use Hybrid\Core\ServiceProvider;
 
 /**
  * Plugin service provider.
  */
-class Provider extends ServiceProvider {
+class PluginServiceProvider extends ServiceProvider {
 
     /**
      * Register.
@@ -24,7 +25,7 @@ class Provider extends ServiceProvider {
         $this->app->singleton( PluginInstall::class );
 
         $this->app->singleton( 'hbp/disabler/assets', static function ( $app ) {
-            $plugin = $app->make( \Hybrid\Assets\Plugin::class );
+            $plugin = $app->make( AssetsPlugin::class );
             $plugin->setPluginFile( DISABLER_FILE );
 
             return $plugin;
@@ -34,7 +35,7 @@ class Provider extends ServiceProvider {
 
         $this->app->singleton( Tracker::class, static fn() => new Tracker(
             'https://tracking.hybopressthemes.com/api/v1/track/',
-            WEEK_IN_SECONDS * 2
+            MONTH_IN_SECONDS * 3
         ) );
 
         $this->app->alias( Tracker::class, 'disabler/usage/tracker' );

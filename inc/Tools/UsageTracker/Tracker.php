@@ -58,11 +58,11 @@ class Tracker extends UsageTracker {
     /**
      * Schedules a new sending of the tracking data after a WordPress core update.
      *
-     * @param  bool|\WP_Upgrader $upgrader Optional. WP_Upgrader instance or false.
-     *                                     Depending on context, it might be a Theme_Upgrader,
-     *                                     Plugin_Upgrader, Core_Upgrade, or Language_Pack_Upgrader.
-     *                                     instance. Default false.
-     * @param  array             $data     Array of update data.
+     * @param bool|\WP_Upgrader $upgrader Optional. WP_Upgrader instance or false.
+     *                                    Depending on context, it might be a Theme_Upgrader,
+     *                                    Plugin_Upgrader, Core_Upgrade, or Language_Pack_Upgrader.
+     *                                    instance. Default false.
+     * @param array             $data Array of update data.
      * @return void
      */
     public function schedule_tracking_data_sending( $upgrader = false, $data = [] ) {

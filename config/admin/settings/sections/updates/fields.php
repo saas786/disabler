@@ -3,13 +3,13 @@
 return [
     'disable_updates'             => [
         'id'          => 'disable_updates',
-        'title'       => esc_html__( 'Disable Updates', 'hbp-disabler' ),
+        'title'       => static fn() => esc_html__( 'Disable Updates', 'hbp-disabler' ),
         'type'        => 'radio',
         'page'        => 'settings_page_hbp-disabler-settings',
         'section'     => 'updates',
         'setting_key' => 'updates_disable_updates',
         'value'       => 'no',
-        'choices'     => [
+        'choices'     => static fn() => [
             'no'        => esc_html__( 'No', 'hbp-disabler' ),
             'all'       => esc_html__( 'All', 'hbp-disabler' ),
             'selective' => esc_html__( 'Selective', 'hbp-disabler' ),
@@ -49,13 +49,13 @@ return [
     ],
     'plugin_updates'              => [
         'id'              => 'plugin_updates',
-        'title'           => esc_html__( 'Plugin Updates', 'hbp-disabler' ),
+        'title'           => static fn() => esc_html__( 'Plugin Updates', 'hbp-disabler' ),
         'type'            => 'radio',
         'page'            => 'settings_page_hbp-disabler-settings',
         'section'         => 'updates',
         'setting_key'     => 'updates_plugin_updates',
         'value'           => 'manual',
-        'choices'         => [
+        'choices'         => static fn() => [
             'manual'  => esc_html__( 'Manual', 'hbp-disabler' ),
             'auto'    => esc_html__( 'Auto', 'hbp-disabler' ),
             'disable' => esc_html__( 'Disable', 'hbp-disabler' ),
@@ -64,13 +64,13 @@ return [
     ],
     'theme_updates'               => [
         'id'              => 'theme_updates',
-        'title'           => esc_html__( 'Theme Updates', 'hbp-disabler' ),
+        'title'           => static fn() => esc_html__( 'Theme Updates', 'hbp-disabler' ),
         'type'            => 'radio',
         'page'            => 'settings_page_hbp-disabler-settings',
         'section'         => 'updates',
         'setting_key'     => 'updates_theme_updates',
         'value'           => 'manual',
-        'choices'         => [
+        'choices'         => static fn() => [
             'manual'  => esc_html__( 'Manual', 'hbp-disabler' ),
             'auto'    => esc_html__( 'Auto', 'hbp-disabler' ),
             'disable' => esc_html__( 'Disable', 'hbp-disabler' ),
@@ -79,13 +79,13 @@ return [
     ],
     'translation_updates'         => [
         'id'              => 'translation_updates',
-        'title'           => esc_html__( 'Auto and Async Translations Updates', 'hbp-disabler' ),
+        'title'           => static fn() => esc_html__( 'Auto and Async Translations Updates', 'hbp-disabler' ),
         'type'            => 'radio',
         'page'            => 'settings_page_hbp-disabler-settings',
         'section'         => 'updates',
         'setting_key'     => 'updates_translation_updates',
         'value'           => 'default',
-        'choices'         => [
+        'choices'         => static fn() => [
             'default' => esc_html__( 'Default', 'hbp-disabler' ),
             'auto'    => esc_html__( 'Auto', 'hbp-disabler' ),
             'disable' => esc_html__( 'Disable', 'hbp-disabler' ),
@@ -94,13 +94,13 @@ return [
     ],
     'core_updates'                => [
         'id'              => 'core_updates',
-        'title'           => esc_html__( 'WordPress Core Updates', 'hbp-disabler' ),
+        'title'           => static fn() => esc_html__( 'WordPress Core Updates', 'hbp-disabler' ),
         'type'            => 'radio',
         'page'            => 'settings_page_hbp-disabler-settings',
         'section'         => 'updates',
         'setting_key'     => 'updates_core_updates',
         'value'           => 'allow_minor_core_auto_updates',
-        'choices'         => [
+        'choices'         => static fn() => [
             'disable_core_updates'          => esc_html__( 'Disable updates', 'hbp-disabler' ),
             'disable_core_auto_updates'     => esc_html__( 'Disable auto updates', 'hbp-disabler' ),
             'allow_minor_core_auto_updates' => esc_html__( 'Allow minor auto updates', 'hbp-disabler' ),
@@ -111,28 +111,28 @@ return [
     ],
     'enable_update_vcs'           => [
         'id'              => 'enable_update_vcs',
-        'title'           => esc_html__( 'Enable updates for VCS Installations', 'hbp-disabler' ),
+        'title'           => static fn() => esc_html__( 'Enable updates for VCS Installations', 'hbp-disabler' ),
         'type'            => 'radio',
         'page'            => 'settings_page_hbp-disabler-settings',
         'section'         => 'updates',
         'setting_key'     => 'updates_enable_update_vcs',
         'value'           => 'default',
-        'choices'         => [
+        'choices'         => static fn() => [
             'default' => esc_html__( 'Default', 'hbp-disabler' ),
             'enable'  => esc_html__( 'Enable', 'hbp-disabler' ),
             'disable' => esc_html__( 'Disable', 'hbp-disabler' ),
         ],
-        'description'     => esc_html__( 'Enable Automatic Updates even if a VCS folder (.git, .hg, .svn) was found in the WordPress directory', 'hbp-disabler' ),
+        'description'     => static fn() => esc_html__( 'Enable Automatic Updates even if a VCS folder (.git, .hg, .svn) was found in the WordPress directory', 'hbp-disabler' ),
         'container-class' => 'updates_enable_update_vcs-wrap',
     ],
     'updates_nags_only_for_admin' => [
         'id'              => 'updates_nags_only_for_admin',
-        'title'           => esc_html__( 'Updates nags only for Admin', 'hbp-disabler' ),
+        'title'           => static fn() => esc_html__( 'Updates nags only for Admin', 'hbp-disabler' ),
         'type'            => 'checkbox',
         'page'            => 'settings_page_hbp-disabler-settings',
         'section'         => 'updates',
         'setting_key'     => 'updates_updates_nags_only_for_admin',
-        'description'     => esc_html__( 'Hides WordPress core update available notice for users who don\'t have `update_core` capability access.', 'hbp-disabler' ),
+        'description'     => static fn() => esc_html__( 'Hides WordPress core update available notice for users who don\'t have `update_core` capability access.', 'hbp-disabler' ),
         'container-class' => 'updates_updates_nags_only_for_admin-wrap',
     ],
 ];

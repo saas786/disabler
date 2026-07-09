@@ -12,9 +12,9 @@ trait Utils {
      * This method takes a multiline text, removes extra spaces and new lines, then splits it into an array of words,
      * and finally sanitizes each word using the provided or default sanitization function.
      *
-     * @param  string $text              The multiline text to be prepared.
-     * @param  string $sanitize_function (optional) The sanitization function to apply to each word.
-     * @return array  An array of sanitized strings.
+     * @param string $text The multiline text to be prepared.
+     * @param string $sanitize_function (optional) The sanitization function to apply to each word.
+     * @return array An array of sanitized strings.
      */
     public static function prepareMultilineText( string $text, string $sanitize_function = 'sanitize_text_field' ): array {
         // Convert extra spaces and new lines to a single space.

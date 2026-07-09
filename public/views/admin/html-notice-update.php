@@ -33,7 +33,12 @@ $update_url = wp_nonce_url(
     </p>
 </div>
 <script type="text/javascript">
-    jQuery( '.hbp-disabler-update-now' ).click( 'click', function() {
-        return window.confirm( '<?php echo esc_js( __( 'It is strongly recommended that you backup your database before proceeding. Are you sure you wish to run the updater now?', 'hbp-disabler' ) ); ?>' ); // jshint ignore:line
-    });
+    document.querySelectorAll( '.hbp-disabler-update-now' ).forEach( function ( element ) {
+        element.addEventListener( 'click', function ( event ) {
+            if ( ! window.confirm( '<?php echo esc_js( __( 'It is strongly recommended that you backup your database before proceeding. Are you sure you wish to run the updater now?', 'hbp-disabler' ) ); ?>' ) ) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        } );
+    } );
 </script>

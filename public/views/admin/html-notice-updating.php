@@ -7,16 +7,16 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$pending_actions_url = class_exists( 'WC_API' ) ? add_query_arg( array(
+$pending_actions_url = class_exists( 'WooCommerce' ) ? add_query_arg( [
     'page'   => 'wc-status',
     'tab'    => 'action-scheduler',
     'status' => 'pending',
     's'      => 'hbp_disabler_run_update',
-), admin_url( 'admin.php' ) ) : add_query_arg( array(
+], admin_url( 'admin.php' ) ) : add_query_arg( [
     'page'   => 'action-scheduler',
     'status' => 'pending',
     's'      => 'hbp_disabler_run_update',
-), admin_url( 'tools.php' ) );
+], admin_url( 'tools.php' ) );
 
 $cron_disabled = defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
 $cron_cta      = $cron_disabled

@@ -7,7 +7,7 @@ use Hybrid\Core\ServiceProvider;
 /**
  * Plugin service provider.
  */
-class Provider extends ServiceProvider {
+class OptimizeServiceProvider extends ServiceProvider {
 
     /**
      * Register.
@@ -19,6 +19,7 @@ class Provider extends ServiceProvider {
         $this->app->singleton( Editor::class );
         $this->app->singleton( Backend::class );
         $this->app->singleton( Frontend::class );
+        $this->app->singleton( Media::class );
         $this->app->singleton( Privacy::class );
         $this->app->singleton( Revisions::class );
         $this->app->singleton( XMLRPC::class );
@@ -26,6 +27,7 @@ class Provider extends ServiceProvider {
         $this->app->singleton( RestAPI::class );
         $this->app->singleton( Feeds::class );
         $this->app->singleton( Updates::class );
+        $this->app->singleton( AdminBar::class );
     }
 
     /**
@@ -37,6 +39,7 @@ class Provider extends ServiceProvider {
         $this->app->resolve( Editor::class )->boot();
         $this->app->resolve( Backend::class )->boot();
         $this->app->resolve( Frontend::class )->boot();
+        $this->app->resolve( Media::class )->boot();
         $this->app->resolve( Privacy::class )->boot();
         $this->app->resolve( Revisions::class )->boot();
         $this->app->resolve( XMLRPC::class )->boot();
@@ -44,6 +47,7 @@ class Provider extends ServiceProvider {
         $this->app->resolve( RestAPI::class )->boot();
         $this->app->resolve( Feeds::class )->boot();
         $this->app->resolve( Updates::class )->boot();
+        $this->app->resolve( AdminBar::class )->boot();
     }
 
 }

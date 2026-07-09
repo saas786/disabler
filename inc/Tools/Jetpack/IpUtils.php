@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file was borrowed and modified from this Symfony package:
  * https://github.com/symfony/http-foundation
@@ -27,9 +28,9 @@ class IpUtils {
     /**
      * Checks if an IPv4 or IPv6 address is contained in the list of given IPs or subnets.
      *
-     * @param  string       $request_ip IP to check
-     * @param  string|array $ips        List of IPs or subnets (can be a string if only a single one)
-     * @return bool         Whether the IP is valid
+     * @param string       $request_ip IP to check
+     * @param string|array $ips List of IPs or subnets (can be a string if only a single one)
+     * @return bool Whether the IP is valid
      */
     public static function checkIP( $request_ip, $ips ) {
         if ( ! is_array( $ips ) ) {
@@ -51,9 +52,9 @@ class IpUtils {
      * Compares two IPv4 addresses.
      * In case a subnet is given, it checks if it contains the request IP.
      *
-     * @param  string $request_ip IPv4 address to check
-     * @param  string $ip         IPv4 address or subnet in CIDR notation
-     * @return bool   Whether the request IP matches the IP, or whether the request IP is within the CIDR subnet
+     * @param string $request_ip IPv4 address to check
+     * @param string $ip IPv4 address or subnet in CIDR notation
+     * @return bool Whether the request IP matches the IP, or whether the request IP is within the CIDR subnet
      */
     public static function checkIP4( $request_ip, $ip ) {
         if ( ! filter_var( $request_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
@@ -83,9 +84,9 @@ class IpUtils {
      * In case a subnet is given, it checks if it contains the request IP.
      *
      * @see https://github.com/dsp/v6tools
-     * @param  string $request_ip IPv6 address to check
-     * @param  string $ip         IPv6 address or subnet in CIDR notation
-     * @return bool   Whether the IP is valid
+     * @param string $request_ip IPv6 address to check
+     * @param string $ip IPv6 address or subnet in CIDR notation
+     * @return bool Whether the IP is valid
      * @throws \RuntimeException When IPV6 support is not enabled
      *
      * @author David Soria Parra <dsp at php dot net>

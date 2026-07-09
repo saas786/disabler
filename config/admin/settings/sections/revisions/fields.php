@@ -5,18 +5,18 @@ use function HBP\Disabler\get_revision_post_types;
 return [
     'disable_revisions' => [
         'id'           => 'disable_revisions',
-        'title'        => esc_html__( 'Disable revisions', 'hbp-disabler' ),
+        'title'        => static fn() => esc_html__( 'Disable revisions', 'hbp-disabler' ),
         'type'         => 'select',
         'page'         => 'settings_page_hbp-disabler-settings',
         'section'      => 'revisions',
         /* Translators: %1$s will be replaced with the opening <p> tag, %2$s will be replaced with closing tags and a line break. */
-        'before_field' => sprintf( esc_html__( '%1$s To select multiple post types, hold ctrl key while selecting. Do not select a post type if you are unsure. %2$s', 'hbp-disabler' ), '<p>', '</p><br/>' ),
+        'before_field' => static fn() => sprintf( esc_html__( '%1$s To select multiple post types, hold ctrl key while selecting. Do not select a post type if you are unsure. %2$s', 'hbp-disabler' ), '<p>', '</p><br/>' ),
         'setting_key'  => 'revisions_disable_revisions',
         'multiple'     => true,
         'choices'      => static function () {
             $choices = [
-                'no'  => 'No',
-                'all' => 'All',
+                'no'  => esc_html__( 'No', 'hbp-disabler' ),
+                'all' => esc_html__( 'All', 'hbp-disabler' ),
             ];
 
             return array_merge( $choices, get_revision_post_types() );
