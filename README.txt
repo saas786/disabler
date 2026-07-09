@@ -1,6 +1,6 @@
 === Disabler ===
 Contributors: saas
-Tags: disable, options, features
+Tags: disable, updates, performance, security, rest-api
 Requires at least: 7.0
 Tested up to: 7.0
 Requires PHP: 8.2
