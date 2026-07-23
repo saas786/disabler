@@ -12,11 +12,11 @@ use Hybrid\Core\ServiceProvider;
  * Plugin service provider.
  */
 class PluginServiceProvider extends ServiceProvider {
-
     /**
      * Register.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function register() {
@@ -25,6 +25,7 @@ class PluginServiceProvider extends ServiceProvider {
         $this->app->singleton( PluginInstall::class );
 
         $this->app->singleton( 'hbp/disabler/assets', static function ( $app ) {
+            /** @var \Hybrid\Assets\Plugin $plugin */
             $plugin = $app->make( AssetsPlugin::class );
             $plugin->setPluginFile( DISABLER_FILE );
 
@@ -52,5 +53,4 @@ class PluginServiceProvider extends ServiceProvider {
 
         $this->app->resolve( 'disabler/usage/tracker' )->boot();
     }
-
 }

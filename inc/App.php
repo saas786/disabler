@@ -2,8 +2,8 @@
 
 namespace HBP\Disabler;
 
-use Hybrid\Action\Scheduler\Provider as ActionSchedulerServiceProvider;
-use Hybrid\Assets\Provider as AssetsServiceProvider;
+use Hybrid\Action\Scheduler\ActionSchedulerServiceProvider;
+use Hybrid\Assets\AssetsServiceProvider;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Core\Application;
 use Hybrid\Log\LogServiceProvider;
