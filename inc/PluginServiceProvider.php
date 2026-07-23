@@ -28,6 +28,9 @@ class PluginServiceProvider extends ServiceProvider {
             /** @var \Hybrid\Assets\Plugin $plugin */
             $plugin = $app->make( AssetsPlugin::class );
             $plugin->setPluginFile( DISABLER_FILE );
+            // Override plugin assets from `{theme}/public/hbp-disabler`.
+            // Use this filter to customize the theme override directory.
+            $plugin->setOverrideAssetsDirectory( apply_filters( 'hbp/disabler/assets/override-path', '/public/hbp-disabler' ) );
 
             return $plugin;
         } );

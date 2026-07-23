@@ -14,17 +14,25 @@ use HBP\Disabler\Facades\Assets;
  * SVG class.
  */
 class SVG {
-    protected static string $assetsFolder = ''; // assets
+    /**
+     * Relative folder (within the assets directory) where SVGs live.
+     */
+    protected static string $svgFolder = 'svg';
 
     /**
      * Returns the SVG file contents.
      *
      * @param string $name
-     *
-     * @return string
+     * @param bool   $inherit
      */
-    public static function render( $name ) {
-        $svg = file_get_contents( static::path( "{$name}.svg" ) );
+    public static function render( string $name, bool $inherit = false ): string {
+        $path = Assets::assetPath( static::prepareFile( "{$name}.svg" ), $inherit );
+
+        if ( ! $path || ! is_readable( $path ) ) {
+            return '';
+        }
+
+        $svg = file_get_contents( $path );
 
         return $svg ?: '';
     }
@@ -33,34 +41,20 @@ class SVG {
      * Displays the SVG.
      *
      * @param string $name
-     *
-     * @return void
+     * @param bool   $inherit
      */
-    public static function display( $name ) {
-        echo static::render( $name );
+    public static function display( string $name, bool $inherit = false ): void {
+        echo static::render( $name, $inherit );
     }
 
     /**
-     * Returns the path to the SVG folder or file if set.
+     * Prefixes a file with the SVG folder path.
      *
-     * @return string
+     * @param string $file
      */
-    public static function path( string $file = '' ) {
-        return Assets::assetPath( static::prepareFile( $file ) );
-    }
-
-    /**
-     * Returns the uri to the SVG folder or file if set.
-     *
-     * @return string
-     */
-    public static function uri( $file = '' ) {
-        return Assets::assetUrl( static::prepareFile( $file ) );
-    }
-
-    public static function prepareFile( $file ) {
+    protected static function prepareFile( string $file ): string {
         $file = trim( $file, '/' );
 
-        return $file ? static::$assetsFolder . "/svg/{$file}" : static::$assetsFolder . '/svg';
+        return $file ? static::$svgFolder . "/{$file}" : static::$svgFolder;
     }
 }

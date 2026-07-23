@@ -240,11 +240,13 @@ class Performance implements Bootable {
      * This is used to unregister the `core-embed/wordpress` block type.
      */
     private function disableEmbedsEnqueueBlockEditorAssets() {
+        /** @var \Hybrid\Assets\Asset $embeds_script */
+        $embeds_script = Assets::asset( 'js/blocks/disable-embeds/index.js' );
         wp_enqueue_script(
             'hbp-disabler-disable-embeds',
-            Assets::assetUrl( 'js/blocks/disable-embeds/index.js' ),
-            [ 'wp-blocks', 'wp-dom-ready', 'wp-polyfill' ],
-            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $embeds_script->url(),
+            $embeds_script->dependencies(),
+            $embeds_script->version(),
             true
         );
     }

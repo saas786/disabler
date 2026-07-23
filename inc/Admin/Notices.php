@@ -199,11 +199,13 @@ class Notices {
             return;
         }
 
+        /** @var \Hybrid\Assets\Asset $notices_style */
+        $notices_style = Assets::asset( 'css/admin/notices.css' );
         wp_enqueue_style(
             'hbp-disabler-admin-notices',
-            Assets::assetUrl( 'css/admin/notices.css' ),
-            [],
-            null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $notices_style->url(),
+            $notices_style->dependencies(),
+            $notices_style->version()
         );
 
         // Add RTL support.

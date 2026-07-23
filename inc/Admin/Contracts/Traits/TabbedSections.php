@@ -27,11 +27,13 @@ trait TabbedSections {
          *
          * Note that the Trac version uses "settings-tabs" as the hook to prevent conflict.
          */
+        /** @var \Hybrid\Assets\Asset $tabs_script */
+        $tabs_script = Assets::asset( 'js/admin/tabs.js', true );
         wp_register_script(
             'hbp-disabler-wp-admin-tabs',
-            Assets::assetUrl( 'js/admin/tabs.js' ),
-            [],
-            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $tabs_script->url(),
+            $tabs_script->dependencies(),
+            $tabs_script->version(),
             true
         );
     }
