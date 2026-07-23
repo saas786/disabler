@@ -7,8 +7,11 @@ use Hybrid\Core\Facades\Facade;
 /**
  * @see \Hybrid\Assets\Plugin
  *
- * @method static string assetUrl(string $file)
- * @method static string assetPath(string $file)
+ * @method static string url(string $file)
+ * @method static string path(string $file)
+ * @method static string assetUrl(string $file, bool $inherit)
+ * @method static string assetPath(string $file, bool $inherit)
+ * @method static Asset asset(string $file, bool $inherit, string $overrideManifestDirectory = '')
  */
 class Assets extends Facade {
     /**
