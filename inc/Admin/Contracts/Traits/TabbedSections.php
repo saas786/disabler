@@ -10,7 +10,6 @@
 namespace HBP\Disabler\Admin\Contracts\Traits;
 
 use HBP\Disabler\Facades\Assets;
-use HBP\Disabler\Tools\SVG;
 use function Hybrid\Tools\value;
 
 trait TabbedSections {
@@ -27,11 +26,13 @@ trait TabbedSections {
          *
          * Note that the Trac version uses "settings-tabs" as the hook to prevent conflict.
          */
+        /** @var \Hybrid\Assets\Asset $tabs_script */
+        $tabs_script = Assets::asset( 'js/admin/tabs.js' );
         wp_register_script(
             'hbp-disabler-wp-admin-tabs',
-            Assets::assetUrl( 'js/admin/tabs.js' ),
-            [],
-            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $tabs_script->url(),
+            $tabs_script->dependencies(),
+            $tabs_script->version(),
             true
         );
     }
@@ -75,7 +76,7 @@ trait TabbedSections {
 
         echo '<div class="nav-tabs-container">';
         echo '<button class="scroll-arrow prev-arrow" aria-label="Previous" hidden>';
-        echo SVG::render( 'arrow-prev-small' );
+        echo Assets::svg( '/svg/arrow-prev-small.svg' )->sanitize( false )->render() . '</button>';
         echo '</button>';
         echo '<div class="tabs-wrapper">';
         echo '<nav class="nav-tab-wrapper hide-if-no-js" role="tablist" aria-orientation="' . $args['tab-orientation'] . '">';
@@ -91,7 +92,7 @@ trait TabbedSections {
         echo '</nav><!-- .nav-tab-wrapper -->';
         echo '</div><!-- .tabs-wrapper -->';
         echo '<button class="scroll-arrow next-arrow" aria-label="Next" hidden>';
-        echo SVG::render( 'arrow-next-small' );
+        echo Assets::svg( '/svg/arrow-next-small.svg' )->sanitize( false )->render();
         echo '</button>';
         echo '</div><!-- .nav-tabs-container -->';
 

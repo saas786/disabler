@@ -246,19 +246,23 @@ class OptionsPage {
     }
 
     public function enqueueAssets(): void {
+        /** @var \Hybrid\Assets\Asset $settings_script */
+        $settings_script = Assets::asset( 'js/admin/settings.js' );
         wp_enqueue_script(
             'hbp-disabler-wp-admin-settings',
-            Assets::assetUrl( 'js/admin/settings.js' ),
-            [],
-            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $settings_script->url(),
+            $settings_script->dependencies(),
+            $settings_script->version(),
             true
         );
 
+        /** @var \Hybrid\Assets\Asset $settings_style */
+        $settings_style = Assets::asset( 'css/admin/settings.css' );
         wp_enqueue_style(
             'hbp-disabler-wp-admin-settings',
-            Assets::assetUrl( 'css/admin/settings.css' ),
-            [],
-            null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $settings_style->url(),
+            $settings_style->dependencies(),
+            $settings_style->version()
         );
     }
 }
