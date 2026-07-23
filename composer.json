@@ -43,15 +43,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/saas786/hybrid-action-scheduler"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/saas786/hybrid-usage-tracker"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/saas786/hybrid-assets"
     },
     {
       "type": "vcs",
