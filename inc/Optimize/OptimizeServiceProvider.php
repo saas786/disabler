@@ -8,11 +8,11 @@ use Hybrid\Core\ServiceProvider;
  * Plugin service provider.
  */
 class OptimizeServiceProvider extends ServiceProvider {
-
     /**
      * Register.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function register() {
@@ -49,5 +49,4 @@ class OptimizeServiceProvider extends ServiceProvider {
         $this->app->resolve( Updates::class )->boot();
         $this->app->resolve( AdminBar::class )->boot();
     }
-
 }

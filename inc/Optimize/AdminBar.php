@@ -55,5 +55,4 @@ class AdminBar implements Bootable {
 
         return $show_admin_bar;
     }
-
 }

@@ -14,7 +14,6 @@ use HBP\Disabler\Tools\SVG;
 use function Hybrid\Tools\value;
 
 trait TabbedSections {
-
     public static function bootTabbedSections(): void {
         add_action( 'admin_enqueue_scripts', [ __CLASS__, 'registerAssets' ], 1 );
     }
@@ -44,6 +43,7 @@ trait TabbedSections {
      *
      * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
      * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
+     *
      * @param string $page The slug name of the page whose settings sections you want to output.
      */
     public function renderTabbedSections( $page, $args = [] ) {
@@ -132,5 +132,4 @@ trait TabbedSections {
     public function renderSections( $page ): void {
         do_settings_sections( $page );
     }
-
 }

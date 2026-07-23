@@ -14,7 +14,7 @@ use Hybrid\Core\Application;
 function app(): App {
     static $app;
 
-    return $app ??= new App();
+    return $app ??= new App;
 }
 
 /**

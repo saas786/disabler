@@ -143,6 +143,7 @@ class OptionsPage {
      * Sanitizes the settings.
      *
      * @param array $settings
+     *
      * @return array
      */
     public function sanitizeSettings( $settings ) {
@@ -186,6 +187,7 @@ class OptionsPage {
      * Compile HTML needed for displaying the field.
      *
      * @param array $field Field settings.
+     *
      * @return string HTML to be displayed
      */
     public function renderField( array $field ): string {
@@ -200,6 +202,7 @@ class OptionsPage {
      * Output the field.
      *
      * @param array $field Field to be rendered.
+     *
      * @return void
      */
     public function outputField( $field ) {
@@ -258,5 +261,4 @@ class OptionsPage {
             null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
         );
     }
-
 }

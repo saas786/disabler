@@ -6,7 +6,6 @@ use HBP\Disabler\Admin\Options;
 use function Hybrid\Tools\value;
 
 trait Textarea {
-
     protected function renderFieldTextarea( $field ): string {
         $id           = $field['id'] ?? null;
         $type         = $field['type'] ?? null;
@@ -54,5 +53,4 @@ trait Textarea {
     protected function sanitizeFieldTextarea( $input ) {
         return sanitize_textarea_field( $input );
     }
-
 }

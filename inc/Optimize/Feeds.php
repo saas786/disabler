@@ -182,5 +182,4 @@ class Feeds implements Bootable {
 
         return $post_type;
     }
-
 }

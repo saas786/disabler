@@ -6,7 +6,6 @@ namespace HBP\Disabler;
  * Plugin class.
  */
 class Plugin {
-
     /**
      * The current version of the plugin.
      */
@@ -21,5 +20,4 @@ class Plugin {
      * The current release date of the plugin.
      */
     const RELEASE_DATE = '8 July, 2026 12:00AM (GMT + 5)';
-
 }

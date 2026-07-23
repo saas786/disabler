@@ -6,7 +6,6 @@ use HBP\Disabler\Admin\Options;
 use function Hybrid\Tools\value;
 
 trait MultiCheckbox {
-
     protected function renderFieldMultiCheckbox( $field ): string {
         $id           = $field['id'] ?? null;
         $title        = $field['title'] ?? null;
@@ -81,5 +80,4 @@ trait MultiCheckbox {
 
         return sanitize_text_field( $input );
     }
-
 }

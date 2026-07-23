@@ -6,7 +6,6 @@ use HBP\Disabler\Admin\Options;
 use function Hybrid\Tools\value;
 
 trait Text {
-
     protected function renderFieldText( $field ): string {
         $id           = $field['id'] ?? null;
         $type         = $field['type'] ?? null;
@@ -50,5 +49,4 @@ trait Text {
     protected function sanitizeFieldText( $input ) {
         return sanitize_text_field( $input );
     }
-
 }

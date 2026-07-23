@@ -5,7 +5,6 @@ namespace HBP\Disabler\Contracts\Traits;
 use Hybrid\Tools\Str;
 
 trait Utils {
-
     /**
      * Prepare a multiline text by sanitizing and converting it into an array of sanitized strings.
      *
@@ -14,6 +13,7 @@ trait Utils {
      *
      * @param string $text The multiline text to be prepared.
      * @param string $sanitize_function (optional) The sanitization function to apply to each word.
+     *
      * @return array An array of sanitized strings.
      */
     public static function prepareMultilineText( string $text, string $sanitize_function = 'sanitize_text_field' ): array {
@@ -31,5 +31,4 @@ trait Utils {
 
         return array_filter( $text );
     }
-
 }

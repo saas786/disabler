@@ -14,13 +14,13 @@ use HBP\Disabler\Facades\Assets;
  * SVG class.
  */
 class SVG {
-
     protected static string $assetsFolder = ''; // assets
 
     /**
      * Returns the SVG file contents.
      *
      * @param string $name
+     *
      * @return string
      */
     public static function render( $name ) {
@@ -33,6 +33,7 @@ class SVG {
      * Displays the SVG.
      *
      * @param string $name
+     *
      * @return void
      */
     public static function display( $name ) {
@@ -62,5 +63,4 @@ class SVG {
 
         return $file ? static::$assetsFolder . "/svg/{$file}" : static::$assetsFolder . '/svg';
     }
-
 }

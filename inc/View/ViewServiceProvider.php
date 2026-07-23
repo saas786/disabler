@@ -14,7 +14,6 @@ use function Hybrid\Tools\WordPress\get_child_theme_file_path;
  * View service provider.
  */
 class ViewServiceProvider extends ServiceProvider {
-
     /**
      * Boot.
      */
@@ -28,5 +27,4 @@ class ViewServiceProvider extends ServiceProvider {
             'HBP/Disabler'
         );
     }
-
 }

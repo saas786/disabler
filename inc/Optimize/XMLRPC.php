@@ -240,8 +240,9 @@ class XMLRPC implements Bootable {
      * NOTE - This checks the REMOTE_ADDR against known JP IPs. The IP can still be spoofed,
      * (but usually an attacker cannot receive the response), so it is important to treat it accordingly.
      *
-     * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L1508
      * @return bool Bool indicating if the current request came from JP servers
+     *
+     * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L1508
      */
     private static function isJetpackRequest() {
         // Filter by env.
@@ -263,5 +264,4 @@ class XMLRPC implements Bootable {
 
         return IpUtils::checkIP( $user_ip, $jetpack_ips );
     }
-
 }

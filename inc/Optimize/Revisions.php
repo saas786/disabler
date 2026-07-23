@@ -52,5 +52,4 @@ class Revisions implements Bootable {
 
         return $num;
     }
-
 }

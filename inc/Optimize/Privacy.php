@@ -38,5 +38,4 @@ class Privacy implements Bootable {
 
         return 'WordPress/' . $wp_version;
     }
-
 }

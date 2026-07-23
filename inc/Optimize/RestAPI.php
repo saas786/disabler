@@ -45,11 +45,12 @@ class RestAPI implements Bootable {
      *
      * Note: We intentionally run it late, to allow other authentication execute before this.
      *
+     * @return true|\WP_Error
+     *
      * @see https://developer.wordpress.org/rest-api/frequently-asked-questions/#require-authentication-for-all-requests
      * @see https://github.com/woocommerce/woocommerce/issues/26847
      * @see https://core.trac.wordpress.org/ticket/46586
      * @see https://github.com/WordPress/WordPress/blob/812b1e296c57c53c6a2bf23f2cbc62adf4c7cc23/wp-includes/rest-api.php#L1058
-     * @return true|\WP_Error
      */
     private function rest_authentication_errors( $result ) {
 
@@ -84,5 +85,4 @@ class RestAPI implements Bootable {
         // on logged-in requests.
         return $result;
     }
-
 }

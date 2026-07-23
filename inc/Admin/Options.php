@@ -16,7 +16,6 @@ use function Hybrid\Tools\config;
  *  Provides methods for retrieving plugin options.
  */
 class Options {
-
     /**
      * Settings key/identifier.
      */
@@ -27,6 +26,7 @@ class Options {
      *
      * @param string $name The name of the option to retrieve. Optional.
      * @param mixed  $default Default value to return if the option does not exist.
+     *
      * @return mixed|null The value of the option, or all options if $name is empty.
      */
     public static function get( $name = '', $default = null ) {
@@ -56,5 +56,4 @@ class Options {
     public static function all() {
         return wp_parse_args( get_option( self::$option_key, [] ), static::defaults() );
     }
-
 }

@@ -29,5 +29,4 @@ class Frontend implements Bootable {
             remove_action( 'template_redirect', 'wp_shortlink_header', 11 );
         }
     }
-
 }

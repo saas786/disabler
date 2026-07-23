@@ -15,7 +15,6 @@ use function Hybrid\booted;
  * App class.
  */
 class App implements Bootable {
-
     /**
      * The plugin's application / container instance.
      *
@@ -110,5 +109,4 @@ class App implements Bootable {
     public function application(): Application {
         return $this->plugin;
     }
-
 }

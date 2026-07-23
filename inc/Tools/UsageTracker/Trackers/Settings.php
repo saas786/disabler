@@ -10,7 +10,6 @@ use Hybrid\Usage\Tracker\Contracts\Tracker;
  * Settings tracker for usage tracking.
  */
 class Settings implements CollectionInterface, Tracker {
-
     /**
      * Retrieve the settings tracker data.
      *
@@ -19,5 +18,4 @@ class Settings implements CollectionInterface, Tracker {
     public function get() {
         return [ 'disabler' => Options::all() ];
     }
-
 }

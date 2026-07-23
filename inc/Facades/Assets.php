@@ -11,7 +11,6 @@ use Hybrid\Core\Facades\Facade;
  * @method static string assetPath(string $file)
  */
 class Assets extends Facade {
-
     /**
      * Get the registered name of the component.
      *
@@ -20,5 +19,4 @@ class Assets extends Facade {
     protected static function getFacadeAccessor() {
         return 'hbp/disabler/assets';
     }
-
 }

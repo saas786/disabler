@@ -116,6 +116,7 @@ class Notices {
      *
      * @param array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
      * @param bool         $force_save Force saving inside this method instead of at the 'shutdown'.
+     *
      * @return void
      */
     public static function remove_notices( $names_array_or_regex, $force_save = false ) {
@@ -135,6 +136,7 @@ class Notices {
      * See if a notice is being shown.
      *
      * @param string $name Notice name.
+     *
      * @return bool
      */
     public static function has_notice( $name ) {
@@ -268,5 +270,4 @@ class Notices {
             View\display( 'HBP/Disabler::admin/html-notice-updated' );
         }
     }
-
 }

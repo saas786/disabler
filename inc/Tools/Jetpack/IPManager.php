@@ -7,7 +7,6 @@
 namespace HBP\Disabler\Tools\Jetpack;
 
 class IPManager {
-
     public const OPTION_NAME = 'hbp_disabler_vip_jetpack_ips';
 
     public const ENDPOINT = 'https://jetpack.com/ips-v4.json';
@@ -95,16 +94,18 @@ class IPManager {
      *
      * Note that like wp_remote_request(), this function does not cache.
      *
-     * @see wp_remote_request()
-     * @see https://docs.wpvip.com/technical-references/code-quality-and-best-practices/retrieving-remote-data/ Fetching Remote Data
-     * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L920
      * @param string         $url URL to request
      * @param string         $fallback_value Optional. Set a fallback value to be returned if the external request fails.
      * @param int            $threshold Optional. The number of fails required before subsequent requests automatically return the fallback value. Defaults to 3, with a maximum of 10.
      * @param int            $timeout Optional. Number of seconds before the request times out. Valid values 1-5; defaults to 1.
      * @param int            $retry Optional. Number of seconds before resetting the fail counter and the number of seconds to delay making new requests after the fail threshold is reached. Defaults to 20, with a minimum of 10.
      * @param array Optional. Set other arguments to be passed to wp_remote_request().
+     *
      * @return string|\WP_Error|array Array of results. If fail counter is met, returns the $fallback_value, otherwise return WP_Error.
+     *
+     * @see wp_remote_request()
+     * @see https://docs.wpvip.com/technical-references/code-quality-and-best-practices/retrieving-remote-data/ Fetching Remote Data
+     * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L920
      */
     public static function safeWPRemoteRequest(
         $url,
@@ -230,8 +231,9 @@ class IPManager {
      * Get User IP.
      * Returns the IP address of the current visitor.
      *
-     * @see https://github.com/awesomemotive/easy-digital-downloads/blob/675bd9306b4d1af3fc8c07bbeddfe2354e132584/includes/misc-functions.php#L224C24-L224C24
      * @return string
+     *
+     * @see https://github.com/awesomemotive/easy-digital-downloads/blob/675bd9306b4d1af3fc8c07bbeddfe2354e132584/includes/misc-functions.php#L224C24-L224C24
      */
     public static function getIP() {
         $ip = false;
@@ -262,5 +264,4 @@ class IPManager {
 
         return apply_filters( 'hbp/disabler/get_ip', $ip_array[0] );
     }
-
 }

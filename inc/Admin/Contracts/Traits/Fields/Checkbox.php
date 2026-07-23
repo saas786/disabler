@@ -6,7 +6,6 @@ use HBP\Disabler\Admin\Options;
 use function Hybrid\Tools\value;
 
 trait Checkbox {
-
     protected function renderFieldCheckbox( $field ): string {
         $id           = $field['id'] ?? null;
         $type         = $field['type'] ?? null;
@@ -54,5 +53,4 @@ trait Checkbox {
     protected function sanitizeFieldCheckbox( $input ) {
         return absint( $input ) === 1 ? 1 : 0;
     }
-
 }

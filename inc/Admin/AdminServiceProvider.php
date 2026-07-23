@@ -8,11 +8,11 @@ use Hybrid\Core\ServiceProvider;
  * Admin service provider.
  */
 class AdminServiceProvider extends ServiceProvider {
-
     /**
      * Register.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function register() {
@@ -29,5 +29,4 @@ class AdminServiceProvider extends ServiceProvider {
         $this->app->resolve( OptionsPage::class )->boot();
         $this->app->resolve( PluginsPage::class )->boot();
     }
-
 }

@@ -363,7 +363,7 @@ class PluginInstall {
                         'hbp-disabler-db-updates'
                     );
 
-                    ++$loop;
+                    $loop++;
                 }
             }
         }
@@ -387,6 +387,7 @@ class PluginInstall {
      * Add more cron schedules.
      *
      * @param array $schedules List of WP scheduled cron jobs.
+     *
      * @return array
      */
     public static function cron_schedules( $schedules ) {
@@ -411,5 +412,4 @@ class PluginInstall {
 
         wp_schedule_event( time() + ( 3 * HOUR_IN_SECONDS ), 'daily', 'hbp_disabler_cleanup_logs' );
     }
-
 }

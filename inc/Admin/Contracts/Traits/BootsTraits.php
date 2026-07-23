@@ -6,7 +6,6 @@ use function Hybrid\Tools\class_basename;
 use function Hybrid\Tools\class_uses_recursive;
 
 trait BootsTraits {
-
     /**
      * The array of trait initializers that will be called on each new instance.
      *
@@ -42,5 +41,4 @@ trait BootsTraits {
             }
         }
     }
-
 }

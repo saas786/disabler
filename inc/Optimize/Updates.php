@@ -310,8 +310,9 @@ class Updates implements Bootable {
     /**
      * Filter cron events
      *
-     * @see https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
      * @return bool
+     *
+     * @see https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
      */
     private function filterCronEvents( $event ) {
         if ( ! is_object( $event ) || empty( $event->hook ) ) {
@@ -384,6 +385,7 @@ class Updates implements Bootable {
      * site and multisite bulk actions.
      *
      * @param array $actions All the bulk actions.
+     *
      * @return array $actions  The remaining actions
      */
     private function disableBulkActionsThemes( $actions ) {
@@ -437,6 +439,7 @@ class Updates implements Bootable {
      * Return an empty array of items requiring update for themes.
      *
      * @param array $items All the items being passed for update.
+     *
      * @return array An empty array, or the original items if not enabled.
      */
     private function removeUpdateThemesArray( $items ) {
@@ -448,7 +451,7 @@ class Updates implements Bootable {
 
         include ABSPATH . WPINC . '/version.php';
 
-        $current                  = new stdClass();
+        $current                  = new stdClass;
         $current->updates         = [];
         $current->version_checked = $wp_version;
         $current->last_checked    = time();
@@ -489,6 +492,7 @@ class Updates implements Bootable {
      * site and multisite bulk actions.
      *
      * @param array $actions All the bulk actions.
+     *
      * @return array $actions  The remaining actions
      */
     private function disableBulkActionsPlugins( $actions ) {
@@ -547,6 +551,7 @@ class Updates implements Bootable {
      * Return an empty array of items requiring update for both plugins.
      *
      * @param array $items All the items being passed for update.
+     *
      * @return array An empty array, or the original items if not enabled.
      */
     private function removePluginsUpdateArray( $items ) {
@@ -911,5 +916,4 @@ class Updates implements Bootable {
             define( 'WP_AUTO_UPDATE_CORE', false );
         }
     }
-
 }

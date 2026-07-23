@@ -210,5 +210,4 @@ class Editor implements Bootable {
 
         return $editorSettings;
     }
-
 }

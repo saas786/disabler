@@ -6,7 +6,6 @@ use HBP\Disabler\Admin\Options;
 use function Hybrid\Tools\value;
 
 trait Radio {
-
     protected function renderFieldRadio( $field ): string {
         $id           = $field['id'] ?? null;
         $title        = $field['title'] ?? null;
@@ -78,5 +77,4 @@ trait Radio {
 
         return sanitize_text_field( $input );
     }
-
 }
