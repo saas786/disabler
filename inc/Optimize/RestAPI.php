@@ -38,6 +38,8 @@ class RestAPI implements Bootable {
         if ( Options::get( 'restapi_disable_rest_api_for_visitors' ) ) {
             self::add_filter( 'rest_authentication_errors', [ $this, 'rest_authentication_errors' ], \PHP_INT_MAX );
         }
+
+        $this->handleApplicationPasswords();
     }
 
     /**
@@ -84,5 +86,57 @@ class RestAPI implements Bootable {
         // Our custom authentication check should have no effect
         // on logged-in requests.
         return $result;
+    }
+
+    /**
+     * Disables Application Passwords (5.6+) globally or for selected roles.
+     *
+     * Application Passwords are enabled by default for all users on HTTPS
+     * sites and let them authenticate to the REST API with a generated
+     * password, bypassing 2FA/CAPTCHA/rate limiting - a common attack
+     * surface for sites that don't need programmatic API access.
+     *
+     * @see https://developer.wordpress.org/advanced-administration/security/application-passwords/
+     * @see https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/
+     */
+    private function handleApplicationPasswords(): void {
+        $mode = Options::get( 'restapi_disable_application_passwords', 'no' );
+
+        if ( 'all' === $mode ) {
+            add_filter( 'wp_is_application_passwords_available', '__return_false' );
+
+            return;
+        }
+
+        if ( 'selective' === $mode ) {
+            self::add_filter( 'wp_is_application_passwords_available_for_user', [ $this, 'isApplicationPasswordsAvailableForUser' ], 10, 2 );
+        }
+    }
+
+    /**
+     * Restricts Application Passwords availability for users who have one
+     * of the roles selected in the settings.
+     *
+     * @param bool     $available Whether Application Passwords are available for the user.
+     * @param \WP_User $user The user to check.
+     *
+     * @see https://developer.wordpress.org/reference/hooks/wp_is_application_passwords_available_for_user/
+     */
+    private function isApplicationPasswordsAvailableForUser( $available, $user ): bool {
+        if ( ! $available || ! $user instanceof \WP_User ) {
+            return $available;
+        }
+
+        $disabled_roles = (array) Options::get( 'restapi_application_passwords_roles', [] );
+
+        if ( empty( $disabled_roles ) ) {
+            return $available;
+        }
+
+        if ( array_intersect( $disabled_roles, (array) $user->roles ) ) {
+            return false;
+        }
+
+        return $available;
     }
 }

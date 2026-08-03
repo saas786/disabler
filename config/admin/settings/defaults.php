@@ -28,4 +28,7 @@ return [
     'performance_disable_widgets'             => 'no',
 
     'admin_bar_disable_admin_bar'             => 'no',
+
+    'restapi_disable_application_passwords'   => 'no',
+    'restapi_application_passwords_roles'     => [],
 ];
