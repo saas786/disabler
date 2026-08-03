@@ -54,7 +54,7 @@ class Media implements Bootable {
      * @see https://github.com/WordPress/WordPress/blob/7f13088e924c0437f954e6cd46b7d65da0bd9317/wp-includes/media.php#L2019
      */
     private function disableWPImgTagAddAutoSizes(): void {
-        if ( Options::get( 'editor_disable_wp_img_tag_add_auto_sizes' ) ) {
+        if ( Options::get( 'media_disable_wp_img_tag_add_auto_sizes' ) ) {
             add_filter( 'wp_img_tag_add_auto_sizes', '__return_false' );
         }
     }

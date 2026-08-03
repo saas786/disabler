@@ -25,7 +25,7 @@ return [
             esc_html__( 'Prevents WordPress from automatically adding \'auto\' sizing to lazy-loaded images. Automatically disables CSS containment as well. %s', 'hbp-disabler' ),
             '<a href="https://github.com/WordPress/WordPress/blob/7.0/wp-includes/media.php#L2016" target="_blank">See</a>'
         ),
-        'setting_key' => 'editor_disable_wp_img_tag_add_auto_sizes',
+        'setting_key' => 'media_disable_wp_img_tag_add_auto_sizes',
     ],
     'disable_core_lazy_loading'         => [
         'id'          => 'disable_core_lazy_loading',
