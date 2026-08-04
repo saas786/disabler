@@ -6,6 +6,7 @@ use Hybrid\Action\Scheduler\ActionSchedulerServiceProvider;
 use Hybrid\Assets\AssetsServiceProvider;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Core\Application;
+use Hybrid\Log\Context\ContextServiceProvider;
 use Hybrid\Log\LogServiceProvider;
 use Hybrid\View\ViewServiceProvider;
 use function Hybrid\app;
@@ -68,6 +69,7 @@ class App implements Bootable {
         $this->plugin->register( ActionSchedulerServiceProvider::class );
         $this->plugin->register( AssetsServiceProvider::class );
         $this->plugin->register( LogServiceProvider::class );
+        $this->plugin->register( ContextServiceProvider::class );
         $this->plugin->register( ViewServiceProvider::class );
         $this->plugin->register( View\ViewServiceProvider::class );
         $this->plugin->register( Admin\AdminServiceProvider::class );
