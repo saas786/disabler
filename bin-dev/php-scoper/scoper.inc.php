@@ -185,6 +185,31 @@ return [
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
     'patchers'                => [
         static function ( string $filePath, string $prefix, string $content ): string {
+            // php-scoper prefixes the constant name where it appears as a
+            // string -- both `defined( 'HYBRID_CORE_BOOTED' )` here and the
+            // `define()` in Core/Application.php -- but leaves the bare
+            // constant fetch beside it alone. The two then disagree: the
+            // constant is defined as `<prefix>\HYBRID_CORE_BOOTED`, while the
+            // fetch resolves against the current namespace and then the
+            // global one, finds neither, and fatals with an undefined
+            // constant the moment `defined()` says yes.
+            //
+            // Prefixed rather than added to `exclude-constants`, which would
+            // also make the three agree but on the *global* constant. That is
+            // worse than it looks: `booted()` decides whether App::register()
+            // reuses `app()` instead of building its own Application, and
+            // `app()` is `Container::getInstance()` from this bundle's own
+            // copy of the framework. Sharing the constant would let another
+            // plugin's Hybrid Core answer for this one, and hand back a bare
+            // container with no config bound.
+            if ( str_ends_with( $filePath, 'hybrid-core/src/functions-helpers.php' ) ) {
+                $content = str_replace(
+                    '=== HYBRID_CORE_BOOTED',
+                    sprintf( '=== \\%s\\HYBRID_CORE_BOOTED', $prefix ),
+                    $content
+                );
+            }
+
             // Hybrid Core framework relies on class aliases,
             // as they can be registered as string,
             // so php-scoper won't be able to prefix them,

@@ -14,6 +14,7 @@
   },
   "copyright": "2026",
   "scripts": {
+    "prepare": "husky",
     "dev": "wp-scripts start --no-watch --webpack-src-dir=resources --output-path=public --experimental-modules",
     "dev:watch": "wp-scripts start --webpack-src-dir=resources --output-path=public --experimental-modules",
     "prod": "wp-scripts build --webpack-src-dir=resources --output-path=public --experimental-modules",
@@ -23,18 +24,15 @@
     "lint:styles:fix": "stylelint resources/scss/**/*.scss --fix",
     "lint:scripts": "eslint resources/js",
     "lint:scripts:fix": "eslint resources/js --fix",
-    "export": "node export.js && npm run build:post:export && npm run clean:post:export && npm run build:post",
     "export:prefixed": "node prefixed.js",
     "build": "npm run clean:build && npm run build:pre && npm run prod && npm run i18n",
-    "build:post:export": "composer dump-autoload --working-dir disabler --classmap-authoritative",
-    "build:prefixed": "@composer prefix",
+    "build:prefixed": "composer prefix",
     "build:pre": "composer install --no-dev -o --no-scripts",
     "build:post": "composer install --no-scripts",
-    "clean:build": "del-cli -f ./disabler ./public/css ./public/js ./public/svg ./public/lang ./public/**/*.asset.php",
-    "clean:post:export": "del-cli -f ./disabler/composer.json",
+    "clean:build": "del-cli -f ./public/css ./public/js ./public/svg ./public/lang ./public/**/*.asset.php",
     "i18n": "npm run i18n:textdomain && npm run i18n:pot",
-    "i18n:textdomain": "npx wpi18n addtextdomain --textdomain=hbp-disabler --glob-pattern={*.php,**/*.php} --exclude=bin-dev,disabler-prefixed,disabler,vendor,node_modules",
-    "i18n:pot": "wp i18n make-pot . ./public/lang/hbp-disabler.pot --slug=disabler --domain=hbp-disabler --exclude=bin-dev,disabler-prefixed,disabler,.vscode,public/css,public/js,public/lang,resources/scss,eslint.config.js,webpack*.js"
+    "i18n:textdomain": "npx wpi18n addtextdomain --textdomain=hbp-disabler --glob-pattern={*.php,**/*.php} --exclude=bin-dev,disabler-prefixed,vendor,node_modules",
+    "i18n:pot": "wp i18n make-pot . ./public/lang/hbp-disabler.pot --slug=disabler --domain=hbp-disabler --exclude=bin-dev,disabler-prefixed,.vscode,public/css,public/js,public/lang,resources/scss,eslint.config.js,webpack*.js"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
@@ -52,11 +50,25 @@
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-turbo": "^2.10.0",
     "fs-extra": "^11.3.5",
+    "husky": "^9.1.7",
     "jsonc-eslint-parser": "^3.1.0",
+    "lint-staged": "^16.2.6",
     "node-wp-i18n": "^1.2.8",
     "postcss-preset-env": "^11.3.2",
     "stylelint": "^17.14.0",
     "stylelint-config-twbs-bootstrap": "^16.1.0",
     "webpack-remove-empty-scripts": "^1.1.1"
+  },
+  "lint-staged": {
+    "*.php": [
+      "sh -c 'command -v php >/dev/null 2>&1 || exit 0; php ./bin-dev/tools/pint.phar --config ./bin-dev/tools/configs/pint.json \"$@\" || true' _",
+      "sh -c 'command -v php >/dev/null 2>&1 || exit 0; [ -f ./vendor/bin/phpcbf ] || exit 0; php ./vendor/bin/phpcbf \"$@\" || true' _"
+    ],
+    "*.{js,mjs,cjs,json}": [
+      "sh -c 'npx --no-install eslint --fix --no-warn-ignored \"$@\" || true' _"
+    ],
+    "*.scss": [
+      "sh -c 'npx --no-install stylelint --fix --allow-empty-input \"$@\" || true' _"
+    ]
   }
 }
