@@ -8,12 +8,19 @@ use Hybrid\Contracts\Bootable;
 use Hybrid\Core\Application;
 use Hybrid\Log\Context\ContextServiceProvider;
 use Hybrid\Log\LogServiceProvider;
+use Hybrid\Tools\Config\Loader;
 use Hybrid\View\ViewServiceProvider;
 use function Hybrid\app;
 use function Hybrid\booted;
 
 /**
  * App class.
+ *
+ * Build this through `HBP\Disabler\app()`, never with `new`. The constructor
+ * does nothing on purpose: `app()` records the instance and calls register()
+ * straight after, and only that order survives a provider reading a setting
+ * while registration is still running. A directly constructed App comes back
+ * inert rather than failing, so the mistake would surface later and elsewhere.
  */
 class App implements Bootable {
     /**
@@ -27,11 +34,14 @@ class App implements Bootable {
 
     /**
      * {@inheritDoc}
+     *
+     * Deliberately does not register. Registering boots providers, and a
+     * provider that reads a setting calls back into `HBP\Disabler\app()`,
+     * which cannot have recorded this instance until the constructor has
+     * returned. `app()` assigns first and calls register() second, so that
+     * re-entrant call finds this same App instead of building another.
      */
-    public function __construct() {
-        // Register default bindings and service providers.
-        $this->register();
-    }
+    public function __construct() {}
 
     /**
      * Register.
@@ -55,6 +65,14 @@ class App implements Bootable {
         $this->plugin->useStoragePath( $this->plugin->bootstrapPath() . '/storage' );
 
         $this->plugin->bootstrap();
+
+        // Nested config → `disabler.*`, always, shared container or not.
+        //
+        // Root app.php / logging.php are ALSO picked up here and stored a second
+        // time as `disabler.app` / `disabler.logging`, alongside the real
+        // unprefixed keys that LoadConfiguration set. Harmless duplicates that
+        // nothing reads through the prefix; not worth a special case to skip.
+        Loader::load( DISABLER_DIR . '/config', 'disabler' );
 
         do_action( 'hbp/disabler/before/providers/register', $this->plugin );
 
@@ -90,7 +108,6 @@ class App implements Bootable {
         // Creates an action hook for plugins to hook into the
         // bootstrapping process and add their own bindings before the app is booted by
         // passing the application instance to the action callback.
-
         do_action( 'hbp/disabler/before/boot', $this->plugin );
 
         // ------------------------------------------------------------------------------

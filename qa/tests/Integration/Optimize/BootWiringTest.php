@@ -36,6 +36,8 @@ use HBP\Disabler\Optimize\Revisions;
 use HBP\Disabler\Optimize\Updates;
 use HBP\Disabler\Optimize\XMLRPC;
 use Hybrid\Contracts\Bootable;
+use Hybrid\Core\Application;
+use function HBP\Disabler\app;
 use function HBP\Disabler\container;
 
 mutates(
@@ -184,4 +186,22 @@ it( 'registers every optimizer that exists on disk', function (): void {
     // provider names a class that no longer exists, which fatals on resolve.
     expect( array_diff( $onDisk, $registered ) )->toBe( [] )
         ->and( array_diff( $registered, $onDisk ) )->toBe( [] );
+} );
+
+it( 'returns a registered application from app()', function (): void {
+    // The constructor is empty and app() is what registers, so a directly
+    // constructed App comes back inert instead of failing. This asserts the
+    // helper still does the registering, which is the half that could be
+    // quietly undone by someone tidying the constructor back up.
+    expect( container() )->toBeInstanceOf( Application::class )
+        ->and( container()->resolved( 'config' ) )->toBeTrue();
+} );
+
+it( 'builds one application no matter how often app() is called', function (): void {
+    // Registering boots the providers, and a provider that reads a setting
+    // calls back into app() before the first call has returned. That only
+    // terminates if the instance is recorded before register() runs, so this
+    // asserts the count rather than merely that a call succeeds.
+    expect( app() )->toBe( app() )
+        ->and( container() )->toBe( container() );
 } );
