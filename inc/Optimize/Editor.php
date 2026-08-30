@@ -2,10 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
-use HBP\Disabler\Contracts\Traits\Utils;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 /**
  * Class Editor
@@ -14,7 +13,6 @@ use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
 class Editor implements Bootable {
 
     use AccessiblePrivateMethods;
-    use Utils;
 
     /**
      * Boot the editor optimization hooks.
@@ -40,7 +38,7 @@ class Editor implements Bootable {
      * Disable classic theme styles if the option is enabled.
      */
     private function disableClassicThemeStyles(): void {
-        if ( Options::get( 'editor_disable_classic_theme_styles' ) ) {
+        if ( setting( 'editor.disable_classic_theme_styles' ) ) {
             remove_action( 'wp_enqueue_scripts', 'wp_enqueue_classic_theme_styles' );
             remove_filter( 'block_editor_settings_all', 'wp_add_editor_classic_theme_styles' );
         }
@@ -52,7 +50,7 @@ class Editor implements Bootable {
      * @see https://developer.wordpress.org/themes/features/block-patterns/#removing-core-patterns
      */
     private function disableCoreBlockPatterns(): void {
-        if ( Options::get( 'editor_disable_core_block_patterns' ) ) {
+        if ( setting( 'editor.disable_core_block_patterns' ) ) {
             remove_theme_support( 'core-block-patterns' );
         }
     }
@@ -63,7 +61,7 @@ class Editor implements Bootable {
      * @see https://developer.wordpress.org/themes/features/block-patterns/#disabling-remote-patterns
      */
     private function disableRemoteBlockPatterns(): void {
-        if ( Options::get( 'editor_disable_remote_block_patterns' ) ) {
+        if ( setting( 'editor.disable_remote_block_patterns' ) ) {
             add_filter( 'should_load_remote_block_patterns', '__return_false' );
         }
     }
@@ -72,7 +70,7 @@ class Editor implements Bootable {
      * Disable texturization if the option is enabled.
      */
     private function disableTexturization(): void {
-        if ( Options::get( 'editor_disable_texturization' ) ) {
+        if ( setting( 'editor.disable_texturization' ) ) {
             $texturizeFilters = [
                 'comment_author',
                 'term_name',
@@ -110,7 +108,7 @@ class Editor implements Bootable {
      * Disable the capital P filter if the option is enabled.
      */
     private function disableCapitalPFilter(): void {
-        if ( Options::get( 'editor_disable_capital_p' ) ) {
+        if ( setting( 'editor.disable_capital_p' ) ) {
             $capitalPFilters = [ 'the_title', 'the_content', 'comment_text' ];
             foreach ( $capitalPFilters as $filter ) {
                 remove_filter( $filter, 'capital_P_dangit', 'comment_text' === $filter ? 31 : 11 );
@@ -122,7 +120,7 @@ class Editor implements Bootable {
      * Disable automatic paragraph creation if the option is enabled.
      */
     private function disableAutoParagraph(): void {
-        if ( Options::get( 'editor_disable_autop' ) ) {
+        if ( setting( 'editor.disable_autop' ) ) {
             remove_filter( 'the_content', 'wpautop', 10 );
         }
     }
@@ -131,8 +129,8 @@ class Editor implements Bootable {
      * Handle disabling of the autosave feature for the classic editor.
      */
     public function handleClassicEditorAutosave(): void {
-        $disableAutosave  = Options::get( 'editor_disable_autosave' );
-        $autosaveInterval = Options::get( 'editor_autosave_interval' );
+        $disableAutosave  = setting( 'editor.disable_autosave' );
+        $autosaveInterval = setting( 'editor.autosave_interval' );
 
         if ( 'yes' === $disableAutosave ) {
             wp_deregister_script( 'autosave' );
@@ -168,7 +166,7 @@ class Editor implements Bootable {
      * Set autosave interval for the classic editor.
      */
     private function setClassicEditorAutosaveInterval(): void {
-        $autosaveInterval = Options::get( 'editor_autosave_interval' );
+        $autosaveInterval = setting( 'editor.autosave_interval' );
 
         if ( ! empty( $autosaveInterval ) && is_numeric( $autosaveInterval ) ) {
             if ( ! defined( 'AUTOSAVE_INTERVAL' ) ) {
@@ -182,8 +180,8 @@ class Editor implements Bootable {
      */
     private function initializeBlockEditorAutosave(): void {
         if ( ! defined( 'AUTOSAVE_INTERVAL' ) ) {
-            $disableAutosave  = Options::get( 'editor_disable_autosave' );
-            $autosaveInterval = Options::get( 'editor_autosave_interval' );
+            $disableAutosave  = setting( 'editor.disable_autosave' );
+            $autosaveInterval = setting( 'editor.autosave_interval' );
 
             if ( 'yes' === $disableAutosave ) {
                 define( 'AUTOSAVE_INTERVAL', HOUR_IN_SECONDS * 24 );
@@ -199,8 +197,8 @@ class Editor implements Bootable {
      * Set autosave interval for the block editor.
      */
     public function setBlockEditorAutosaveInterval( array $editorSettings ): array {
-        $disableAutosave  = Options::get( 'editor_disable_autosave' );
-        $autosaveInterval = Options::get( 'editor_autosave_interval' );
+        $disableAutosave  = setting( 'editor.disable_autosave' );
+        $autosaveInterval = setting( 'editor.autosave_interval' );
 
         if ( 'yes' === $disableAutosave ) {
             $editorSettings['autosaveInterval'] = HOUR_IN_SECONDS * 24;

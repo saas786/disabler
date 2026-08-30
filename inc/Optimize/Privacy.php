@@ -2,9 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class Privacy implements Bootable {
 
@@ -21,11 +21,11 @@ class Privacy implements Bootable {
 
     private function initHooks(): void {
         // Remove WordPress version from header.
-        if ( Options::get( 'privacy_disable_wp_generator' ) ) {
+        if ( setting( 'privacy.disable_wp_generator' ) ) {
             remove_action( 'wp_head', 'wp_generator' );
         }
 
-        if ( Options::get( 'privacy_fake_user_agent_value' ) ) {
+        if ( setting( 'privacy.fake_user_agent_value' ) ) {
             add_filter( 'http_headers_useragent', [ $this, 'removeUrlFromUserAgent' ] );
         }
     }

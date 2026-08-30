@@ -6,15 +6,13 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
-use HBP\Disabler\Contracts\Traits\Utils;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class Feeds implements Bootable {
 
     use AccessiblePrivateMethods;
-    use Utils;
 
     /**
      * Boot.
@@ -26,11 +24,11 @@ class Feeds implements Bootable {
     }
 
     private function initHooks(): void {
-        if ( Options::get( 'feeds_disable_feed_global' ) ) {
+        if ( setting( 'feeds.disable_feed_global' ) ) {
             add_action( 'feed_links_show_posts_feed', '__return_false' );
         }
 
-        if ( Options::get( 'feeds_disable_feed_global_comments' ) ) {
+        if ( setting( 'feeds.disable_feed_global_comments' ) ) {
             add_action( 'feed_links_show_comments_feed', '__return_false' );
         }
 
@@ -42,13 +40,13 @@ class Feeds implements Bootable {
      * Disable feeds on selected cases.
      */
     public function maybeDisableFeeds() {
-        if ( is_singular() && Options::get( 'feeds_disable_feed_post_comments' )
-            || ( is_author() && Options::get( 'feeds_disable_feed_authors' ) )
-            || ( is_category() && Options::get( 'feeds_disable_feed_categories' ) )
-            || ( is_tag() && Options::get( 'feeds_disable_feed_tags' ) )
-            || ( is_tax() && Options::get( 'feeds_disable_feed_custom_taxonomies' ) )
-            || ( is_post_type_archive() && Options::get( 'feeds_disable_feed_post_types' ) )
-            || ( is_search() && Options::get( 'feeds_disable_feed_search' ) ) ) {
+        if ( is_singular() && setting( 'feeds.disable_feed_post_comments' )
+            || ( is_author() && setting( 'feeds.disable_feed_authors' ) )
+            || ( is_category() && setting( 'feeds.disable_feed_categories' ) )
+            || ( is_tag() && setting( 'feeds.disable_feed_tags' ) )
+            || ( is_tax() && setting( 'feeds.disable_feed_custom_taxonomies' ) )
+            || ( is_post_type_archive() && setting( 'feeds.disable_feed_post_types' ) )
+            || ( is_search() && setting( 'feeds.disable_feed_search' ) ) ) {
             remove_action( 'wp_head', 'feed_links_extra', 3 );
         }
     }
@@ -64,7 +62,7 @@ class Feeds implements Bootable {
         }
 
         if ( in_array( get_query_var( 'feed' ), [ 'atom', 'rdf' ], true )
-            && Options::get( 'feeds_disable_atom_rdf_feeds' )
+            && setting( 'feeds.disable_atom_rdf_feeds' )
         ) {
             $this->redirectFeedOrDie( home_url(), 'We disable Atom/RDF feeds for performance reasons.' );
         }
@@ -73,7 +71,7 @@ class Feeds implements Bootable {
         if ( ( [ 'feed' => 'feed' ] === $wp_query->query
                 || [ 'feed' => 'atom' ] === $wp_query->query
                 || [ 'feed' => 'rdf' ] === $wp_query->query )
-            && Options::get( 'feeds_disable_feed_global' ) ) {
+            && setting( 'feeds.disable_feed_global' ) ) {
             $this->redirectFeedOrDie( home_url(), 'We disable the RSS feed for performance reasons.' );
         }
 
@@ -82,25 +80,25 @@ class Feeds implements Bootable {
                 is_singular()
                 || is_attachment()
             )
-            && Options::get( 'feeds_disable_feed_global_comments' )
+            && setting( 'feeds.disable_feed_global_comments' )
         ) {
             $this->redirectFeedOrDie( home_url(), 'We disable comment feeds for performance reasons.' );
         } elseif ( is_comment_feed()
             && is_singular()
-            && ( Options::get( 'feeds_disable_feed_post_comments' ) || Options::get( 'feeds_disable_feed_global_comments' ) ) ) {
+            && ( setting( 'feeds.disable_feed_post_comments' ) || setting( 'feeds.disable_feed_global_comments' ) ) ) {
             $url = get_permalink( get_queried_object() );
             $this->redirectFeedOrDie( $url, 'We disable post comment feeds for performance reasons.' );
         }
 
-        if ( is_author() && Options::get( 'feeds_disable_feed_authors' ) ) {
+        if ( is_author() && setting( 'feeds.disable_feed_authors' ) ) {
             $author_id = (int) get_query_var( 'author' );
             $url       = get_author_posts_url( $author_id );
             $this->redirectFeedOrDie( $url, 'We disable author feeds for performance reasons.' );
         }
 
-        if ( ( is_category() && Options::get( 'feeds_disable_feed_categories' ) )
-            || ( is_tag() && Options::get( 'feeds_disable_feed_tags' ) )
-            || ( is_tax() && Options::get( 'feeds_disable_feed_custom_taxonomies' ) ) ) {
+        if ( ( is_category() && setting( 'feeds.disable_feed_categories' ) )
+            || ( is_tag() && setting( 'feeds.disable_feed_tags' ) )
+            || ( is_tax() && setting( 'feeds.disable_feed_custom_taxonomies' ) ) ) {
             $term = get_queried_object();
             $url  = get_term_link( $term, $term->taxonomy );
             if ( is_wp_error( $url ) ) {
@@ -110,12 +108,12 @@ class Feeds implements Bootable {
             $this->redirectFeedOrDie( $url, 'We disable taxonomy feeds for performance reasons.' );
         }
 
-        if ( is_post_type_archive() && Options::get( 'feeds_disable_feed_post_types' ) ) {
+        if ( is_post_type_archive() && setting( 'feeds.disable_feed_post_types' ) ) {
             $url = get_post_type_archive_link( $this->getQueriedPostType() );
             $this->redirectFeedOrDie( $url, 'We disable post type feeds for performance reasons.' );
         }
 
-        if ( is_search() && Options::get( 'feeds_disable_feed_search' ) ) {
+        if ( is_search() && setting( 'feeds.disable_feed_search' ) ) {
             $url = trailingslashit( home_url() ) . '?s=' . get_search_query();
             $this->redirectFeedOrDie( $url, 'We disable search RSS feeds for performance reasons.' );
         }
@@ -128,7 +126,7 @@ class Feeds implements Bootable {
      * @param string $reason The reason we're redirecting.
      */
     private function redirectFeedOrDie( $url, $reason ) {
-        if ( '404' === Options::get( 'feeds_rss_feed_redirect' ) ) {
+        if ( '404' === setting( 'feeds.rss_feed_redirect' ) ) {
             wp_die(
                 sprintf(
                     // Translators: Placeholders for the homepage link.

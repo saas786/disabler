@@ -2,10 +2,10 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use HBP\Disabler\Facades\Assets;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class Performance implements Bootable {
 
@@ -28,7 +28,7 @@ class Performance implements Bootable {
     }
 
     private function disableEmojis() {
-        if ( ! Options::get( 'performance_disable_emojis' ) ) {
+        if ( ! setting( 'performance.disable_emojis' ) ) {
             return;
         }
 
@@ -36,6 +36,15 @@ class Performance implements Bootable {
         remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
         remove_action( 'wp_print_styles', 'print_emoji_styles' );
         remove_action( 'admin_print_styles', 'print_emoji_styles' );
+
+        // The hook core actually enqueues emoji styles through. The
+        // print_emoji_styles removals above are kept for older installs, but
+        // core unhooks that callback itself from wp_enqueue_emoji_styles, so
+        // on a current WordPress they remove nothing and the styles ship
+        // regardless of this control.
+        remove_action( 'wp_enqueue_scripts', 'wp_enqueue_emoji_styles' );
+        remove_action( 'enqueue_embed_scripts', 'wp_enqueue_emoji_styles' );
+
         remove_action( 'embed_head', 'print_emoji_detection_script' );
 
         remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
@@ -49,7 +58,7 @@ class Performance implements Bootable {
     }
 
     private function disableHearbeat() {
-        switch ( Options::get( 'performance_disable_heartbeat' ) ) {
+        switch ( setting( 'performance.disable_heartbeat' ) ) {
             case 'everywhere':
                 wp_deregister_script( 'heartbeat' );
                 break;
@@ -104,12 +113,12 @@ class Performance implements Bootable {
     }
 
     public function heartbeatFrequency( $settings ) {
-        $disable_heartbeat = Options::get( 'performance_disable_heartbeat' );
+        $disable_heartbeat = setting( 'performance.disable_heartbeat' );
         if ( 'everywhere' === $disable_heartbeat ) {
             return $settings;
         }
 
-        $heartbeat_frequency = Options::get( 'performance_heartbeat_frequency' );
+        $heartbeat_frequency = setting( 'performance.heartbeat_frequency' );
         if ( empty( $heartbeat_frequency ) || ! is_numeric( $heartbeat_frequency ) ) {
             return $settings;
         }
@@ -133,7 +142,7 @@ class Performance implements Bootable {
     private function disableEmbeds() {
         global $wp;
 
-        if ( ! Options::get( 'performance_disable_embeds' ) ) {
+        if ( ! setting( 'performance.disable_embeds' ) ) {
             return;
         }
 
@@ -145,9 +154,9 @@ class Performance implements Bootable {
             ]
         );
 
-        remove_filter( 'rest_endpoints', [ $this, 'disableEmbedEndpoint' ] );
+        self::add_filter( 'rest_endpoints', [ $this, 'disableEmbedEndpoint' ] );
 
-        remove_filter( 'oembed_response_data', [ $this, 'emptyOembedResponseData' ] );
+        self::add_filter( 'oembed_response_data', [ $this, 'emptyOembedResponseData' ] );
 
         // Turn off oEmbed auto discovery.
         add_filter( 'embed_oembed_discover', '__return_false' );
@@ -254,16 +263,16 @@ class Performance implements Bootable {
     private function disableWidgets() {
         global $wp_meta_boxes;
 
-        if ( 'no' === Options::get( 'performance_disable_widgets' ) ) {
+        if ( 'no' === setting( 'performance.disable_widgets' ) ) {
             return;
         }
 
-        if ( 'all' === Options::get( 'performance_disable_widgets' ) ) {
+        if ( 'all' === setting( 'performance.disable_widgets' ) ) {
             $wp_meta_boxes['dashboard']['normal']['core'] = [];
             $wp_meta_boxes['dashboard']['side']['core']   = [];
         }
 
-        if ( 'core' === Options::get( 'performance_disable_widgets' ) ) {
+        if ( 'core' === setting( 'performance.disable_widgets' ) ) {
             remove_action( 'welcome_panel', 'wp_welcome_panel' );
 
             remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );

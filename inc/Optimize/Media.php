@@ -2,10 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
-use HBP\Disabler\Contracts\Traits\Utils;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 /**
  * Class Media.
@@ -13,7 +12,6 @@ use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
 class Media implements Bootable {
 
     use AccessiblePrivateMethods;
-    use Utils;
 
     /**
      * Boot.
@@ -39,7 +37,7 @@ class Media implements Bootable {
      * @see https://make.wordpress.org/core/2024/10/18/auto-sizes-for-lazy-loaded-images-in-wordpress-6-7/
      */
     private function disableWPImgAutoSizesContain(): void {
-        if ( Options::get( 'media_disable_wp_img_auto_sizes_contain' ) ) {
+        if ( setting( 'media.disable_wp_img_auto_sizes_contain' ) ) {
             wp_dequeue_style( 'wp-img-auto-sizes-contain' );
         }
     }
@@ -54,7 +52,7 @@ class Media implements Bootable {
      * @see https://github.com/WordPress/WordPress/blob/7f13088e924c0437f954e6cd46b7d65da0bd9317/wp-includes/media.php#L2019
      */
     private function disableWPImgTagAddAutoSizes(): void {
-        if ( Options::get( 'media_disable_wp_img_tag_add_auto_sizes' ) ) {
+        if ( setting( 'media.disable_wp_img_tag_add_auto_sizes' ) ) {
             add_filter( 'wp_img_tag_add_auto_sizes', '__return_false' );
         }
     }
@@ -74,7 +72,7 @@ class Media implements Bootable {
      * @see https://developer.wordpress.org/reference/hooks/wp_lazy_loading_enabled/
      */
     private function handleWPCoreLazyLoading(): void {
-        $mode = Options::get( 'media_disable_core_lazy_loading', 'no' );
+        $mode = setting( 'media.disable_core_lazy_loading', 'no' );
 
         if ( 'yes' === $mode ) {
             add_filter( 'wp_lazy_loading_enabled', '__return_false' );

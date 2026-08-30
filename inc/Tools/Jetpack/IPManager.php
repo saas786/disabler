@@ -1,7 +1,31 @@
 <?php
 
 /**
+ * Ported from Automattic's VIP helpers. Keep it that way.
+ *
  * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/class-jetpack-ip-manager.php
+ * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php vip_safe_wp_remote_request()
+ *
+ * Two things here read as bugs and are not. Both have been investigated and
+ * measured; do not "fix" either without new evidence:
+ *
+ * 1. CACHE_KEY is a mutex, not a retry timer. Releasing it in `finally` even
+ *    when the fetch failed is correct -- the 300s TTL exists to free a lock
+ *    held by a process that died, not to space out attempts. Holding it on
+ *    failure changes the semantics and is a design decision, not a repair.
+ *
+ * 2. safeWPRemoteRequest's breaker counts only failures slower than the
+ *    timeout. Fast failures (DNS, connection refused) never increment it.
+ *    That is deliberate upstream: slow upstreams tie up PHP workers, fast
+ *    ones are cheap.
+ *
+ * Worth knowing, since upstream never has to think about it: both the lock
+ * and the breaker live in `wp_cache_*`. On hosting with Redis or Memcached
+ * they work exactly as they do on VIP. Without a persistent object cache
+ * `wp_cache` is per-request, so both simply become inert and every request
+ * fetches -- degraded, not broken, and correct either way. Moving the lock to
+ * a transient would extend the protection to those installs at the cost of
+ * diverging from upstream. Not a bug; a deliberate open question.
  */
 
 namespace HBP\Disabler\Tools\Jetpack;
@@ -25,7 +49,23 @@ class IPManager {
                 $body = wp_remote_retrieve_body( $response );
                 $ips  = json_decode( $body, true );
 
-                if ( is_array( $ips ) && ! empty( $ips ) ) {
+                // array_is_list, not is_array. json_decode with assoc=true
+                // turns a JSON *object* into an array too, so an error
+                // payload served with a 200 -- {"error":"nope"} -- passed the
+                // old is_array check and was stored as the IP list. Whatever
+                // read it then matched addresses against the string 'nope'.
+                //
+                // The entries are filtered as well: one malformed line in an
+                // otherwise good response should not become an allowlist
+                // entry that matches nothing, or worse, matches loosely.
+                if ( is_array( $ips ) && array_is_list( $ips ) ) {
+                    $ips = array_values( array_filter(
+                        $ips,
+                        static fn( $ip ): bool => is_string( $ip ) && '' !== trim( $ip )
+                    ) );
+                }
+
+                if ( is_array( $ips ) && array_is_list( $ips ) && ! empty( $ips ) ) {
                     $data = [
                         'ips' => $ips,
                         'exp' => time() + DAY_IN_SECONDS,

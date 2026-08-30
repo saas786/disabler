@@ -2,9 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class RestAPI implements Bootable {
 
@@ -21,21 +21,21 @@ class RestAPI implements Bootable {
 
     private function initHooks(): void {
         // Disable REST API links in HTML <head>.
-        if ( Options::get( 'restapi_disable_rest_api_links' ) ) {
+        if ( setting( 'restapi.disable_rest_api_links' ) ) {
             remove_action( 'wp_head', 'rest_output_link_wp_head' );
         }
 
         // Disable the REST API URL to the WP RSD endpoint.
-        if ( Options::get( 'restapi_disable_rest_api_rsd_link' ) ) {
+        if ( setting( 'restapi.disable_rest_api_rsd_link' ) ) {
             remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
         }
 
         // Disable REST API link in HTTP headers.
-        if ( Options::get( 'restapi_disable_rest_api_link_in_headers' ) ) {
+        if ( setting( 'restapi.disable_rest_api_link_in_headers' ) ) {
             remove_action( 'template_redirect', 'rest_output_link_header', 11 );
         }
 
-        if ( Options::get( 'restapi_disable_rest_api_for_visitors' ) ) {
+        if ( setting( 'restapi.disable_rest_api_for_visitors' ) ) {
             self::add_filter( 'rest_authentication_errors', [ $this, 'rest_authentication_errors' ], \PHP_INT_MAX );
         }
 
@@ -100,7 +100,7 @@ class RestAPI implements Bootable {
      * @see https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/
      */
     private function handleApplicationPasswords(): void {
-        $mode = Options::get( 'restapi_disable_application_passwords', 'no' );
+        $mode = setting( 'restapi.disable_application_passwords', 'no' );
 
         if ( 'all' === $mode ) {
             add_filter( 'wp_is_application_passwords_available', '__return_false' );
@@ -127,7 +127,7 @@ class RestAPI implements Bootable {
             return $available;
         }
 
-        $disabled_roles = (array) Options::get( 'restapi_application_passwords_roles', [] );
+        $disabled_roles = (array) setting( 'restapi.application_passwords_roles', [] );
 
         if ( empty( $disabled_roles ) ) {
             return $available;

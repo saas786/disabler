@@ -2,16 +2,15 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
-use HBP\Disabler\Contracts\Traits\Utils;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\Arr;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\prepare_multiline_text;
+use function HBP\Disabler\setting;
 
 class Backend implements Bootable {
 
     use AccessiblePrivateMethods;
-    use Utils;
 
     /**
      * Boot.
@@ -24,13 +23,13 @@ class Backend implements Bootable {
 
     private function initHooks(): void {
         // No self ping.
-        if ( Options::get( 'backend_disable_self_ping' ) ) {
+        if ( setting( 'backend.disable_self_ping' ) ) {
             add_action( 'pre_ping', [ $this, 'noSelfPing' ] );
         }
     }
 
     public function noSelfPing( &$links ) {
-        $urls = self::prepareMultilineText( Options::get( 'backend_disable_self_ping_urls', '' ), 'sanitize_url' );
+        $urls = prepare_multiline_text( setting( 'backend.disable_self_ping_urls', '' ), 'sanitize_url' );
 
         // Add home URL to array.
         $urls = Arr::prepend( $urls, esc_url( home_url() ) );

@@ -2,9 +2,9 @@
 
 namespace HBP\Disabler\Tools\UsageTracker;
 
-use HBP\Disabler\Admin\Options;
 use HBP\Disabler\Tools\UsageTracker\Trackers\Settings;
 use Hybrid\Usage\Tracker\Tracker as UsageTracker;
+use function HBP\Disabler\setting;
 
 class Tracker extends UsageTracker {
     /**
@@ -47,7 +47,7 @@ class Tracker extends UsageTracker {
      */
     public function tracking_enabled() {
         // Check if we're allowing tracking.
-        if ( Options::get( 'tracking_allow_usage_tracking' ) ) {
+        if ( setting( 'tracking.allow_usage_tracking' ) ) {
             return true;
         }
 

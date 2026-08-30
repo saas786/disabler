@@ -2,9 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class Frontend implements Bootable {
 
@@ -21,7 +21,7 @@ class Frontend implements Bootable {
 
     private function initHooks(): void {
         // Disable shortlinks.
-        if ( Options::get( 'frontend_disable_shortlinks' ) ) {
+        if ( setting( 'frontend.disable_shortlinks' ) ) {
             // Disable HTML meta tag.
             remove_action( 'wp_head', 'wp_shortlink_wp_head' );
 

@@ -2,9 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class Revisions implements Bootable {
 
@@ -32,7 +32,7 @@ class Revisions implements Bootable {
      * @param \WP_Post $post Post object.
      */
     public function revisionsToKeep( $num, $post ) {
-        $disable_revisions = Options::get( 'revisions_disable_revisions' );
+        $disable_revisions = setting( 'revisions.disable_revisions' );
 
         if (
             ! in_array( 'no', $disable_revisions )
@@ -44,7 +44,7 @@ class Revisions implements Bootable {
             return 0;
         }
 
-        $revisions_limit = Options::get( 'revisions_revisions_limit_' . $post->post_type, '' );
+        $revisions_limit = setting( 'revisions.revisions_limit_' . $post->post_type, '' );
 
         if ( ! empty( $revisions_limit ) && is_numeric( $revisions_limit ) ) {
             return (int) $revisions_limit;
