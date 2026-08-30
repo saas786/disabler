@@ -33,3 +33,7 @@
 .husky/*.sh text eol=lf
 .husky/commit-msg eol=lf
 .husky/pre-commit eol=lf
+
+# Keep the test suite out of the release archive.
+qa export-ignore
+.github export-ignore

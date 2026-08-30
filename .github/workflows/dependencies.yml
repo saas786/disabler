@@ -1,0 +1,72 @@
+name: Dependencies
+
+# Both composer.lock files are committed, so CI installs a fixed tree and a
+# release upstream cannot turn the suite red on a morning nobody touched the
+# code. The cost of pinning is that nothing moves on its own, so this job
+# moves it deliberately: once a week it re-resolves both manifests and opens
+# a pull request with the result.
+#
+# The plugin depends on several `dev-dev` and `dev-main` branches, so a diff
+# here is expected most weeks rather than exceptional. The pull request is
+# where the tests run against it -- which is the whole point of doing this on
+# a schedule instead of inside an unrelated change.
+
+on:
+  schedule:
+    # Mondays, early UTC.
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Refresh lock files
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          # The suite's floor. The plugin's own lock is resolved against the
+          # 8.2 platform pinned in its composer.json, so the PHP running
+          # Composer here does not decide what the plugin gets.
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: none
+
+      - run: composer update --no-progress --no-interaction
+
+      - run: composer update --no-progress --no-interaction -d qa
+
+      - name: Open a pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- composer.lock qa/composer.lock; then
+            echo "Both lock files are unchanged; nothing to open."
+            exit 0
+          fi
+
+          branch="deps/$(date -u +%Y-%m-%d)"
+
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$branch"
+          git add composer.lock qa/composer.lock
+          git commit -m 'chore(deps): refresh lock files'
+          git push origin "$branch"
+
+          # A pull request opened with GITHUB_TOKEN does not start other
+          # workflows, so Tests will not run on its own. Close and reopen it,
+          # or push an empty commit, to get a run.
+          gh pr create \
+            --base dev \
+            --head "$branch" \
+            --title 'chore(deps): refresh lock files' \
+            --body 'Weekly `composer update` for both manifests. Tests do not start automatically on a bot-opened PR -- close and reopen to trigger them.'
