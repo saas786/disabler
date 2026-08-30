@@ -1,15 +1,18 @@
-.hbp-disabler-form-wrap {
-  .tabbed-section-heading {
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
+// Radio and checkbox groups stack, one choice per line.
+//
+// The fields render each choice as a plain <label>, which is inline, so
+// without this a set of choices runs together on one line. The old screen got
+// the same result from a <br/> after each choice; this keeps the markup free
+// of layout.
+.hbp-radio,
+.hbp-multicheckbox {
+  label {
+    display: block !important;
+    margin-bottom: 4px;
   }
+}
 
+.hbp-disabler-form-wrap {
   .description {
     margin: 1em 0;
   }
@@ -25,40 +28,6 @@
 
   .submit {
     margin-left: 32px;
-  }
-}
-
-.nav-tabs-orientation-vertical {
-  display: flex;
-  align-items: flex-start;
-
-  .nav-tab-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    border-bottom: 0;
-
-    .nav-tab {
-      margin-left: 0;
-      border-bottom-color: #c3c4c7;
-    }
-
-    .nav-tab-active,
-    .nav-tab-active:focus,
-    .nav-tab-active:focus:active,
-    .nav-tab-active:hover {
-      border-right: 1px solid #f0f0f1;
-    }
-
-    // Fix focus issue.
-    a:focus {
-      position: relative;
-      z-index: 100000;
-    }
-  }
-
-  .nav-tab-content {
-    margin: 1rem;
   }
 }
 

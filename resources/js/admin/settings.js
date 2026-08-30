@@ -1,14 +1,21 @@
 ( function () {
   jQuery( document ).ready( ( $ ) => {
-    function toggleFields( selectedValues, fieldSelector ) {
-      const events = $( fieldSelector ).data( 'events' );
+    /**
+     * Apply the show/hide rules a control declares for its current value.
+     *
+     * Rules arrive already resolved to selectors: the config names control
+     * keys, and the server turns each into the class that control's row
+     * carries. Nothing here builds a selector, so the two cannot drift.
+     */
+    function toggleFields( selectedValues, events ) {
       const mergedActions = {};
 
       if ( !Array.isArray( selectedValues ) ) {
         selectedValues = [ selectedValues ];
       }
 
-      // Merge actions for all selected values
+      // Merge actions across every selected value, so a multiple select
+      // applies all of its selections rather than only the last one.
       selectedValues.forEach( ( selectedValue ) => {
         if ( events[selectedValue] ) {
           Object.entries( events[selectedValue] ).forEach( ( [ action, targetSelectors ] ) => {
@@ -20,34 +27,35 @@
         }
       } );
 
-      // Apply merged actions
       Object.entries( mergedActions ).forEach( ( [ action, targetSelectors ] ) => {
         const targets = Array.isArray( targetSelectors ) ? targetSelectors : [ targetSelectors ];
         targets.forEach( ( targetSelector ) => {
+          const $target = $( targetSelector );
           if ( action === 'show' ) {
-            $( targetSelector ).show();
+            $target.show();
           } else if ( action === 'hide' ) {
-            $( targetSelector ).hide();
+            $target.hide();
           }
         } );
       } );
     }
 
-    function setupListeners( fieldSelector ) {
-      const fieldType = $( fieldSelector ).prop( 'tagName' ).toLowerCase(); // Use 'prop' to get the tag name
+    function setupListeners( field, events ) {
+      const $field = $( field );
+      const tag = $field.prop( 'tagName' ).toLowerCase();
 
-      switch ( fieldType ) {
+      switch ( tag ) {
         case 'input':
-          const inputType = $( fieldSelector ).attr( 'type' );
+          const inputType = $field.attr( 'type' );
           switch ( inputType ) {
             case 'radio':
-              $( fieldSelector ).on( 'change', function () {
-                toggleFields( $( this ).val(), fieldSelector );
+              $field.on( 'change', function () {
+                toggleFields( $( this ).val(), events );
               } ).filter( ':checked' ).trigger( 'change' );
               break;
             case 'checkbox':
-              $( fieldSelector ).on( 'change', function () {
-                toggleFields( this.checked.toString(), fieldSelector );
+              $field.on( 'change', function () {
+                toggleFields( this.checked.toString(), events );
               } ).trigger( 'change' );
               break;
             default:
@@ -55,21 +63,29 @@
           }
           break;
         case 'select':
-          const isMultiple = $( fieldSelector ).prop( 'multiple' );
-          $( fieldSelector ).on( 'change', function () {
-            const selectedValues = isMultiple ? $( this ).val() : [ $( this ).val() ];
-            toggleFields( selectedValues, fieldSelector );
+          const isMultiple = $field.prop( 'multiple' );
+          $field.on( 'change', function () {
+            toggleFields( isMultiple ? $( this ).val() : [ $( this ).val() ], events );
           } ).trigger( 'change' );
           break;
-          // Add more cases as needed for other field types
         default:
-          console.info( 'Unsupported field type:', fieldType );
+          console.info( 'Unsupported field type:', tag );
       }
     }
 
-    // Set up listeners for each main field on the page.
-    $( '.hbp-disabler-form-wrap form .hbp-disabler-form-field' ).each( function () {
-      setupListeners( this );
+    // Every control declaring rules is wrapped and carries them as JSON.
+    $( '.hbp-disabler-form-wrap form [data-hbp-events]' ).each( function () {
+      const events = $( this ).data( 'hbpEvents' );
+
+      if ( !events ) {
+        return;
+      }
+
+      // The wrapper holds exactly one control; a companion hidden input for
+      // the empty case is skipped, since it never changes.
+      $( this ).find( 'input:not([type="hidden"]), select' ).each( function () {
+        setupListeners( this, events );
+      } );
     } );
   } );
 } )();
