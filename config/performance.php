@@ -9,9 +9,10 @@
  */
 
 return [
-    'disable_embeds'      => 0,
-    'disable_emojis'      => 0,
-    'disable_heartbeat'   => 'no',
-    'disable_widgets'     => 'no',
-    'heartbeat_frequency' => '',
+    'disable_embeds'              => 0,
+    'disable_emojis'              => 0,
+    'disable_heartbeat'           => 'no',
+    'disable_speculative_loading' => 'no',
+    'disable_widgets'             => 'no',
+    'heartbeat_frequency'         => '',
 ];

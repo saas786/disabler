@@ -11,7 +11,7 @@
  */
 
 return [
-    'performance.disable_emojis'      => [
+    'performance.disable_emojis'              => [
         'type'     => 'checkbox',
         'tab'      => 'performance',
         'priority' => 400,
@@ -19,7 +19,7 @@ return [
         'label'    => static fn() => esc_html__( 'Disable emojis', 'hbp-disabler' ),
     ],
 
-    'performance.disable_embeds'      => [
+    'performance.disable_embeds'              => [
         'type'        => 'checkbox',
         'tab'         => 'performance',
         'priority'    => 401,
@@ -28,7 +28,7 @@ return [
         'description' => static fn() => esc_html__( 'Prevents others from embedding content from your site and removes JavaScript requests related to WordPress embeds.', 'hbp-disabler' ),
     ],
 
-    'performance.heartbeat_info'      => [
+    'performance.heartbeat_info'              => [
         'type'     => 'html',
         'tab'      => 'performance',
         'priority' => 402,
@@ -43,7 +43,7 @@ return [
                 ),
     ],
 
-    'performance.disable_heartbeat'   => [
+    'performance.disable_heartbeat'           => [
         'type'     => 'radio',
         'tab'      => 'performance',
         'priority' => 403,
@@ -71,7 +71,7 @@ return [
         ],
     ],
 
-    'performance.heartbeat_frequency' => [
+    'performance.heartbeat_frequency'         => [
         'type'        => 'text',
         'tab'         => 'performance',
         'priority'    => 404,
@@ -82,7 +82,21 @@ return [
         'class'       => 'small-text',
     ],
 
-    'performance.disable_widgets'     => [
+    'performance.disable_speculative_loading' => [
+        'type'        => 'radio',
+        'tab'         => 'performance',
+        'priority'    => 406,
+        'section'     => 'performance',
+        'label'       => static fn() => esc_html__( 'Disable speculative loading', 'hbp-disabler' ),
+        'description' => static fn() => esc_html__( 'Since WordPress 6.8 the browser is told to fetch pages a visitor looks likely to open next, before they click. This is off for logged-in users and for sites without pretty permalinks either way. Prefetch requests the page; prerender also runs its scripts, which can fire analytics and other side effects on pages nobody visits.', 'hbp-disabler' ),
+        'choices'     => static fn() => [
+            'no'        => esc_html__( 'No', 'hbp-disabler' ),
+            'all'       => esc_html__( 'All', 'hbp-disabler' ),
+            'prerender' => esc_html__( 'Prerender (only)', 'hbp-disabler' ),
+        ],
+    ],
+
+    'performance.disable_widgets'             => [
         'type'     => 'radio',
         'tab'      => 'performance',
         'priority' => 405,

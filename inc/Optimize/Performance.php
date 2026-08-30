@@ -24,6 +24,7 @@ class Performance implements Bootable {
         $this->disableEmojis();
         $this->disableHearbeat();
         $this->disableEmbeds();
+        $this->disableSpeculativeLoading();
         self::add_action( 'wp_dashboard_setup', [ $this, 'disableWidgets' ] );
     }
 
@@ -76,6 +77,72 @@ class Performance implements Bootable {
         }
 
         add_filter( 'heartbeat_settings', [ $this, 'heartbeatFrequency' ], \PHP_INT_MAX );
+    }
+
+    /**
+     * Speculative loading, on since WordPress 6.8.
+     *
+     * Core hands `wp_speculation_rules_configuration` an array of `mode` and
+     * `eagerness`, or null when it has already decided not to speculate --
+     * for logged-in users, or without pretty permalinks. Returning null
+     * switches it off; returning an array forces a configuration.
+     *
+     * `prerender` only downgrades the mode, because prerendering runs the
+     * page's scripts before anyone asks for it and analytics, counters and
+     * anything else with a side effect fire on pages nobody visits.
+     * Prefetching only fetches the document, so it is left alone.
+     */
+    private function disableSpeculativeLoading(): void {
+        $mode = setting( 'performance.disable_speculative_loading' );
+
+        if ( 'all' === $mode ) {
+            self::add_filter( 'wp_speculation_rules_configuration', '__return_null', \PHP_INT_MAX );
+
+            return;
+        }
+
+        if ( 'prerender' === $mode ) {
+            self::add_filter( 'wp_speculation_rules_configuration', [ $this, 'downgradePrerender' ], \PHP_INT_MAX );
+        }
+    }
+
+    /**
+     * Swap a prerender configuration for a prefetch one.
+     *
+     * Null is passed straight back: core has already decided not to speculate
+     * at all, and this setting is not asking for more than it would have done.
+     * A non-array is left alone too, since core sanitises those itself and
+     * would only replace whatever this returned.
+     *
+     * `auto` has to be resolved rather than treated as safe. It means "let
+     * core decide", and since 7.1 a host can point that at prerender with the
+     * WP_SPECULATIVE_LOADING_DEFAULT_MODE constant or the matching environment
+     * variable. Reading the resolved default is the only way to know.
+     *
+     *   * @param array<string, string>|null $config Speculation rules configuration.
+     *
+     *   * @param array<string, string>|null $config Speculation rules configuration.
+     *
+     * @param array<string, string>|null $config Speculation rules configuration.
+     */
+    private function downgradePrerender( $config ) {
+        if ( ! is_array( $config ) ) {
+            return $config;
+        }
+
+        $mode = $config['mode'] ?? 'auto';
+
+        if ( 'auto' === $mode && function_exists( 'wp_get_speculation_rules_default_configuration' ) ) {
+            $mode = wp_get_speculation_rules_default_configuration()['mode'] ?? 'prefetch';
+        }
+
+        if ( 'prerender' !== $mode ) {
+            return $config;
+        }
+
+        $config['mode'] = 'prefetch';
+
+        return $config;
     }
 
     /**
