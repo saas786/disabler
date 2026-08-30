@@ -23,15 +23,17 @@
   "require": {
     "php": ">=8.2",
     "composer/installers": "^1.12 || ^2.0",
+    "hbp/settings": "dev-main as 1.0",
+    "hbp/settings-ui": "dev-main as 1.0",
     "saas786/php-scoper-wp-excludes": "dev-main",
     "themehybrid/hybrid-action-scheduler": "^1.0",
     "themehybrid/hybrid-assets": "dev-dev as 1.0",
     "themehybrid/hybrid-contracts": "^2.0",
-    "themehybrid/hybrid-core": "^7.0",
+    "themehybrid/hybrid-core": "dev-dev as 7.0",
     "themehybrid/hybrid-events": "^1.0",
     "themehybrid/hybrid-filesystem": "^1.0",
     "themehybrid/hybrid-log": "^1.0",
-    "themehybrid/hybrid-tools": "^2.0",
+    "themehybrid/hybrid-tools": "dev-dev as 2.0",
     "themehybrid/hybrid-usage-tracker": "^1.0",
     "themehybrid/hybrid-view": "^2.0"
   },
@@ -56,6 +58,14 @@
     {
       "type": "vcs",
       "url": "https://github.com/themehybrid/hybrid-phpcs-rules"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/hybopress/settings"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/hybopress/settings-ui"
     }
   ],
   "minimum-stability": "dev",
@@ -63,7 +73,10 @@
   "autoload": {
     "psr-4": {
       "HBP\\Disabler\\": "inc/"
-    }
+    },
+    "files": [
+      "inc/functions-helpers.php"
+    ]
   },
   "autoload-dev": {
     "classmap": [
@@ -110,7 +123,7 @@
     "composer:pre:prefix": "composer install --no-dev --prefer-dist --no-scripts",
     "composer:reset": "composer install --no-scripts",
     "download-tools": "Hybrid\\DevTools\\Composer\\Actions::downloadTools",
-    "lint:syntax": "@php ./vendor/bin/parallel-lint ./bin-dev/php-scoper ./config ./inc ./public/views ./disabler.php --show-deprecated -e php --exclude assets",
+    "lint:syntax": "@php ./bin-dev/tools/parallel-lint.phar ./bin-dev/php-scoper ./config ./inc ./public/views ./disabler.php --show-deprecated -e php --exclude assets",
     "lint:syntax:prefixed": "@php ./bin-dev/tools/parallel-lint.phar ./disabler-prefixed/config ./disabler-prefixed/inc ./disabler-prefixed/public/views ./disabler-prefixed/disabler.php --show-deprecated -e php",
     "phpcs:analyze": "@php ./vendor/bin/phpcs ./bin-dev/php-scoper ./config ./inc ./public/views ./disabler.php",
     "phpcs:fix": "@php ./vendor/bin/phpcbf ./bin-dev/php-scoper ./config ./inc ./public/views ./disabler.php",
