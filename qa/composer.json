@@ -1,0 +1,30 @@
+{
+  "name": "hbp/disabler-qa",
+  "description": "Test suite for the Disabler plugin. Its own Composer project, installed separately from the plugin.",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "require-dev": {
+    "alvarodelera/pest-wp-plugin": "^2.0",
+    "pestphp/pest": "^5.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    },
+    "optimize-autoloader": true,
+    "process-timeout": 0
+  },
+  "minimum-stability": "stable",
+  "_comment_mutate": "The mutate script is the single definition of the mutation run: CI invokes this same script rather than repeating the flags, because when the two were written separately they drifted. It sets XDEBUG_MODE itself via @putenv, since xdebug ships with coverage off and Pest then stops with a message about config rather than about the driver; @putenv works on every platform, unlike an inline VAR=value prefix. --path is passed explicitly rather than relying on the <source> block in phpunit.mutate.xml, because the mutation plugin resolves a relative path against the working directory and silently drops anything that is not a directory -- a source path that does not resolve produces '0 Mutations for 0 Files' with no error. Run from qa/, which is what --path is relative to. Use mutate:fresh when a local score looks wrong: the plugin caches each mutant's verdict in the system temp directory, outside the repo, so git clean will not clear it and results recorded against older code can be reused. CI is a cold checkout every time, so it never needs the clear.",
+  "scripts": {
+    "test": "@php ./vendor/bin/pest -c phpunit.xml",
+    "mutate": [
+      "@putenv XDEBUG_MODE=coverage",
+      "@php ./vendor/bin/pest -c phpunit.mutate.xml --mutate --covered-only --path=../inc/Optimize"
+    ],
+    "mutate:fresh": [
+      "@putenv XDEBUG_MODE=coverage",
+      "@php ./vendor/bin/pest -c phpunit.mutate.xml --mutate --covered-only --path=../inc/Optimize --clear-cache"
+    ]
+  }
+}

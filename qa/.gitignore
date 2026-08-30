@@ -1,0 +1,3 @@
+/vendor/
+/.pest/
+/.phpunit.cache/
