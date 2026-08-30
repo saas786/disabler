@@ -279,11 +279,16 @@ class PluginInstall {
         $settings = get_option( 'hbp_disabler_settings', null );
         $version  = get_option( 'hbp_disabler_version', null );
 
+        // Every one of them. These are five generations of this plugin's
+        // options, and a site is only new if it carries no trace of any
+        // generation. Most sites are missing several: one that started on 4.x
+        // has no `disabler_autop` and never will, but its
+        // `hbp_disabler_settings` still makes it an upgrade, not an install.
         return is_null( $v2_settings )
-            || is_null( $v3_settings )
-            || is_null( $v3_0_3_settings )
-            || is_null( $settings )
-            || is_null( $version );
+            && is_null( $v3_settings )
+            && is_null( $v3_0_3_settings )
+            && is_null( $settings )
+            && is_null( $version );
     }
 
     /**
