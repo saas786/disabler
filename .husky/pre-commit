@@ -1,0 +1,12 @@
+# GitHub Desktop launches from the GUI and does not inherit your shell PATH,
+# so node/nvm may be missing here even though they work in a terminal.
+command -v node >/dev/null 2>&1 || . "$HOME/.nvm/nvm.sh" >/dev/null 2>&1 || true
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit: node not found, skipping lint-staged"
+  exit 0
+fi
+
+# Never block the commit: fixers auto-fix what they can, the rest is CI's job.
+npx --no-install lint-staged || echo "pre-commit: lint-staged reported unfixable issues, committing anyway"
+exit 0

@@ -2,17 +2,16 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
-use HBP\Disabler\Contracts\Traits\Utils;
 use HBP\Disabler\Tools\Jetpack\IPManager;
 use HBP\Disabler\Tools\Jetpack\IpUtils;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\prepare_multiline_text;
+use function HBP\Disabler\setting;
 
 class XMLRPC implements Bootable {
 
     use AccessiblePrivateMethods;
-    use Utils;
 
     /**
      * Boot.
@@ -24,7 +23,7 @@ class XMLRPC implements Bootable {
     }
 
     private function initHooks(): void {
-        if ( self::isRequestAllowed() || 'no' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( self::isRequestAllowed() || 'no' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             return;
         }
 
@@ -45,7 +44,7 @@ class XMLRPC implements Bootable {
      * @see https://developer.wordpress.org/reference/hooks/xmlrpc_enabled/
      */
     private function XMLRPCEnabled( $is_enabled ): bool {
-        if ( 'completely' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( 'completely' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             return false;
         }
 
@@ -59,14 +58,14 @@ class XMLRPC implements Bootable {
      * @see https://developer.wordpress.org/reference/hooks/xmlrpc_methods/
      */
     private function disableMethods( $methods ) {
-        if ( 'completely' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( 'completely' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             return [];
         }
 
-        if ( 'selective' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
-            $selected_methods = Options::get( 'xmlrpc_xmlrpc_methods', [] );
+        if ( 'selective' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
+            $selected_methods = setting( 'xmlrpc.xmlrpc_methods', [] );
 
-            $custom_methods = self::prepareMultilineText( Options::get( 'xmlrpc_custom_xmlrpc_methods', '' ) );
+            $custom_methods = prepare_multiline_text( setting( 'xmlrpc.custom_xmlrpc_methods', '' ) );
             $custom_methods = array_merge( $selected_methods, $custom_methods );
 
             array_walk( $custom_methods, static function ( $method ) use ( &$methods ) {
@@ -86,17 +85,17 @@ class XMLRPC implements Bootable {
      * @see https://developer.wordpress.org/reference/hooks/xmlrpc_call/
      */
     private function disableCall( $method ) {
-        if ( 'completely' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( 'completely' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             wp_die( 'XML-RPC is not supported', 'Not Allowed!', [ 'response' => 403 ] );
         }
 
-        if ( 'selective' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
-            $custom_methods = self::prepareMultilineText( Options::get( 'xmlrpc_custom_xmlrpc_methods', '' ) );
-            $custom_methods = array_merge( Options::get( 'xmlrpc_xmlrpc_methods', [] ), $custom_methods );
+        if ( 'selective' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
+            $custom_methods = prepare_multiline_text( setting( 'xmlrpc.custom_xmlrpc_methods', '' ) );
+            $custom_methods = array_merge( setting( 'xmlrpc.xmlrpc_methods', [] ), $custom_methods );
 
             if ( in_array( $method, $custom_methods ) ) {
                 wp_die(
-                    /* Translators: %1$s XML RPC method name. */
+                    /* Translators: %1$s XML-RPC method name. */
                     sprintf( esc_html__( 'XML-RPC\'s method %1$s is not supported', 'hbp-disabler' ), $method ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     'Not Allowed!',
                     [ 'response' => 403 ]
@@ -111,11 +110,11 @@ class XMLRPC implements Bootable {
     private function removeHeaders( $headers ) {
         $custom_headers = [];
 
-        if ( 'completely' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( 'completely' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             $custom_headers = [ 'X-Pingback' ];
-        } elseif ( 'selective' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
-            $custom_headers = self::prepareMultilineText( Options::get( 'xmlrpc_custom_xmlrpc_headers', '' ) );
-            $custom_headers = array_merge( Options::get( 'xmlrpc_disable_xmlrpc_headers', [] ), $custom_headers );
+        } elseif ( 'selective' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
+            $custom_headers = prepare_multiline_text( setting( 'xmlrpc.custom_xmlrpc_headers', '' ) );
+            $custom_headers = array_merge( setting( 'xmlrpc.disable_xmlrpc_headers', [] ), $custom_headers );
         }
 
         array_walk( $custom_headers, static function ( $header ) use ( &$headers ) {
@@ -137,11 +136,11 @@ class XMLRPC implements Bootable {
 
         $custom_headers = [];
 
-        if ( 'completely' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( 'completely' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             $custom_headers = [ 'X-Pingback' ];
-        } elseif ( 'selective' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
-            $custom_headers = self::prepareMultilineText( Options::get( 'xmlrpc_custom_xmlrpc_headers', '' ) );
-            $custom_headers = array_merge( Options::get( 'xmlrpc_disable_xmlrpc_headers', [] ), $custom_headers );
+        } elseif ( 'selective' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
+            $custom_headers = prepare_multiline_text( setting( 'xmlrpc.custom_xmlrpc_headers', '' ) );
+            $custom_headers = array_merge( setting( 'xmlrpc.disable_xmlrpc_headers', [] ), $custom_headers );
         }
 
         array_walk( $custom_headers, static function ( $header ) {
@@ -160,10 +159,10 @@ class XMLRPC implements Bootable {
         }
 
         if (
-            'completely' === Options::get( 'xmlrpc_disable_xmlrpc' )
+            'completely' === setting( 'xmlrpc.disable_xmlrpc' )
             || (
-                'selective' === Options::get( 'xmlrpc_disable_xmlrpc' )
-                && Options::get( 'xmlrpc_remove_xmlrpc_pingback_link' )
+                'selective' === setting( 'xmlrpc.disable_xmlrpc' )
+                && setting( 'xmlrpc.remove_xmlrpc_pingback_link' )
             )
         ) {
             $output = '';
@@ -177,10 +176,10 @@ class XMLRPC implements Bootable {
      */
     private function removePingbackURL2( $link ) {
         if (
-            'completely' === Options::get( 'xmlrpc_disable_xmlrpc' )
+            'completely' === setting( 'xmlrpc.disable_xmlrpc' )
             || (
-                'selective' === Options::get( 'xmlrpc_disable_xmlrpc' )
-                && Options::get( 'xmlrpc_remove_xmlrpc_pingback_link' )
+                'selective' === setting( 'xmlrpc.disable_xmlrpc' )
+                && setting( 'xmlrpc.remove_xmlrpc_pingback_link' )
             )
         ) {
             $link = '';
@@ -198,29 +197,29 @@ class XMLRPC implements Bootable {
      * @see https://cyber.harvard.edu/blogs/gems/tech/rsd.html
      */
     private function headCleanup() {
-        if ( 'completely' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
+        if ( 'completely' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
             remove_action( 'wp_head', 'rsd_link' );
             remove_action( 'wp_head', 'wlwmanifest_link' );
             remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
         }
 
-        if ( 'selective' === Options::get( 'xmlrpc_disable_xmlrpc' ) ) {
-            if ( Options::get( 'xmlrpc_xmlrpc_remove_rsd_link' ) ) {
+        if ( 'selective' === setting( 'xmlrpc.disable_xmlrpc' ) ) {
+            if ( setting( 'xmlrpc.xmlrpc_remove_rsd_link' ) ) {
                 remove_action( 'wp_head', 'rsd_link' );
             }
 
-            if ( Options::get( 'xmlrpc_xmlrpc_remove_wlwmanifest_link' ) ) {
+            if ( setting( 'xmlrpc.xmlrpc_remove_wlwmanifest_link' ) ) {
                 remove_action( 'wp_head', 'wlwmanifest_link' );
             }
         }
     }
 
     private static function isRequestAllowed() {
-        if ( Options::get( 'xmlrpc_xmlrpc_whitelist_jetpack_ips' ) && self::isJetpackRequest() ) {
+        if ( setting( 'xmlrpc.xmlrpc_whitelist_jetpack_ips' ) && self::isJetpackRequest() ) {
             return true;
         }
 
-        $custom_ips = self::prepareMultilineText( Options::get( 'xmlrpc_custom_xmlrpc_whitelist_ips', '' ), '' );
+        $custom_ips = prepare_multiline_text( setting( 'xmlrpc.custom_xmlrpc_whitelist_ips', '' ), '' );
         $custom_ips = array_map( 'strip_tags', $custom_ips );
         $custom_ips = array_map( 'htmlentities', $custom_ips );
         $custom_ips = array_filter( $custom_ips );
@@ -240,8 +239,9 @@ class XMLRPC implements Bootable {
      * NOTE - This checks the REMOTE_ADDR against known JP IPs. The IP can still be spoofed,
      * (but usually an attacker cannot receive the response), so it is important to treat it accordingly.
      *
-     * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L1508
      * @return bool Bool indicating if the current request came from JP servers
+     *
+     * @see https://github.com/Automattic/vip-go-mu-plugins/blob/bd74c5fe57bce49ca6ddf065c5b40813b02232d1/vip-helpers/vip-utils.php#L1508
      */
     private static function isJetpackRequest() {
         // Filter by env.
@@ -263,5 +263,4 @@ class XMLRPC implements Bootable {
 
         return IpUtils::checkIP( $user_ip, $jetpack_ips );
     }
-
 }

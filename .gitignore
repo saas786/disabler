@@ -2,7 +2,7 @@
 .DS_Store
 CHANGELOG.md
 yarn.lock
-composer.lock
+composer-tests.lock
 mix-manifest.json
 
 /public/mix-manifest.json
@@ -10,12 +10,15 @@ mix-manifest.json
 
 /.idea/
 /vendor/
+/vendor-tests/
 /node_modules/
 /bin-dev/tools/
 /public/css/
 /public/js/
 /public/svg/
 /public/lang/
-/disabler/
 /disabler-prefixed/
 /.vscode
+.deliver/
+/.pest/
+/.phpunit.cache/

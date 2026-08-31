@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Mutation testing config.
+
+    A second file rather than a <source> block added to phpunit.xml, because
+    that element does more than tell the mutation plugin what to mutate. It
+    also scopes PHPUnit's deprecation and notice reporting to those files,
+    and with failOnWarning="true" on the main run, adding it there could turn
+    the suite red over a deprecation in a dependency that has nothing to do
+    with the change being tested. The everyday run stays exactly as it is.
+
+    Scoped to inc/Optimize, which is where the features with paired tests
+    live, so an escaped mutant there is a real finding. Mutating the rest
+    would mostly report that untested code is untested, which the coverage
+    table already says more cheaply.
+
+    Note for anyone editing this comment: XML forbids a double hyphen inside
+    a comment, and the parser reports it as a Builder.php error several
+    frames from here rather than as a problem with this file.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         failOnWarning="true"
+         failOnRisky="true">
+    <testsuites>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>../inc/Optimize</directory>
+        </include>
+    </source>
+</phpunit>

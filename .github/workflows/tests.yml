@@ -1,0 +1,129 @@
+name: Tests
+
+on:
+  push:
+    branches: [ next, dev ]
+  pull_request:
+
+jobs:
+  # The plugin's own floor. This job is what proves the shipped code still
+  # installs and parses on the version the plugin claims to support -- which
+  # is why the test tooling is deliberately not installed here.
+  plugin:
+    name: Plugin (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.2', '8.3', '8.4' ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+
+      # From the committed lock, so this job installs the same tree the
+      # suite ran against rather than whatever resolves today.
+      - run: composer install --no-progress --no-interaction
+
+      - run: composer run lint:syntax
+
+  # The suite. Pinned to 8.4 because the test tooling requires it; the code
+  # under test does not, and the job above is what says so.
+  tests:
+    name: Test suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, dom, gd, zip
+          tools: composer:v2
+          coverage: none
+
+      # The plugin's own autoloader, resolved at its 8.2 platform floor. The
+      # suite loads the plugin through it, so a dependency that only resolves
+      # on 8.4 would fail here rather than reaching a user.
+      - run: composer install --no-progress --no-interaction
+
+      - run: composer install --no-progress --no-interaction -d qa
+
+      # PestWP downloads WordPress on first run. Not cached: the install
+      # takes a few seconds, and an immutable key would freeze one core
+      # build into the cache while still claiming to track the latest.
+
+      # Pest takes the parent of its own autoloader as the project root, and
+      # the directory name `vendor` is hardcoded in its binary, so the suite
+      # has to be a Composer project with `vendor/` and `tests/` side by side.
+      # That project is qa/. See qa/README.md.
+      - run: qa/vendor/bin/pest -c qa/phpunit.xml --colors=always
+
+  # What the suite is worth, rather than how much of it there is. Mutation
+  # testing edits the plugin -- flips a conditional, drops a method call --
+  # and reports which edits no test noticed. An escaped mutant is a line the
+  # suite covers without checking.
+  #
+  # Not on pull requests: it needs a coverage driver and runs the suite once
+  # per mutant, so it is minutes rather than seconds. Weekly, and advisory --
+  # continue-on-error, because the number moving is information, not a reason
+  # to block a change. Set --min-msi here once the baseline is known and the
+  # escaped mutants worth killing have been killed.
+  mutation:
+    name: Mutation testing
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, dom, gd, zip
+          tools: composer:v2
+          # pcov rather than xdebug: it only does line coverage, which is all
+          # the mutation plugin reads, and it is several times faster.
+          #
+          # pcov.directory is not optional here. Unlike xdebug, pcov only
+          # instruments files beneath one root, and when the root is not set
+          # it infers one from the autoloader -- which is qa/, because that is
+          # where the test suite's vendor/ lives. The plugin source is at
+          # ../inc, outside that root, so every source file comes back with no
+          # covered lines, --covered-only skips all of them, and the run
+          # reports '0 Mutations for 0 Files' with a green test suite and no
+          # error. Pointing pcov at the repo root puts inc/ back in scope.
+          coverage: pcov
+          ini-values: pcov.directory=${{ github.workspace }}
+
+      - run: composer install --no-progress --no-interaction
+
+      - run: composer install --no-progress --no-interaction -d qa
+
+      # Not --parallel. Every worker shares one SQLite file, and the suite
+      # wraps each test in a transaction it rolls back afterwards. With
+      # several workers that rollback discards writes another worker is still
+      # reading, so stored settings vanish mid-test and features read their
+      # defaults -- which surfaces as a dozen unrelated "the control did
+      # nothing" failures in the baseline run, before a single mutant is
+      # generated. Parallelising this suite would need a database per worker,
+      # keyed on paratest's TEST_TOKEN, which is a change to pest-wp rather
+      # than to this workflow.
+      #
+      # Serial is therefore slow: the baseline alone is minutes, and each
+      # surviving mutant reruns the tests that cover it. That is the reason
+      # this job is weekly rather than on pull requests.
+      # Run from qa/, and pass --path explicitly. The mutation plugin resolves
+      # a relative source path against the current working directory and drops
+      # silently anything that is not a directory, so running from the repo
+      # root would find nothing and report '0 Mutations for 0 Files' without
+      # an error to explain why.
+      - run: vendor/bin/pest -c phpunit.mutate.xml --mutate --covered-only --path=../inc/Optimize --colors=always
+        working-directory: qa
+        continue-on-error: true

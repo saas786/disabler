@@ -2,10 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
-use HBP\Disabler\Contracts\Traits\Utils;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 /**
  * Class Media.
@@ -13,7 +12,6 @@ use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
 class Media implements Bootable {
 
     use AccessiblePrivateMethods;
-    use Utils;
 
     /**
      * Boot.
@@ -25,6 +23,7 @@ class Media implements Bootable {
 
     private function initHooks(): void {
         $this->disableWPImgTagAddAutoSizes();
+        $this->handleWPCoreLazyLoading();
     }
 
     private function wpEnqueueScripts(): void {
@@ -38,7 +37,7 @@ class Media implements Bootable {
      * @see https://make.wordpress.org/core/2024/10/18/auto-sizes-for-lazy-loaded-images-in-wordpress-6-7/
      */
     private function disableWPImgAutoSizesContain(): void {
-        if ( Options::get( 'editor_disable_wp_img_auto_sizes_contain' ) ) {
+        if ( setting( 'media.disable_wp_img_auto_sizes_contain' ) ) {
             wp_dequeue_style( 'wp-img-auto-sizes-contain' );
         }
     }
@@ -53,9 +52,47 @@ class Media implements Bootable {
      * @see https://github.com/WordPress/WordPress/blob/7f13088e924c0437f954e6cd46b7d65da0bd9317/wp-includes/media.php#L2019
      */
     private function disableWPImgTagAddAutoSizes(): void {
-        if ( Options::get( 'editor_disable_wp_img_tag_add_auto_sizes' ) ) {
+        if ( setting( 'media.disable_wp_img_tag_add_auto_sizes' ) ) {
             add_filter( 'wp_img_tag_add_auto_sizes', '__return_false' );
         }
     }
 
+    /**
+     * Disables or overrides WordPress' native lazy loading (added in 5.5) for
+     * images and iframes, which can conflict with lazy-load logic added by
+     * themes, page builders, or other optimization plugins.
+     *
+     * - 'yes' fully disables core lazy loading, so no `loading` attribute is
+     *   added at all.
+     * - 'eager' leaves core lazy loading logic in place, but forces the
+     *   `loading` attribute to `eager` instead of `lazy`, for elements where
+     *   lazy behavior causes layout shift or LCP issues.
+     *
+     * @see https://make.wordpress.org/core/2020/07/14/lazy-loading-images-in-5-5/
+     * @see https://developer.wordpress.org/reference/hooks/wp_lazy_loading_enabled/
+     */
+    private function handleWPCoreLazyLoading(): void {
+        $mode = setting( 'media.disable_core_lazy_loading', 'no' );
+
+        if ( 'yes' === $mode ) {
+            add_filter( 'wp_lazy_loading_enabled', '__return_false' );
+
+            return;
+        }
+
+        if ( 'eager' === $mode ) {
+            self::add_filter( 'wp_img_tag_add_loading_attr', [ $this, 'forceEagerLoadingAttr' ] );
+            self::add_filter( 'wp_iframe_tag_add_loading_attr', [ $this, 'forceEagerLoadingAttr' ] );
+        }
+    }
+
+    /**
+     * Forces the `loading` attribute value to `eager`.
+     *
+     * @see https://developer.wordpress.org/reference/hooks/wp_img_tag_add_loading_attr/
+     * @see https://developer.wordpress.org/reference/hooks/wp_iframe_tag_add_loading_attr/
+     */
+    private function forceEagerLoadingAttr(): string {
+        return 'eager';
+    }
 }

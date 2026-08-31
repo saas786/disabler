@@ -2,24 +2,37 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use Hybrid\Contracts\Bootable;
+use Hybrid\Tools\Arr;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
-use stdClass;
+use function HBP\Disabler\maybe_define_constant;
 
+/**
+ * Everything this plugin does to WordPress' update machinery.
+ *
+ * The decisions all live in UpdatePolicy, resolved once at `init`. What is
+ * left here is wiring: which hook, which verdict, in that order. No callback
+ * re-reads a setting, so none of them can disagree with another about what
+ * the user asked for.
+ */
 class Updates implements Bootable {
 
     use AccessiblePrivateMethods;
 
     /**
-     * Boot.
+     * Resolved at `init`, because reading settings any earlier means reading
+     * them before the option store and its presets are available.
      */
-    public function boot() {
+    private UpdatePolicy $policy;
+
+    public function boot(): void {
         self::add_action( 'init', [ $this, 'initHooks' ], 0 );
     }
 
     private function initHooks(): void {
-        if ( 'no' === Options::get( 'updates_disable_updates' ) ) {
+        $this->policy = UpdatePolicy::fromSettings();
+
+        if ( ! $this->policy->enabled ) {
             return;
         }
 
@@ -28,54 +41,37 @@ class Updates implements Bootable {
         self::add_filter( 'site_status_tests', [ $this, 'siteStatusTests' ] );
 
         /*
-         * Filter / Disable schedule checks.
+         * Filter / disable schedule checks.
          *
          * @link https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
          */
         self::add_action( 'admin_init', [ $this, 'disableScheduleHook' ] );
         self::add_action( 'schedule_event', [ $this, 'filterCronEvents' ] );
 
-        self::add_filter( 'bulk_actions-plugins', [ $this, 'disableBulkActionsPlugins' ] );
-        self::add_filter( 'bulk_actions-plugins-network', [ $this, 'disableBulkActionsPlugins' ] );
+        self::add_filter( 'bulk_actions-plugins', [ $this, 'bulkActionsPlugins' ] );
+        self::add_filter( 'bulk_actions-plugins-network', [ $this, 'bulkActionsPlugins' ] );
+        self::add_filter( 'bulk_actions-themes', [ $this, 'bulkActionsThemes' ] );
+        self::add_filter( 'bulk_actions-themes-network', [ $this, 'bulkActionsThemes' ] );
 
-        // Remove bulk action for updating themes.
-        self::add_filter( 'bulk_actions-themes', [ $this, 'disableBulkActionsThemes' ] );
-        self::add_filter( 'bulk_actions-themes-network', [ $this, 'disableBulkActionsThemes' ] );
-
-        // Time based transient checks.
         self::add_filter( 'pre_site_transient_update_core', [ $this, 'lastCheckedCore' ] );
-
         self::add_filter( 'automatic_updates_is_vcs_checkout', [ $this, 'isVCSCheckout' ] );
 
-        // Handle minor core updates.
-        self::add_filter( 'allow_minor_auto_core_updates', [ $this, 'allowMinorAutoCoreUpdates' ] );
-
-        // Handle major core updates.
-        self::add_filter( 'allow_major_auto_core_updates', [ $this, 'allowMajorAutoCoreUpdates' ] );
-
-        // Handle dev core updates.
-        self::add_filter( 'allow_dev_auto_core_updates', [ $this, 'allowDevAutoCoreUpdates' ] );
-
-        // Disable overall core updates.
+        // Core auto-updates, one filter per release level.
+        self::add_filter( 'allow_minor_auto_core_updates', [ $this, 'allowMinorCore' ] );
+        self::add_filter( 'allow_major_auto_core_updates', [ $this, 'allowMajorCore' ] );
+        self::add_filter( 'allow_dev_auto_core_updates', [ $this, 'allowDevCore' ] );
         self::add_filter( 'auto_update_core', [ $this, 'autoUpdateCore' ] );
 
         // Get rid of the version number in the footer.
         self::add_filter( 'update_footer', [ $this, 'updateFooter' ], 11 );
 
-        // Disable automatic plugin updates (used by WP to force push security fixes).
+        // Auto-update decisions, and the list-table toggles that mirror them.
         self::add_filter( 'auto_update_plugin', [ $this, 'autoUpdatePlugin' ] );
-
-        // Hide UI to edit the plugins auto-update update option on plugins list.
-        self::add_filter( 'plugins_auto_update_enabled', [ $this, 'pluginsAutoUpdateEnabled' ] );
-
-        // Disable automatic theme updates (used by WP to force push security fixes).
+        self::add_filter( 'plugins_auto_update_enabled', [ $this, 'autoUpdatePlugin' ] );
         self::add_filter( 'auto_update_theme', [ $this, 'autoUpdateTheme' ], 1 );
-
-        // Hide UI to edit the themes auto-update update option on themes list.
-        self::add_filter( 'themes_auto_update_enabled', [ $this, 'themesAutoUpdateEnabled' ] );
-
-        add_filter( 'auto_update_translation', [ $this, 'autoUpdateTranslation' ] );
-        add_filter( 'async_update_translation', [ $this, 'asyncUpdateTranslation' ] );
+        self::add_filter( 'themes_auto_update_enabled', [ $this, 'autoUpdateTheme' ] );
+        self::add_filter( 'auto_update_translation', [ $this, 'autoUpdateTranslation' ] );
+        self::add_filter( 'async_update_translation', [ $this, 'autoUpdateTranslation' ] );
 
         $this->handleGeneralUpdates();
         $this->handlePluginUpdates();
@@ -85,128 +81,95 @@ class Updates implements Bootable {
         $this->handleConstants();
     }
 
-    private function handleGeneralUpdates() {
-        if ( 'all' !== Options::get( 'updates_disable_updates' ) ) {
+    // ---------------------------------------------------------------------
+    // Wholesale
+    // ---------------------------------------------------------------------
+
+    private function handleGeneralUpdates(): void {
+        if ( ! $this->policy->everything ) {
             return;
         }
 
-        // Admin UI items.
         self::add_action( 'admin_menu', [ $this, 'adminMenuItems' ], 9999 );
         self::add_action( 'network_admin_menu', [ $this, 'msAdminMenuItems' ], 9999 );
 
-        // Disable automatic updater updates.
         add_filter( 'automatic_updater_disabled', '__return_true' );
 
-        // Disable update check schedule.
         remove_action( 'init', 'wp_schedule_update_checks' );
 
-        // Define core constants for more protection.
-        if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
-            define( 'AUTOMATIC_UPDATER_DISABLED', true );
-        }
+        maybe_define_constant( 'AUTOMATIC_UPDATER_DISABLED', true );
 
-        add_action( 'admin_init', static function () {
-            // Runs for core, plugin and themes, cron hook.
+        add_action( 'admin_init', static function (): void {
+            // The cron hook that runs core, plugin and theme auto-updates.
             remove_action( 'wp_maybe_auto_update', 'wp_maybe_auto_update' );
         } );
     }
 
     /**
-     * Remove menu items for updates from a standard WP install.
+     * Remove the updates menu item on a single site.
      */
-    private function adminMenuItems() {
+    private function adminMenuItems(): void {
         if ( is_multisite() ) {
             return;
         }
 
-        // Remove our items.
         remove_submenu_page( 'index.php', 'update-core.php' );
     }
 
     /**
-     * Remove menu items for updates from a multisite instance.
+     * Remove the updates menu item in network admin.
      */
-    private function msAdminMenuItems() {
+    private function msAdminMenuItems(): void {
         if ( ! is_network_admin() ) {
             return;
         }
 
-        // Remove the items.
         remove_submenu_page( 'index.php', 'upgrade.php' );
     }
 
+    // ---------------------------------------------------------------------
+    // Counts and Site Health
+    // ---------------------------------------------------------------------
+
     /**
-     * callback for filter wp_get_update_data.
+     * Drop the counts for whatever is switched off, and the total with them.
+     *
+     * @param array $update_data Counts and title, as core assembled them.
+     * @param array $titles Per-kind title fragments.
      */
     private function updateCounter( $update_data, $titles ) {
-        if ( 'all' === Options::get( 'updates_disable_updates' ) ) {
+        if ( $this->policy->everything ) {
+            // A dedicated string rather than an empty title, because the admin
+            // bar prints this as the tooltip on the updates item and an empty
+            // one reads as a rendering fault rather than as good news.
             return [
-                'counts' => [
-                    'plugins'      => 0,
-                    'themes'       => 0,
-                    'wordpress'    => 0,
-                    'translations' => 0,
-                    'total'        => 0,
-                ],
-                'title'  => 'No updates available',
+                'counts' => array_fill_keys(
+                    [ 'plugins', 'themes', 'wordpress', 'translations', 'total' ],
+                    0
+                ),
+                'title'  => esc_attr__( 'No updates available', 'hbp-disabler' ),
             ];
         }
 
-        if (
-            'selective' === Options::get( 'updates_disable_updates' )
-            && 'disable_core_updates' === Options::get( 'updates_core_updates' )
-            && 0 < $update_data['counts']['wordpress']
-        ) {
-            // Reduce WordPress count from total.
-            $update_data['counts']['total'] = $update_data['counts']['total'] - $update_data['counts']['wordpress'];
+        $stripped = false;
 
-            // As we are disabling WordPress updates, set WordPress updates count to 0.
-            $update_data['counts']['wordpress'] = 0;
+        foreach ( $this->countable() as $count => $verdict ) {
+            if ( ! $verdict->isOff() || empty( $update_data['counts'][ $count ] ) ) {
+                continue;
+            }
 
-            // Adjust update title.
-            unset( $titles['wordpress'] );
-            $update_data['title'] = $titles ? esc_attr( implode( ', ', $titles ) ) : '';
+            $update_data['counts']['total'] -= $update_data['counts'][ $count ];
+            $update_data['counts'][ $count ] = 0;
+
+            unset( $titles[ $count ] );
+
+            $stripped = true;
         }
 
-        if (
-            'selective' === Options::get( 'updates_disable_updates' )
-            && 'disable' === Options::get( 'updates_plugin_updates' ) && 0 < $update_data['counts']['plugins'] ) {
-            // Reduce plugin count from total.
-            $update_data['counts']['total'] = $update_data['counts']['total'] - $update_data['counts']['plugins'];
-
-            // As we are disabling plugin updates, set plugin updates count to 0.
-            $update_data['counts']['plugins'] = 0;
-
-            // Adjust update title.
-            unset( $titles['plugins'] );
-            $update_data['title'] = $titles ? esc_attr( implode( ', ', $titles ) ) : '';
-        }
-
-        if (
-            'selective' === Options::get( 'updates_disable_updates' )
-            && 'disable' === Options::get( 'updates_theme_updates' ) && 0 < $update_data['counts']['themes'] ) {
-            // Reduce theme count from total.
-            $update_data['counts']['total'] = $update_data['counts']['total'] - $update_data['counts']['themes'];
-
-            // As we are disabling theme updates, set theme updates count to 0.
-            $update_data['counts']['themes'] = 0;
-
-            // Adjust update title.
-            unset( $titles['themes'] );
-            $update_data['title'] = $titles ? esc_attr( implode( ', ', $titles ) ) : '';
-        }
-
-        if (
-            'selective' === Options::get( 'updates_disable_updates' )
-            && 'disable' === Options::get( 'updates_translation_updates' ) && 0 < $update_data['counts']['translations'] ) {
-            // Reduce translation count from total.
-            $update_data['counts']['total'] = $update_data['counts']['total'] - $update_data['counts']['translations'];
-
-            // As we are disabling translation updates, set translation updates count to 0.
-            $update_data['counts']['translations'] = 0;
-
-            // Adjust update title.
-            unset( $titles['translations'] );
+        // Only when something was removed. Rebuilding unconditionally would
+        // overwrite a title another plugin had already filtered, on every
+        // request, including ones where this plugin changed nothing.
+        if ( $stripped ) {
             $update_data['title'] = $titles ? esc_attr( implode( ', ', $titles ) ) : '';
         }
 
@@ -214,365 +177,149 @@ class Updates implements Bootable {
     }
 
     /**
-     * Hide update checks in the Site Health screen.
+     * Hide the update checks in Site Health that no longer apply.
+     *
+     * @param array $tests Registered tests, grouped by direct and async.
      */
     private function siteStatusTests( $tests ) {
-        if ( 'all' === Options::get( 'updates_disable_updates' ) ) {
-            if ( isset( $tests['async']['background_updates'] ) ) {
-                unset( $tests['async']['background_updates'] );
-            }
-
-            if ( isset( $tests['direct']['wordpress_version'] ) ) {
-                unset( $tests['direct']['wordpress_version'] );
-            }
-
-            if ( isset( $tests['direct']['plugin_theme_auto_updates'] ) ) {
-                unset( $tests['direct']['plugin_theme_auto_updates'] );
-            }
-
-            if ( isset( $tests['direct']['plugin_version'] ) ) {
-                unset( $tests['direct']['plugin_version'] );
-            }
-
-            if ( isset( $tests['direct']['theme_version'] ) ) {
-                unset( $tests['direct']['theme_version'] );
-            }
-
-            return $tests;
+        // Arr::forget takes dotted keys and is a no-op on ones that are not
+        // there, so the isset() guard each of these used to carry is dead
+        // weight.
+        if ( $this->policy->core->isOff() ) {
+            Arr::forget( $tests, [ 'async.background_updates', 'direct.wordpress_version' ] );
         }
 
-        if ( 'selective' === Options::get( 'updates_disable_updates' ) ) {
+        if ( $this->policy->plugins->isOff() ) {
+            Arr::forget( $tests, 'direct.plugin_version' );
+        }
 
-            if ( 'disable_core_updates' === Options::get( 'updates_core_updates' ) ) {
-                if ( isset( $tests['async']['background_updates'] ) ) {
-                    unset( $tests['async']['background_updates'] );
-                }
+        if ( $this->policy->themes->isOff() ) {
+            Arr::forget( $tests, 'direct.theme_version' );
+        }
 
-                if ( isset( $tests['direct']['wordpress_version'] ) ) {
-                    unset( $tests['direct']['wordpress_version'] );
-                }
-            }
-
-            if (
-                'disable' === Options::get( 'updates_plugin_updates' )
-                || 'disable' === Options::get( 'updates_theme_updates' )
-            ) {
-                if ( isset( $tests['direct']['plugin_theme_auto_updates'] ) ) {
-                    unset( $tests['direct']['plugin_theme_auto_updates'] );
-                }
-            }
-
-            if ( 'disable' === Options::get( 'updates_plugin_updates' ) ) {
-                if ( isset( $tests['direct']['plugin_version'] ) ) {
-                    unset( $tests['direct']['plugin_version'] );
-                }
-            }
-
-            if ( 'disable' === Options::get( 'updates_theme_updates' ) ) {
-                if ( isset( $tests['direct']['theme_version'] ) ) {
-                    unset( $tests['direct']['theme_version'] );
-                }
-            }
+        if ( $this->policy->plugins->isOff() || $this->policy->themes->isOff() ) {
+            Arr::forget( $tests, 'direct.plugin_theme_auto_updates' );
         }
 
         return $tests;
     }
 
-    /**
-     * Remove all the various schedule hooks for themes, plugins, etc.
-     */
-    private function disableScheduleHook() {
-        if ( 'all' === Options::get( 'updates_disable_updates' ) ) {
-            wp_clear_scheduled_hook( 'wp_update_themes' );
-            wp_clear_scheduled_hook( 'wp_update_plugins' );
-            wp_clear_scheduled_hook( 'wp_version_check' );
-            wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
+    // ---------------------------------------------------------------------
+    // Cron
+    // ---------------------------------------------------------------------
 
-            return;
+    /**
+     * Clear the scheduled check for anything switched off.
+     */
+    private function disableScheduleHook(): void {
+        foreach ( $this->scheduledHooks() as $hook => $verdict ) {
+            if ( $verdict->isOff() ) {
+                wp_clear_scheduled_hook( $hook );
+            }
         }
 
-        if ( 'selective' === Options::get( 'updates_disable_updates' ) ) {
-            if ( 'disable' === Options::get( 'updates_theme_updates' ) ) {
-                wp_clear_scheduled_hook( 'wp_update_themes' );
-            }
-
-            if ( 'disable' === Options::get( 'updates_plugin_updates' ) ) {
-                wp_clear_scheduled_hook( 'wp_update_plugins' );
-            }
-
-            if ( 'disable_core_updates' === Options::get( 'updates_core_updates' ) ) {
-                wp_clear_scheduled_hook( 'wp_version_check' );
-                // wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
-            }
+        if ( $this->policy->everything ) {
+            wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
         }
     }
 
     /**
-     * Filter cron events
+     * Refuse to schedule a check that has just been cleared.
+     *
+     * Clearing alone is not enough: core reschedules on the next request, so
+     * without this the hook comes straight back.
      *
      * @see https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
-     * @return bool
      */
     private function filterCronEvents( $event ) {
         if ( ! is_object( $event ) || empty( $event->hook ) ) {
             return $event;
         }
 
-        if ( 'all' === Options::get( 'updates_disable_updates' ) ) {
-            switch ( $event->hook ) {
-                case 'wp_version_check':
-                case 'wp_maybe_auto_update':
-                case 'wp_update_plugins':
-                case 'wp_update_themes':
-                    $event = false;
-                    break;
-            }
+        if ( $this->policy->everything && 'wp_maybe_auto_update' === $event->hook ) {
+            return false;
         }
 
-        if ( 'selective' === Options::get( 'updates_disable_updates' ) ) {
-            $core_updates    = Options::get( 'updates_core_updates' ) == 'disable_core_updates';
-            $plugins_updates = Options::get( 'updates_plugin_updates' ) == 'disable';
-            $themes_updates  = Options::get( 'updates_theme_updates' ) == 'disable';
+        $verdict = $this->scheduledHooks()[ $event->hook ] ?? null;
 
-            switch ( $event->hook ) {
-                case 'wp_version_check':
-                    // case 'wp_maybe_auto_update':
-                    $event = $core_updates ? false : $event;
-                    break;
-                case 'wp_update_plugins':
-                    $event = $plugins_updates ? false : $event;
-                    break;
-                case 'wp_update_themes':
-                    $event = $themes_updates ? false : $event;
-                    break;
-            }
-        }
-
-        return $event;
+        return $verdict?->isOff() ? false : $event;
     }
 
-    private function handleThemeUpdates() {
-        if (
-            'all' === Options::get( 'updates_disable_updates' )
-            || (
-                'selective' === Options::get( 'updates_disable_updates' )
-                && Options::get( 'updates_theme_updates' ) == 'disable'
-            )
-        ) {
+    // ---------------------------------------------------------------------
+    // Bulk actions
+    // ---------------------------------------------------------------------
 
-            // Necessary to remove after `admin_init` action.
-            add_action( 'admin_init', static function () {
-                // Remove update notice on themes list for each individual theme.
-                remove_action( 'load-themes.php', 'wp_theme_update_rows', 20 );
-            } );
+    private function bulkActionsPlugins( $actions ) {
+        return $this->stripActions( $actions, $this->policy->plugins );
+    }
 
-            // Time based transient checks.
-            self::add_filter( 'pre_site_transient_update_themes', [ $this, 'lastCheckedThemes' ] );
-            self::add_filter( 'site_transient_update_themes', [ $this, 'removeUpdateThemesArray' ] );
-
-            // Disable Theme Updates checks.
-            remove_action( 'load-themes.php', 'wp_update_themes' );
-            remove_action( 'load-update.php', 'wp_update_themes' );
-            remove_action( 'load-update-core.php', 'wp_update_themes' );
-            remove_action( 'admin_init', '_maybe_update_themes' );
-            remove_action( 'wp_update_themes', 'wp_update_themes' );
-        }
+    private function bulkActionsThemes( $actions ) {
+        return $this->stripActions( $actions, $this->policy->themes );
     }
 
     /**
-     * Disable the ability to update themes from single
-     * site and multisite bulk actions.
-     *
-     * @param array $actions All the bulk actions.
-     * @return array $actions  The remaining actions
+     * @param array $actions Bulk actions offered by the list table.
      */
-    private function disableBulkActionsThemes( $actions ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-        $theme_updates   = Options::get( 'updates_theme_updates' );
+    private function stripActions( $actions, Verdict $verdict ): array {
+        return array_diff_key(
+            $actions,
+            array_flip( $this->policy->strippedBulkActions( $verdict ) )
+        );
+    }
 
-        if ( 'all' === $disable_updates || ( 'selective' === $disable_updates && 'disable' === $theme_updates ) ) {
-            $remove_actions = [ 'update-selected', 'update', 'upgrade', 'enable-auto-update-selected', 'disable-auto-update-selected' ];
-        } elseif ( 'selective' === $disable_updates && 'manual' === $theme_updates ) {
-            $remove_actions = [ 'enable-auto-update-selected', 'disable-auto-update-selected' ];
-        } else {
-            return $actions;
+    // ---------------------------------------------------------------------
+    // Transients: report everything as current
+    // ---------------------------------------------------------------------
+
+    private function handlePluginUpdates(): void {
+        if ( ! $this->policy->plugins->isOff() ) {
+            return;
         }
 
-        foreach ( $remove_actions as $key ) {
-            if ( isset( $actions[ $key ] ) ) {
-                unset( $actions[ $key ] );
-            }
+        add_action( 'admin_init', static function (): void {
+            remove_action( 'load-plugins.php', 'wp_plugin_update_rows', 20 );
+        } );
+
+        self::add_filter( 'pre_site_transient_update_plugins', [ $this, 'lastCheckedPlugins' ] );
+        add_filter( 'site_transient_update_plugins', '__return_empty_array' );
+
+        remove_action( 'load-update-core.php', 'wp_update_plugins' );
+        remove_action( 'load-plugins.php', 'wp_update_plugins' );
+        remove_action( 'load-update.php', 'wp_update_plugins' );
+        remove_action( 'wp_update_plugins', 'wp_update_plugins' );
+        remove_action( 'admin_init', '_maybe_update_plugins' );
+    }
+
+    private function handleThemeUpdates(): void {
+        if ( ! $this->policy->themes->isOff() ) {
+            return;
         }
 
-        return $actions;
+        add_action( 'admin_init', static function (): void {
+            remove_action( 'load-themes.php', 'wp_theme_update_rows', 20 );
+        } );
+
+        self::add_filter( 'pre_site_transient_update_themes', [ $this, 'lastCheckedThemes' ] );
+        add_filter( 'site_transient_update_themes', '__return_empty_array' );
+
+        remove_action( 'load-themes.php', 'wp_update_themes' );
+        remove_action( 'load-update.php', 'wp_update_themes' );
+        remove_action( 'load-update-core.php', 'wp_update_themes' );
+        remove_action( 'admin_init', '_maybe_update_themes' );
+        remove_action( 'wp_update_themes', 'wp_update_themes' );
     }
 
-    /**
-     * Always send back that the latest version of our theme is the one we're running.
-     *
-     * @return object the modified output with our information
-     */
-    private function lastCheckedThemes() {
-        // Call the global WP version.
-        global $wp_version;
-
-        // Set a blank data array.
-        $data = [];
-
-        // Build my theme data array.
-        foreach ( wp_get_themes() as $theme ) {
-            $data[ $theme->get_stylesheet() ] = $theme->get( 'Version' );
+    private function handleTranslationUpdates(): void {
+        if ( ! $this->policy->translations->isOff() ) {
+            return;
         }
 
-        // Return our object.
-        return (object) [
-            'last_checked'    => time(),
-            'updates'         => [],
-            'version_checked' => $wp_version,
-            'checked'         => $data,
-        ];
-    }
-
-    /**
-     * Return an empty array of items requiring update for themes.
-     *
-     * @param array $items All the items being passed for update.
-     * @return array An empty array, or the original items if not enabled.
-     */
-    private function removeUpdateThemesArray( $items ) {
-        return [];
-    }
-
-    private function lastCheckedNow( $transient ) {
-        global $wp_version;
-
-        include ABSPATH . WPINC . '/version.php';
-
-        $current                  = new stdClass();
-        $current->updates         = [];
-        $current->version_checked = $wp_version;
-        $current->last_checked    = time();
-
-        return $current;
-    }
-
-    private function handlePluginUpdates() {
-        if (
-            'all' === Options::get( 'updates_disable_updates' )
-            || (
-                'selective' === Options::get( 'updates_disable_updates' )
-                && Options::get( 'updates_plugin_updates' ) == 'disable'
-            )
-        ) {
-
-            // Necessary to remove after `admin_init` action.
-            add_action( 'admin_init', static function () {
-                // Remove update notice on plugins list for each individual plugin.
-                remove_action( 'load-plugins.php', 'wp_plugin_update_rows', 20 );
-            } );
-
-            // Time based transient checks.
-            self::add_filter( 'pre_site_transient_update_plugins', [ $this, 'lastCheckedPlugins' ] );
-            self::add_filter( 'site_transient_update_plugins', [ $this, 'removePluginsUpdateArray' ] );
-
-            // Disable Plugin Updates checks.
-            remove_action( 'load-update-core.php', 'wp_update_plugins' );
-            remove_action( 'load-plugins.php', 'wp_update_plugins' );
-            remove_action( 'load-update.php', 'wp_update_plugins' );
-            remove_action( 'wp_update_plugins', 'wp_update_plugins' );
-            remove_action( 'admin_init', '_maybe_update_plugins' );
+        foreach ( [ 'core', 'plugins', 'themes' ] as $kind ) {
+            self::add_filter( "site_transient_update_{$kind}", [ $this, 'emptyTranslations' ] );
         }
     }
 
-    /**
-     * Disable the ability to update plugins from single
-     * site and multisite bulk actions.
-     *
-     * @param array $actions All the bulk actions.
-     * @return array $actions  The remaining actions
-     */
-    private function disableBulkActionsPlugins( $actions ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-        $plugin_updates  = Options::get( 'updates_plugin_updates' );
-
-        if ( 'all' === $disable_updates || ( 'selective' === $disable_updates && 'disable' === $plugin_updates ) ) {
-            $remove_actions = [ 'update-selected', 'update', 'upgrade', 'enable-auto-update-selected', 'disable-auto-update-selected' ];
-        } elseif ( 'selective' === $disable_updates && 'manual' === $plugin_updates ) {
-            $remove_actions = [ 'enable-auto-update-selected', 'disable-auto-update-selected' ];
-        } else {
-            return $actions;
-        }
-
-        foreach ( $remove_actions as $key ) {
-            if ( isset( $actions[ $key ] ) ) {
-                unset( $actions[ $key ] );
-            }
-        }
-
-        return $actions;
-    }
-
-    /**
-     * Always send back that the latest version of our plugins are the one we're running
-     *
-     * @return object the modified output with our information
-     */
-    private function lastCheckedPlugins() {
-        // Call the global WP version.
-        global $wp_version;
-
-        // Set a blank data array.
-        $data = [];
-
-        // Add our plugin file if we don't have it.
-        if ( ! function_exists( 'get_plugins' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        // Build my plugin data array.
-        foreach ( get_plugins() as $file => $plugin ) {
-            $data[ $file ] = $plugin['Version'];
-        }
-
-        // Return our object.
-        return (object) [
-            'last_checked'    => time(),
-            'updates'         => [],
-            'version_checked' => $wp_version,
-            'checked'         => $data,
-        ];
-    }
-
-    /**
-     * Return an empty array of items requiring update for both plugins.
-     *
-     * @param array $items All the items being passed for update.
-     * @return array An empty array, or the original items if not enabled.
-     */
-    private function removePluginsUpdateArray( $items ) {
-        return [];
-    }
-
-    private function handleTranslationUpdates() {
-        if (
-            'all' === Options::get( 'updates_disable_updates' )
-            || (
-                'selective' === Options::get( 'updates_disable_updates' )
-                && Options::get( 'updates_translation_updates' ) == 'disable'
-            )
-        ) {
-            // Core translation notifications.
-            self::add_filter( 'site_transient_update_core', [ $this, 'disableTranslationUpdates' ] );
-
-            // Plugin translation notifications.
-            self::add_filter( 'site_transient_update_plugins', [ $this, 'disableTranslationUpdates' ] );
-
-            // Theme translation notifications.
-            self::add_filter( 'site_transient_update_themes', [ $this, 'disableTranslationUpdates' ] );
-        }
-    }
-
-    private function disableTranslationUpdates( $transient ) {
+    private function emptyTranslations( $transient ) {
         if ( is_object( $transient ) && isset( $transient->translations ) ) {
             $transient->translations = [];
         }
@@ -581,264 +328,120 @@ class Updates implements Bootable {
     }
 
     /**
-     * Tell WordPress we are on a version control system to add additional blocks.
-     * Disable Auto-update updates, 'false' allows the update.
-     *
-     * @return bool
+     * Report every installed plugin as already current.
      */
-    private function isVCSCheckout( $checkout ) {
-        $disable_updates    = Options::get( 'updates_disable_updates' );
-        $core_updates       = Options::get( 'updates_core_updates' );
-        $enable_VCS_updates = Options::get( 'updates_enable_update_vcs' );
-
-        if (
-            'all' === $disable_updates
-            || (
-                'selective' === $disable_updates
-                && (
-                    'disable_core_updates' === $core_updates
-                    || 'enable' === $enable_VCS_updates
-                )
-            )
-        ) {
-            return true;
+    private function lastCheckedPlugins() {
+        if ( ! function_exists( 'get_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
-        if ( 'selective' === $disable_updates && 'disable' === $enable_VCS_updates ) {
-            return false;
-        }
-
-        return $checkout;
-    }
-
-    private function allowMinorAutoCoreUpdates( $upgrade_minor ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates ) {
-            $core_updates = Options::get( 'updates_core_updates' );
-
-            if ( 'disable_core_auto_updates' === $core_updates || 'disable_core_updates' === $core_updates ) {
-                return false;
-            }
-
-            return 'allow_minor_core_auto_updates' === $core_updates;
-        }
-
-        return $upgrade_minor;
-    }
-
-    private function allowMajorAutoCoreUpdates( $upgrade_major ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates ) {
-            $core_updates = Options::get( 'updates_core_updates' );
-
-            if ( 'disable_core_auto_updates' === $core_updates || 'disable_core_updates' === $core_updates ) {
-                return false;
-            }
-
-            return 'allow_major_core_auto_updates' === $core_updates;
-        }
-
-        return $upgrade_major;
-    }
-
-    private function allowDevAutoCoreUpdates( $upgrade_major ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates ) {
-            $core_updates = Options::get( 'updates_core_updates' );
-
-            if ( 'disable_core_auto_updates' === $core_updates || 'disable_core_updates' === $core_updates ) {
-                return false;
-            }
-
-            return 'allow_dev_core_auto_updates' === $core_updates;
-        }
-
-        return $upgrade_major;
-    }
-
-    private function autoUpdateCore( $update ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates ) {
-            $core_updates = Options::get( 'updates_core_updates' );
-
-            if ( 'disable_core_auto_updates' === $core_updates || 'disable_core_updates' === $core_updates ) {
-                return false;
-            }
-        }
-
-        return $update;
+        return $this->checkedTransient( wp_list_pluck( get_plugins(), 'Version' ) );
     }
 
     /**
-     * Get rid of the version number in the footer.
+     * Report every installed theme as already current.
      */
-    private function updateFooter( $content ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
+    private function lastCheckedThemes() {
+        $versions = [];
 
-        if ( 'all' === $disable_updates
-            || (
-                'selective' === $disable_updates
-                && Options::get( 'updates_core_updates' ) === 'disable_core_updates'
-            )
-        ) {
-            return '';
+        foreach ( wp_get_themes() as $theme ) {
+            $versions[ $theme->get_stylesheet() ] = $theme->get( 'Version' );
         }
 
-        return $content;
+        return $this->checkedTransient( $versions );
     }
+
+    /**
+     * Report core as already current.
+     */
+    private function lastCheckedCore( $update ) {
+        return $this->policy->core->isOff()
+            ? $this->checkedTransient()
+            : $update;
+    }
+
+    /**
+     * An update transient saying a check just happened and found nothing.
+     *
+     * @param array|null $checked Versions core would have compared against.
+     */
+    private function checkedTransient( ?array $checked = null ): object {
+        global $wp_version;
+
+        $transient = (object) [
+            'last_checked'    => time(),
+            'updates'         => [],
+            'version_checked' => $wp_version,
+        ];
+
+        // Core omits `checked` on the core transient and requires it on the
+        // plugin and theme ones, so this is not merely cosmetic.
+        if ( null !== $checked ) {
+            $transient->checked = $checked;
+        }
+
+        return $transient;
+    }
+
+    // ---------------------------------------------------------------------
+    // Auto-update filters
+    // ---------------------------------------------------------------------
 
     private function autoUpdatePlugin( $update ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        $plugin_updates = Options::get( 'updates_plugin_updates' );
-        if ( 'selective' === $disable_updates && ( 'manual' === $plugin_updates || 'disable' === $plugin_updates ) ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates && 'auto' === $plugin_updates ) {
-            return true;
-        }
-
-        return $update;
-    }
-
-    private function pluginsAutoUpdateEnabled( $enabled ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        $plugin_updates = Options::get( 'updates_plugin_updates' );
-        if ( 'selective' === $disable_updates && ( 'manual' === $plugin_updates || 'disable' === $plugin_updates ) ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates && 'auto' === $plugin_updates ) {
-            return true;
-        }
-
-        return $enabled;
+        return $this->policy->plugins->autoUpdate( (bool) $update );
     }
 
     private function autoUpdateTheme( $update ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        $theme_updates = Options::get( 'updates_theme_updates' );
-        if ( 'selective' === $disable_updates && ( 'manual' === $theme_updates || 'disable' === $theme_updates ) ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates && 'auto' === $theme_updates ) {
-            return true;
-        }
-
-        return $update;
-    }
-
-    private function themesAutoUpdateEnabled( $enabled ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        $theme_updates = Options::get( 'updates_theme_updates' );
-        if ( 'selective' === $disable_updates && ( 'manual' === $theme_updates || 'disable' === $theme_updates ) ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates && 'auto' === $theme_updates ) {
-            return true;
-        }
-
-        return $enabled;
+        return $this->policy->themes->autoUpdate( (bool) $update );
     }
 
     private function autoUpdateTranslation( $update ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        $translationUpdateOption = Options::get( 'updates_translation_updates' );
-        if ( 'selective' === $disable_updates && 'disable' === $translationUpdateOption ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates && 'auto' === $translationUpdateOption ) {
-            return true;
-        }
-
-        return $update;
+        return $this->policy->translations->autoUpdate( (bool) $update );
     }
 
-    private function asyncUpdateTranslation( $update ) {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( 'all' === $disable_updates ) {
-            return false;
-        }
-
-        $translationUpdateOption = Options::get( 'updates_translation_updates' );
-        if ( 'selective' === $disable_updates && 'disable' === $translationUpdateOption ) {
-            return false;
-        }
-
-        if ( 'selective' === $disable_updates && 'auto' === $translationUpdateOption ) {
-            return true;
-        }
-
-        return $update;
+    private function allowMinorCore( $allowed ) {
+        return $this->policy->allowsCoreAuto( 'minor', (bool) $allowed );
     }
 
-    private function updateNotice() {
-        if ( $this->shouldShowUpdateNotice() ) {
+    private function allowMajorCore( $allowed ) {
+        return $this->policy->allowsCoreAuto( 'major', (bool) $allowed );
+    }
+
+    private function allowDevCore( $allowed ) {
+        return $this->policy->allowsCoreAuto( 'dev', (bool) $allowed );
+    }
+
+    /**
+     * A veto only.
+     *
+     * The three release-level filters above decide whether core updates
+     * itself. This one can refuse, but must never force -- returning true
+     * would overrule a level filter that had already said no.
+     */
+    private function autoUpdateCore( $update ) {
+        return $this->policy->core->blocksAuto() ? false : $update;
+    }
+
+    /**
+     * Tell WordPress this is a version-controlled checkout.
+     */
+    private function isVCSCheckout( $checkout ) {
+        return $this->policy->vcs ?? $checkout;
+    }
+
+    // ---------------------------------------------------------------------
+    // Notices, footer, email, constants
+    // ---------------------------------------------------------------------
+
+    private function updateFooter( $content ) {
+        return $this->policy->core->isOff() ? '' : $content;
+    }
+
+    private function updateNotice(): void {
+        if ( ! $this->hidesUpdateNotice() ) {
             return;
         }
 
-        $this->disableUpdateNotices();
-    }
-
-    private function shouldShowUpdateNotice(): bool {
-        $disable_updates     = Options::get( 'updates_disable_updates' );
-        $nags_only_for_admin = Options::get( 'updates_updates_nags_only_for_admin' );
-        $core_updates        = Options::get( 'updates_core_updates' );
-        $can_update_core     = current_user_can( 'update_core' );
-
-        return ! ( 'all' === $disable_updates || ( 'selective' === $disable_updates && ( ( $nags_only_for_admin && ! $can_update_core ) || 'disable_core_updates' === $core_updates ) ) );
-    }
-
-    private function disableUpdateNotices() {
         remove_action( 'admin_notices', 'update_nag', 3 );
         remove_action( 'network_admin_notices', 'update_nag', 3 );
         remove_action( 'admin_notices', 'maintenance_nag' );
@@ -846,70 +449,71 @@ class Updates implements Bootable {
     }
 
     /**
-     * Always send back that the latest version of WordPress is the one we're running.
+     * Whether the core update nag should be suppressed for this user.
+     *
+     * The nags-only-for-admin case is per-user rather than per-site, which is
+     * why it is asked here and not resolved into the policy.
      */
-    private function lastCheckedCore( $update ) {
-        // Call the global WP version.
-        global $wp_version;
-
-        $disable_updates = Options::get( 'updates_disable_updates' );
-        $core_updates    = Options::get( 'updates_core_updates' );
-
-        if ( 'all' === $disable_updates
-            || (
-                'selective' === $disable_updates
-                && 'disable_core_updates' === $core_updates
-            )
-        ) {
-            return (object) [
-                'last_checked'    => time(),
-                'updates'         => [],
-                'version_checked' => $wp_version,
-            ];
+    private function hidesUpdateNotice(): bool {
+        if ( $this->policy->core->isOff() ) {
+            return true;
         }
 
-        return $update;
+        return $this->policy->nagsOnlyForAdmin && ! current_user_can( 'update_core' );
     }
 
-    private function handleUpdateEmails() {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( ! (
-            'all' === $disable_updates
-            || (
-                'selective' === $disable_updates
-                && Options::get( 'updates_core_updates' ) === 'disable_core_updates'
-            )
-        )
-        ) {
+    private function handleUpdateEmails(): void {
+        if ( ! $this->policy->core->isOff() ) {
             return;
         }
 
-        // Disable update emails (for when we push the new WordPress versions manually) as well
-        // as the notification there is a new version emails.
+        // Both the "a new version is available" mail and the debug mail sent
+        // after an attempted update.
         add_filter( 'automatic_updates_send_debug_email', '__return_false' );
         add_filter( 'auto_core_update_send_email', '__return_false' );
         add_filter( 'send_core_update_notification_email', '__return_false' );
-        add_filter( 'automatic_updates_send_debug_email', '__return_false', 1 );
     }
 
-    private function handleConstants() {
-        $disable_updates = Options::get( 'updates_disable_updates' );
-
-        if ( ! (
-            'all' === $disable_updates
-            || (
-                'selective' === $disable_updates
-                && Options::get( 'updates_core_updates' ) === 'disable_core_updates'
-            )
-        )
-        ) {
+    private function handleConstants(): void {
+        if ( ! $this->policy->core->isOff() ) {
             return;
         }
 
-        if ( ! defined( 'WP_AUTO_UPDATE_CORE' ) ) {
-            define( 'WP_AUTO_UPDATE_CORE', false );
-        }
+        maybe_define_constant( 'WP_AUTO_UPDATE_CORE', false );
     }
 
+    // ---------------------------------------------------------------------
+    // Maps
+    // ---------------------------------------------------------------------
+
+    /**
+     * The `wp_get_update_data` count keys, and the verdict governing each.
+     *
+     * @return array<string, Verdict>
+     */
+    private function countable(): array {
+        return [
+            'wordpress'    => $this->policy->core,
+            'plugins'      => $this->policy->plugins,
+            'themes'       => $this->policy->themes,
+            'translations' => $this->policy->translations,
+        ];
+    }
+
+    /**
+     * The cron hooks that check for updates, and the verdict governing each.
+     *
+     * `wp_maybe_auto_update` is deliberately absent: it performs updates for
+     * all three kinds at once, so no single verdict governs it. It is handled
+     * separately, and only when everything is off.
+     *
+     * @return array<string, Verdict>
+     */
+    private function scheduledHooks(): array {
+        return [
+            'wp_version_check'  => $this->policy->core,
+            'wp_update_plugins' => $this->policy->plugins,
+            'wp_update_themes'  => $this->policy->themes,
+        ];
+    }
 }

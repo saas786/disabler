@@ -19,7 +19,6 @@ namespace HBP\Disabler\Tools\Jetpack;
  * @author Fabien Potencier <fabien@symfony.com>
  */
 class IpUtils {
-
     /**
      * This class should not be instantiated.
      */
@@ -30,6 +29,7 @@ class IpUtils {
      *
      * @param string       $request_ip IP to check
      * @param string|array $ips List of IPs or subnets (can be a string if only a single one)
+     *
      * @return bool Whether the IP is valid
      */
     public static function checkIP( $request_ip, $ips ) {
@@ -54,6 +54,7 @@ class IpUtils {
      *
      * @param string $request_ip IPv4 address to check
      * @param string $ip IPv4 address or subnet in CIDR notation
+     *
      * @return bool Whether the request IP matches the IP, or whether the request IP is within the CIDR subnet
      */
     public static function checkIP4( $request_ip, $ip ) {
@@ -83,10 +84,12 @@ class IpUtils {
      * Compares two IPv6 addresses.
      * In case a subnet is given, it checks if it contains the request IP.
      *
-     * @see https://github.com/dsp/v6tools
      * @param string $request_ip IPv6 address to check
      * @param string $ip IPv6 address or subnet in CIDR notation
+     *
      * @return bool Whether the IP is valid
+     *
+     * @see https://github.com/dsp/v6tools
      * @throws \RuntimeException When IPV6 support is not enabled
      *
      * @author David Soria Parra <dsp at php dot net>
@@ -125,5 +128,4 @@ class IpUtils {
 
         return true;
     }
-
 }

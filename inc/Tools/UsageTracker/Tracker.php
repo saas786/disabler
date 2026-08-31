@@ -2,12 +2,11 @@
 
 namespace HBP\Disabler\Tools\UsageTracker;
 
-use HBP\Disabler\Admin\Options;
 use HBP\Disabler\Tools\UsageTracker\Trackers\Settings;
 use Hybrid\Usage\Tracker\Tracker as UsageTracker;
+use function HBP\Disabler\setting;
 
 class Tracker extends UsageTracker {
-
     /**
      * The tracking option name.
      *
@@ -48,7 +47,7 @@ class Tracker extends UsageTracker {
      */
     public function tracking_enabled() {
         // Check if we're allowing tracking.
-        if ( Options::get( 'tracking_allow_usage_tracking' ) ) {
+        if ( setting( 'tracking.allow_usage_tracking' ) ) {
             return true;
         }
 
@@ -63,6 +62,7 @@ class Tracker extends UsageTracker {
      *                                    Plugin_Upgrader, Core_Upgrade, or Language_Pack_Upgrader.
      *                                    instance. Default false.
      * @param array             $data Array of update data.
+     *
      * @return void
      */
     public function schedule_tracking_data_sending( $upgrader = false, $data = [] ) {
@@ -91,7 +91,6 @@ class Tracker extends UsageTracker {
     public function init_collector() {
         parent::init_collector();
 
-        $this->add_collection( new Settings() );
+        $this->add_collection( new Settings );
     }
-
 }

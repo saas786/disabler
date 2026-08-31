@@ -116,6 +116,7 @@ class Notices {
      *
      * @param array|string $names_array_or_regex An array of notice names, or a string representing a regular expression.
      * @param bool         $force_save Force saving inside this method instead of at the 'shutdown'.
+     *
      * @return void
      */
     public static function remove_notices( $names_array_or_regex, $force_save = false ) {
@@ -135,6 +136,7 @@ class Notices {
      * See if a notice is being shown.
      *
      * @param string $name Notice name.
+     *
      * @return bool
      */
     public static function has_notice( $name ) {
@@ -197,11 +199,13 @@ class Notices {
             return;
         }
 
+        /** @var \Hybrid\Assets\Asset $notices_style */
+        $notices_style = Assets::asset( 'css/admin/notices.css' );
         wp_enqueue_style(
             'hbp-disabler-admin-notices',
-            Assets::assetUrl( 'css/admin/notices.css' ),
-            [],
-            null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $notices_style->url(),
+            $notices_style->dependencies(),
+            $notices_style->version()
         );
 
         // Add RTL support.
@@ -268,5 +272,4 @@ class Notices {
             View\display( 'HBP/Disabler::admin/html-notice-updated' );
         }
     }
-
 }
