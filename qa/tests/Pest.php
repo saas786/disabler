@@ -42,6 +42,7 @@ uses()
         TransactionManager::beginTransaction();
         snapshot_hooks();
         snapshot_query_vars();
+        snapshot_meta_boxes();
 
         // CI installs a bare WordPress with no theme, so nothing ever calls
         // add_theme_support( 'automatic-feed-links' ) -- and feed_links(),
@@ -67,6 +68,7 @@ uses()
         TransactionManager::rollback();
         restore_hooks();
         restore_query_vars();
+        restore_meta_boxes();
         reset_scripts();
         reset_styles();
     } )
@@ -401,6 +403,44 @@ function restore_query_vars(): void {
     $wp->public_query_vars = $GLOBALS['hbp_saved_query_vars'];
 
     $GLOBALS['hbp_saved_query_vars'] = null;
+}
+
+/**
+ * The dashboard meta boxes, as they stood before the current test.
+ *
+ * $wp_meta_boxes is a fourth mutable global that neither the rollback nor the
+ * hook restore reaches. Performance's widgets control writes it directly --
+ * emptying ['dashboard']['normal']['core'] for 'all', and going through
+ * remove_meta_box() for 'core', which writes false into all four priorities.
+ * Either way the array a later test inherits is not the one it would have
+ * built for itself.
+ *
+ * Nulling it is not enough, the way it is for WP_Scripts: nothing rebuilds
+ * this global on demand. wp_dashboard_setup() populates it, and that only
+ * runs on an actual dashboard load. Snapshot and put it back instead.
+ *
+ * @var array<string, mixed>|null
+ */
+$GLOBALS['hbp_saved_meta_boxes'] = null;
+
+function snapshot_meta_boxes(): void {
+    // A plain assignment is a full copy here. PHP arrays are values, and
+    // copy-on-write separates at whatever depth is written, so the feature
+    // emptying ['dashboard']['normal']['core'] does not reach through this.
+    // Nothing in the array is mutated in place, only replaced, so the objects
+    // the two copies share do not matter -- and serialize() would choke on a
+    // closure callback that a plain copy carries fine.
+    $GLOBALS['hbp_saved_meta_boxes'] = $GLOBALS['wp_meta_boxes'] ?? null;
+}
+
+function restore_meta_boxes(): void {
+    if ( null === $GLOBALS['hbp_saved_meta_boxes'] ) {
+        unset( $GLOBALS['wp_meta_boxes'] );
+    } else {
+        $GLOBALS['wp_meta_boxes'] = $GLOBALS['hbp_saved_meta_boxes'];
+    }
+
+    $GLOBALS['hbp_saved_meta_boxes'] = null;
 }
 
 /**
