@@ -22,3 +22,5 @@ mix-manifest.json
 .deliver/
 /.pest/
 /.phpunit.cache/
+/.claude/tmp
+/.token-optimizer
