@@ -423,12 +423,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hybopress/settings.git",
-                "reference": "11b0ffee5f1c73438b5b80b05527c45d0565bb2c"
+                "reference": "7fcff967818cb9794327ccca16f08a018e33392e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hybopress/settings/zipball/11b0ffee5f1c73438b5b80b05527c45d0565bb2c",
-                "reference": "11b0ffee5f1c73438b5b80b05527c45d0565bb2c",
+                "url": "https://api.github.com/repos/hybopress/settings/zipball/7fcff967818cb9794327ccca16f08a018e33392e",
+                "reference": "7fcff967818cb9794327ccca16f08a018e33392e",
                 "shasum": ""
             },
             "require": {
@@ -488,7 +488,7 @@
                 "issues": "https://github.com/hybopress/settings/issues",
                 "source": "https://github.com/hybopress/settings/tree/main"
             },
-            "time": "2026-08-24T14:11:20+00:00"
+            "time": "2026-09-24T14:07:41+00:00"
         },
         {
             "name": "hbp/settings-ui",
@@ -496,12 +496,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hybopress/settings-ui.git",
-                "reference": "916705c95129e2ee2d7086c80960bf78957feb71"
+                "reference": "7a7d333bcd060dc42cfc4ff4848ab504f5454f46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hybopress/settings-ui/zipball/916705c95129e2ee2d7086c80960bf78957feb71",
-                "reference": "916705c95129e2ee2d7086c80960bf78957feb71",
+                "url": "https://api.github.com/repos/hybopress/settings-ui/zipball/7a7d333bcd060dc42cfc4ff4848ab504f5454f46",
+                "reference": "7a7d333bcd060dc42cfc4ff4848ab504f5454f46",
                 "shasum": ""
             },
             "require": {
@@ -562,7 +562,7 @@
                 "issues": "https://github.com/hybopress/settings-ui/issues",
                 "source": "https://github.com/hybopress/settings-ui/tree/main"
             },
-            "time": "2026-08-27T06:13:10+00:00"
+            "time": "2026-09-24T14:07:53+00:00"
         },
         {
             "name": "league/commonmark",
