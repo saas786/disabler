@@ -6,7 +6,7 @@
 
 namespace HBP\Disabler\Tools\Update;
 
-use HBP\Disabler\Admin\Notices;
+use HBP\Disabler\Facades\Notices;
 use HBP\Disabler\Plugin;
 use Hybrid\Log\Facades\Log;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
@@ -194,7 +194,7 @@ class PluginInstall {
 
             self::update();
 
-            Notices::add_notice( 'update', true );
+            Notices::add( 'update' );
         }
     }
 
@@ -255,7 +255,7 @@ class PluginInstall {
      * Reset any notices added to admin.
      */
     private static function remove_admin_notices() {
-        Notices::remove_all_notices();
+        Notices::clear();
     }
 
     /**
@@ -325,7 +325,7 @@ class PluginInstall {
             if ( apply_filters( 'hbp_disabler_enable_auto_update_db', false ) ) {
                 self::update();
             } else {
-                Notices::add_notice( 'update', true );
+                Notices::add( 'update' );
             }
         } else {
             self::update_db_version();
