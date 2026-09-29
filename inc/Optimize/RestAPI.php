@@ -2,9 +2,9 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class RestAPI implements Bootable {
 
@@ -21,23 +21,25 @@ class RestAPI implements Bootable {
 
     private function initHooks(): void {
         // Disable REST API links in HTML <head>.
-        if ( Options::get( 'restapi_disable_rest_api_links' ) ) {
+        if ( setting( 'restapi.disable_rest_api_links' ) ) {
             remove_action( 'wp_head', 'rest_output_link_wp_head' );
         }
 
         // Disable the REST API URL to the WP RSD endpoint.
-        if ( Options::get( 'restapi_disable_rest_api_rsd_link' ) ) {
+        if ( setting( 'restapi.disable_rest_api_rsd_link' ) ) {
             remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
         }
 
         // Disable REST API link in HTTP headers.
-        if ( Options::get( 'restapi_disable_rest_api_link_in_headers' ) ) {
+        if ( setting( 'restapi.disable_rest_api_link_in_headers' ) ) {
             remove_action( 'template_redirect', 'rest_output_link_header', 11 );
         }
 
-        if ( Options::get( 'restapi_disable_rest_api_for_visitors' ) ) {
+        if ( setting( 'restapi.disable_rest_api_for_visitors' ) ) {
             self::add_filter( 'rest_authentication_errors', [ $this, 'rest_authentication_errors' ], \PHP_INT_MAX );
         }
+
+        $this->handleApplicationPasswords();
     }
 
     /**
@@ -45,11 +47,12 @@ class RestAPI implements Bootable {
      *
      * Note: We intentionally run it late, to allow other authentication execute before this.
      *
+     * @return true|\WP_Error
+     *
      * @see https://developer.wordpress.org/rest-api/frequently-asked-questions/#require-authentication-for-all-requests
      * @see https://github.com/woocommerce/woocommerce/issues/26847
      * @see https://core.trac.wordpress.org/ticket/46586
      * @see https://github.com/WordPress/WordPress/blob/812b1e296c57c53c6a2bf23f2cbc62adf4c7cc23/wp-includes/rest-api.php#L1058
-     * @return true|\WP_Error
      */
     private function rest_authentication_errors( $result ) {
 
@@ -85,4 +88,55 @@ class RestAPI implements Bootable {
         return $result;
     }
 
+    /**
+     * Disables Application Passwords (5.6+) globally or for selected roles.
+     *
+     * Application Passwords are enabled by default for all users on HTTPS
+     * sites and let them authenticate to the REST API with a generated
+     * password, bypassing 2FA/CAPTCHA/rate limiting - a common attack
+     * surface for sites that don't need programmatic API access.
+     *
+     * @see https://developer.wordpress.org/advanced-administration/security/application-passwords/
+     * @see https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/
+     */
+    private function handleApplicationPasswords(): void {
+        $mode = setting( 'restapi.disable_application_passwords', 'no' );
+
+        if ( 'all' === $mode ) {
+            add_filter( 'wp_is_application_passwords_available', '__return_false' );
+
+            return;
+        }
+
+        if ( 'selective' === $mode ) {
+            self::add_filter( 'wp_is_application_passwords_available_for_user', [ $this, 'isApplicationPasswordsAvailableForUser' ], 10, 2 );
+        }
+    }
+
+    /**
+     * Restricts Application Passwords availability for users who have one
+     * of the roles selected in the settings.
+     *
+     * @param bool     $available Whether Application Passwords are available for the user.
+     * @param \WP_User $user The user to check.
+     *
+     * @see https://developer.wordpress.org/reference/hooks/wp_is_application_passwords_available_for_user/
+     */
+    private function isApplicationPasswordsAvailableForUser( $available, $user ): bool {
+        if ( ! $available || ! $user instanceof \WP_User ) {
+            return $available;
+        }
+
+        $disabled_roles = (array) setting( 'restapi.application_passwords_roles', [] );
+
+        if ( empty( $disabled_roles ) ) {
+            return $available;
+        }
+
+        if ( array_intersect( $disabled_roles, (array) $user->roles ) ) {
+            return false;
+        }
+
+        return $available;
+    }
 }

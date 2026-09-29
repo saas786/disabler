@@ -1,0 +1,12 @@
+# GitHub Desktop launches from the GUI and does not inherit your shell PATH,
+# so node/nvm may be missing here even though they work in a terminal.
+command -v node >/dev/null 2>&1 || . "$HOME/.nvm/nvm.sh" >/dev/null 2>&1 || true
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "commit-msg: node not found, skipping commitlint"
+  exit 0
+fi
+
+# Unlike pre-commit, this one does block. A bad message cannot be fixed by a
+# formatter afterwards, and rewriting it later means rewriting history.
+npx --no-install commitlint --edit "$1"

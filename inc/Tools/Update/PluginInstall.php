@@ -6,7 +6,7 @@
 
 namespace HBP\Disabler\Tools\Update;
 
-use HBP\Disabler\Admin\Notices;
+use HBP\Disabler\Facades\Notices;
 use HBP\Disabler\Plugin;
 use Hybrid\Log\Facades\Log;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
@@ -38,6 +38,10 @@ class PluginInstall {
         '4.0.2'      => [
             __NAMESPACE__ . '\update_4_0_2_options',
             __NAMESPACE__ . '\update_4_0_2_db_version',
+        ],
+        '4.0.5'      => [
+            __NAMESPACE__ . '\update_4_0_5_options',
+            __NAMESPACE__ . '\update_4_0_5_db_version',
         ],
     ];
 
@@ -190,7 +194,7 @@ class PluginInstall {
 
             self::update();
 
-            Notices::add_notice( 'update', true );
+            Notices::add( 'update' );
         }
     }
 
@@ -251,7 +255,7 @@ class PluginInstall {
      * Reset any notices added to admin.
      */
     private static function remove_admin_notices() {
-        Notices::remove_all_notices();
+        Notices::clear();
     }
 
     /**
@@ -275,11 +279,16 @@ class PluginInstall {
         $settings = get_option( 'hbp_disabler_settings', null );
         $version  = get_option( 'hbp_disabler_version', null );
 
+        // Every one of them. These are five generations of this plugin's
+        // options, and a site is only new if it carries no trace of any
+        // generation. Most sites are missing several: one that started on 4.x
+        // has no `disabler_autop` and never will, but its
+        // `hbp_disabler_settings` still makes it an upgrade, not an install.
         return is_null( $v2_settings )
-            || is_null( $v3_settings )
-            || is_null( $v3_0_3_settings )
-            || is_null( $settings )
-            || is_null( $version );
+            && is_null( $v3_settings )
+            && is_null( $v3_0_3_settings )
+            && is_null( $settings )
+            && is_null( $version );
     }
 
     /**
@@ -316,7 +325,7 @@ class PluginInstall {
             if ( apply_filters( 'hbp_disabler_enable_auto_update_db', false ) ) {
                 self::update();
             } else {
-                Notices::add_notice( 'update', true );
+                Notices::add( 'update' );
             }
         } else {
             self::update_db_version();
@@ -363,7 +372,7 @@ class PluginInstall {
                         'hbp-disabler-db-updates'
                     );
 
-                    ++$loop;
+                    $loop++;
                 }
             }
         }
@@ -387,6 +396,7 @@ class PluginInstall {
      * Add more cron schedules.
      *
      * @param array $schedules List of WP scheduled cron jobs.
+     *
      * @return array
      */
     public static function cron_schedules( $schedules ) {
@@ -411,5 +421,4 @@ class PluginInstall {
 
         wp_schedule_event( time() + ( 3 * HOUR_IN_SECONDS ), 'daily', 'hbp_disabler_cleanup_logs' );
     }
-
 }

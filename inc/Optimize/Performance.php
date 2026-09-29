@@ -2,10 +2,10 @@
 
 namespace HBP\Disabler\Optimize;
 
-use HBP\Disabler\Admin\Options;
 use HBP\Disabler\Facades\Assets;
 use Hybrid\Contracts\Bootable;
 use Hybrid\Tools\WordPress\Traits\AccessiblePrivateMethods;
+use function HBP\Disabler\setting;
 
 class Performance implements Bootable {
 
@@ -24,11 +24,12 @@ class Performance implements Bootable {
         $this->disableEmojis();
         $this->disableHearbeat();
         $this->disableEmbeds();
+        $this->disableSpeculativeLoading();
         self::add_action( 'wp_dashboard_setup', [ $this, 'disableWidgets' ] );
     }
 
     private function disableEmojis() {
-        if ( ! Options::get( 'performance_disable_emojis' ) ) {
+        if ( ! setting( 'performance.disable_emojis' ) ) {
             return;
         }
 
@@ -36,6 +37,15 @@ class Performance implements Bootable {
         remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
         remove_action( 'wp_print_styles', 'print_emoji_styles' );
         remove_action( 'admin_print_styles', 'print_emoji_styles' );
+
+        // The hook core actually enqueues emoji styles through. The
+        // print_emoji_styles removals above are kept for older installs, but
+        // core unhooks that callback itself from wp_enqueue_emoji_styles, so
+        // on a current WordPress they remove nothing and the styles ship
+        // regardless of this control.
+        remove_action( 'wp_enqueue_scripts', 'wp_enqueue_emoji_styles' );
+        remove_action( 'enqueue_embed_scripts', 'wp_enqueue_emoji_styles' );
+
         remove_action( 'embed_head', 'print_emoji_detection_script' );
 
         remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
@@ -49,7 +59,7 @@ class Performance implements Bootable {
     }
 
     private function disableHearbeat() {
-        switch ( Options::get( 'performance_disable_heartbeat' ) ) {
+        switch ( setting( 'performance.disable_heartbeat' ) ) {
             case 'everywhere':
                 wp_deregister_script( 'heartbeat' );
                 break;
@@ -70,9 +80,76 @@ class Performance implements Bootable {
     }
 
     /**
+     * Speculative loading, on since WordPress 6.8.
+     *
+     * Core hands `wp_speculation_rules_configuration` an array of `mode` and
+     * `eagerness`, or null when it has already decided not to speculate --
+     * for logged-in users, or without pretty permalinks. Returning null
+     * switches it off; returning an array forces a configuration.
+     *
+     * `prerender` only downgrades the mode, because prerendering runs the
+     * page's scripts before anyone asks for it and analytics, counters and
+     * anything else with a side effect fire on pages nobody visits.
+     * Prefetching only fetches the document, so it is left alone.
+     */
+    private function disableSpeculativeLoading(): void {
+        $mode = setting( 'performance.disable_speculative_loading' );
+
+        if ( 'all' === $mode ) {
+            self::add_filter( 'wp_speculation_rules_configuration', '__return_null', \PHP_INT_MAX );
+
+            return;
+        }
+
+        if ( 'prerender' === $mode ) {
+            self::add_filter( 'wp_speculation_rules_configuration', [ $this, 'downgradePrerender' ], \PHP_INT_MAX );
+        }
+    }
+
+    /**
+     * Swap a prerender configuration for a prefetch one.
+     *
+     * Null is passed straight back: core has already decided not to speculate
+     * at all, and this setting is not asking for more than it would have done.
+     * A non-array is left alone too, since core sanitises those itself and
+     * would only replace whatever this returned.
+     *
+     * `auto` has to be resolved rather than treated as safe. It means "let
+     * core decide", and since 7.1 a host can point that at prerender with the
+     * WP_SPECULATIVE_LOADING_DEFAULT_MODE constant or the matching environment
+     * variable. Reading the resolved default is the only way to know.
+     *
+     *   * @param array<string, string>|null $config Speculation rules configuration.
+     *
+     *   * @param array<string, string>|null $config Speculation rules configuration.
+     *
+     * @param array<string, string>|null $config Speculation rules configuration.
+     */
+    private function downgradePrerender( $config ) {
+        if ( ! is_array( $config ) ) {
+            return $config;
+        }
+
+        $mode = $config['mode'] ?? 'auto';
+
+        if ( 'auto' === $mode && function_exists( 'wp_get_speculation_rules_default_configuration' ) ) {
+            $mode = wp_get_speculation_rules_default_configuration()['mode'] ?? 'prefetch';
+        }
+
+        if ( 'prerender' !== $mode ) {
+            return $config;
+        }
+
+        $config['mode'] = 'prefetch';
+
+        return $config;
+    }
+
+    /**
      * Filter function used to remove the tinymce emoji plugin.
      *
      * @param array $plugins
+     *
      * @return array
      */
     private function removeEmojisTinymce( $plugins ) {
@@ -82,9 +159,11 @@ class Performance implements Bootable {
     /**
      * Remove the core s.w.org hint as it's only used for emoji stuff we don't use (if disabled).
      *
-     * @see https://github.com/Yoast/wordpress-seo/blob/f6179b04ebc359c9975513e1dad1bc0718fef98e/src/integrations/front-end/crawl-cleanup-basic.php#L111
      * @param array $hints The hints we're adding to.
+     *
      * @return array
+     *
+     * @see https://github.com/Yoast/wordpress-seo/blob/f6179b04ebc359c9975513e1dad1bc0718fef98e/src/integrations/front-end/crawl-cleanup-basic.php#L111
      */
     private function resourceHintsPlainCleanup( $hints ) {
         foreach ( $hints as $key => $hint ) {
@@ -101,12 +180,12 @@ class Performance implements Bootable {
     }
 
     public function heartbeatFrequency( $settings ) {
-        $disable_heartbeat = Options::get( 'performance_disable_heartbeat' );
+        $disable_heartbeat = setting( 'performance.disable_heartbeat' );
         if ( 'everywhere' === $disable_heartbeat ) {
             return $settings;
         }
 
-        $heartbeat_frequency = Options::get( 'performance_heartbeat_frequency' );
+        $heartbeat_frequency = setting( 'performance.heartbeat_frequency' );
         if ( empty( $heartbeat_frequency ) || ! is_numeric( $heartbeat_frequency ) ) {
             return $settings;
         }
@@ -130,7 +209,7 @@ class Performance implements Bootable {
     private function disableEmbeds() {
         global $wp;
 
-        if ( ! Options::get( 'performance_disable_embeds' ) ) {
+        if ( ! setting( 'performance.disable_embeds' ) ) {
             return;
         }
 
@@ -142,9 +221,9 @@ class Performance implements Bootable {
             ]
         );
 
-        remove_filter( 'rest_endpoints', [ $this, 'disableEmbedEndpoint' ] );
+        self::add_filter( 'rest_endpoints', [ $this, 'disableEmbedEndpoint' ] );
 
-        remove_filter( 'oembed_response_data', [ $this, 'emptyOembedResponseData' ] );
+        self::add_filter( 'oembed_response_data', [ $this, 'emptyOembedResponseData' ] );
 
         // Turn off oEmbed auto discovery.
         add_filter( 'embed_oembed_discover', '__return_false' );
@@ -172,6 +251,7 @@ class Performance implements Bootable {
      * Remove the oembed/1.0/embed REST route.
      *
      * @param array $endpoints Registered REST API endpoints.
+     *
      * @return array Filtered REST API endpoints.
      */
     private function disableEmbedEndpoint( $endpoints ) {
@@ -184,6 +264,7 @@ class Performance implements Bootable {
      * Disables sending internal oEmbed response data in proxy endpoint.
      *
      * @param array $data The response data.
+     *
      * @return array|false Response data or false if in a REST API context.
      */
     private function emptyOembedResponseData( $data ) {
@@ -198,6 +279,7 @@ class Performance implements Bootable {
      * Disable all rewrite rules related to embeds.
      *
      * @param array $rules WordPress rewrite rules.
+     *
      * @return array Rewrite rules without embeds rules.
      */
     private function disableEmbedsRewriteRules( $rules ) {
@@ -234,11 +316,13 @@ class Performance implements Bootable {
      * This is used to unregister the `core-embed/wordpress` block type.
      */
     private function disableEmbedsEnqueueBlockEditorAssets() {
+        /** @var \Hybrid\Assets\Asset $embeds_script */
+        $embeds_script = Assets::asset( 'js/blocks/disable-embeds/index.js' );
         wp_enqueue_script(
             'hbp-disabler-disable-embeds',
-            Assets::assetUrl( 'js/blocks/disable-embeds/index.js' ),
-            [ 'wp-blocks', 'wp-dom-ready', 'wp-polyfill' ],
-            null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+            $embeds_script->url(),
+            $embeds_script->dependencies(),
+            $embeds_script->version(),
             true
         );
     }
@@ -246,16 +330,16 @@ class Performance implements Bootable {
     private function disableWidgets() {
         global $wp_meta_boxes;
 
-        if ( 'no' === Options::get( 'performance_disable_widgets' ) ) {
+        if ( 'no' === setting( 'performance.disable_widgets' ) ) {
             return;
         }
 
-        if ( 'all' === Options::get( 'performance_disable_widgets' ) ) {
+        if ( 'all' === setting( 'performance.disable_widgets' ) ) {
             $wp_meta_boxes['dashboard']['normal']['core'] = [];
             $wp_meta_boxes['dashboard']['side']['core']   = [];
         }
 
-        if ( 'core' === Options::get( 'performance_disable_widgets' ) ) {
+        if ( 'core' === setting( 'performance.disable_widgets' ) ) {
             remove_action( 'welcome_panel', 'wp_welcome_panel' );
 
             remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
@@ -274,5 +358,4 @@ class Performance implements Bootable {
             remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
         }
     }
-
 }

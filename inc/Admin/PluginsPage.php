@@ -33,5 +33,4 @@ class PluginsPage {
 
         return $links;
     }
-
 }

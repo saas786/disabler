@@ -4,7 +4,7 @@ Tags: disable, updates, performance, security, rest-api
 Requires at least: 7.0
 Tested up to: 7.0
 Requires PHP: 8.2
-Stable tag: 4.0.4
+Stable tag: 4.0.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,12 +28,11 @@ This plugin enables you to disable/remove the following features:
 
 **Media**
 
-Lazy-Loaded Image Auto-Sizing (WordPress 6.7+)
-
 WordPress 6.7 introduced automatic sizing for lazy-loaded images. Use the following options to disable this behavior:
 
 * Disable Image Sizing CSS Containment - Removes the CSS containment rule applied to lazy-loaded images.
 * Disable Auto Sizing Attribute on Images - Prevents WordPress from adding the sizes="auto" attribute to lazy-loaded images. This also removes the CSS containment rule.
+* Disable Core Lazy Loading - Disables WordPress' native lazy loading for images and iframes. Choose "Force Eager Loading" instead of "Yes" if you just want to avoid layout shift or LCP issues rather than removing lazy loading entirely.
 
 **Admin Bar**
 
@@ -90,6 +89,15 @@ The REST API in WordPress provides powerful functionality for interacting with y
 * Disable REST API RSD link: Removes the RSD (Really Simple Discovery) link tag that specifies the REST API endpoint.
 * Disable REST API link in HTTP headers: Removes the HTTP header link that specifies the REST API endpoint.
 
+Application Passwords
+
+* Disable Application Passwords - Application Passwords let users authenticate to the REST API with a generated password, bypassing 2FA/CAPTCHA/rate limiting. Disable them if you don't use programmatic API access.
+  - No: Keep Application Passwords enabled.
+  - All: Disable Application Passwords for everyone.
+  - Selective: Disable Application Passwords for selected roles.
+
+* Roles - Select the user roles for which Application Passwords should be disabled.
+
 **Privacy Settings**
 
 * Outputting WordPress version in your blog headers
@@ -121,6 +129,16 @@ All options default to off and are cleaned up upon uninstall.
 * [Plugin Site](https://wordpress.org/plugins/disabler/)
 
 ==Changelog==
+
+= 4.0.5 =
+
+* Added option to disable Application Passwords, with support for restricting by user role.
+* Added option to disable WordPress core lazy loading for images.
+* Refactored settings defaults to include missing defaults and align with current setting keys.
+* Improved SVG icon loading and switched to asset metadata for scripts/styles.
+* Aligned plugin code with updated Hybrid Core APIs.
+* Removed unused Composer repositories and fixed PHPCS violations.
+* Migrated existing installs' saved settings: renamed the `editor_disable_wp_img_tag_add_auto_sizes` and `editor_disable_wp_img_auto_sizes_contain` keys to their `media_` prefixed equivalents, and backfilled any missing/null settings with current defaults (handled automatically via the DB updater).
 
 = 4.0.4 =
 

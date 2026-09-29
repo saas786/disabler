@@ -4,10 +4,13 @@
     <config name="php_version" value="80200"/>
 
     <!--
+    <file>bin-dev/php-scoper</file>
     <file>config</file>
     <file>inc</file>
-    <exclude-pattern>resources/*</exclude-pattern>
+    <file>public/views</file>
+    <file>disabler.php</file>
     -->
+
 
     <rule ref="ThemeHybrid">
         <!-- non-strict comparisons are used in a lot of legacy code, and must be removed with care and additional -->
@@ -17,11 +20,78 @@
         <!-- used themselves, and also extended (EG: almost all of our DataObjects) -->
         <exclude name="SlevomatCodingStandard.Classes.RequireAbstractOrFinal.ClassNeitherAbstractNorFinal"/>
 
-        <!--- Disabler only rules -->
-        <!--<exclude name="SlevomatCodingStandard.Functions.DisallowTrailingCommaInDeclaration"/>-->
+        <exclude name="PEAR.Functions.FunctionCallSignature"/>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames"/>
+        <exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
+
+        <exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+
+        <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation"/>
+        <exclude name="SlevomatCodingStandard.Attributes.AttributesOrder"/>
+        <exclude name="SlevomatCodingStandard.Classes.RequireSingleLineMethodSignature"/>
+        <exclude name="SlevomatCodingStandard.Functions.StaticClosure.ClosureNotStatic"/>
+        <exclude name="SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty"/>
+        <exclude
+            name="SlevomatCodingStandard.Classes.DisallowConstructorPropertyPromotion.DisallowedConstructorPropertyPromotion"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.DisallowMixedTypeHint.DisallowedMixedTypeHint"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions.NonFullyQualifiedException"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFullyQualifiedName"/>
+        <exclude name="SlevomatCodingStandard.Functions.RequireArrowFunction.RequiredArrowFunction"/>
+        <exclude name="SlevomatCodingStandard.Functions.RequireSingleLineCall.RequiredSingleLineCall"/>
+        <exclude
+            name="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators.DisallowedPreIncrementOperator"/>
+        <exclude
+            name="SlevomatCodingStandard.ControlStructures.RequireSingleLineCondition.RequiredSingleLineCondition"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax.DisallowedArrayTypeHintSyntax"/>
+
+        <!-- Self refers to the class where the call was written, and can cause errors if the method lives on a class other than where it was called -->
+        <exclude name="SlevomatCodingStandard.Classes.RequireSelfReference.RequiredSelfReference"/>
+
+        <!-- Allow member references without $this-> or self:: -->
+        <exclude name="Squiz.Classes.SelfMemberReference.NotUsed"/>
+
+        <exclude name="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition.NullTypeHintNotOnLastPosition"/>
+        <exclude name="SlevomatCodingStandard.PHP.DisallowDirectMagicInvokeCall.DisallowDirectMagicInvokeCall"/>
+
+        <exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostDecrementFound"/>
+        <exclude
+            name="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators.DisallowedPostDecrementOperator"/>
+
+        <exclude
+            name="SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants.DisallowedLateStaticBindingForConstant"/>
+
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit.UselessElse"/>
+
+        <exclude name="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces.NoEmptyLineBeforeClosingBrace"/>
+        <exclude name="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces.NoEmptyLineAfterOpeningBrace"/>
+
+        <!-- Hybrid Core allows instantiation without parentheses for simple cases -->
+        <exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
+
+        <exclude name="PSR12.Traits.UseDeclaration.MultipleImport"/>
+
+        <exclude name="SlevomatCodingStandard.PHP.UselessParentheses.UselessParentheses"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit.UselessElseIf"/>
+
+        <exclude
+            name="SlevomatCodingStandard.Numbers.DisallowNumericLiteralSeparator.DisallowedNumericLiteralSeparator"/>
+
+        <exclude name="SlevomatCodingStandard.Functions.DisallowTrailingCommaInDeclaration"/>
 
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
         <exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration.MissingTrailingComma"/>
+
+        <!-- newer rules, make sure they are working properly -->
+        <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+        <!-- <exclude name="PEAR.Functions.FunctionCallSignature"/> -->
     </rule>
 
     <!-- Code MUST use an indent of 4 spaces for each indent level, and MUST NOT use tabs for indenting. -->
@@ -34,6 +104,64 @@
             </property>
         </properties>
     </rule>
+
+    <!-- Force phpDocs separation between different annotations and remove extra `*`. -->
+    <!-- Require specific order of phpDoc annotations with empty newline between specific groups. -->
+
+    <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
+        <properties>
+            <property name="linesCountBetweenAnnotationsGroups" value="1"/>
+            <property name="linesCountBetweenDifferentAnnotationsTypes" value="0"/>
+            <property name="annotationsGroups" type="array">
+                <element value="
+                    @inheritDoc,
+                    @package,
+                    @since,
+                    @link,
+                    @todo,
+                    @global,
+                    @var,
+                "/>
+                <element value="
+                    @internal,
+                "/>
+                <element value="
+                    @template,
+                "/>
+                <element value="
+                    @template-covariant,
+                "/>
+                <element value="
+                    @implements,
+                    @param,
+                "/>
+                <element value="
+                    @param-closure-this,
+                "/>
+                <element value="
+                    @return,
+                "/>
+                <element value="
+                    @see,
+                    @throws,
+                    @deprecated,
+                    @codeCoverageIgnore,
+                    @phpcsSuppress,
+                    @psalm-suppress,
+                    @SuppressWarnings,
+                    @dataProvider,
+                "/>
+            </property>
+        </properties>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.Attributes.AttributeAndTargetSpacing">
+        <!-- For code like private function processUser(Member $member, #[\SensitiveParameter] string $password): void -->
+        <exclude
+            name="SlevomatCodingStandard.Attributes.AttributeAndTargetSpacing.IncorrectLinesCountBetweenAttributeAndTarget"/>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Attributes.DisallowAttributesJoining"/>
+    <rule ref="SlevomatCodingStandard.Attributes.DisallowMultipleAttributesPerLine"/>
 
     <!-- Only check PHP files. -->
     <arg name="extensions" value="php"/>
@@ -56,7 +184,7 @@
     -->
 
     <!--
-    <config name="testVersion" value="5.6-"/>
+    <config name="testVersion" value="8.2-"/>
     <rule ref="PHPCompatibility"/>
     -->
 </ruleset>

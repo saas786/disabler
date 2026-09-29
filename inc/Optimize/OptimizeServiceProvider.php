@@ -8,26 +8,40 @@ use Hybrid\Core\ServiceProvider;
  * Plugin service provider.
  */
 class OptimizeServiceProvider extends ServiceProvider {
+    /**
+     * The optimizers, in the order they boot.
+     *
+     * One list rather than the same twelve class names written out twice,
+     * once to bind and once to boot. Kept in order because every boot()
+     * registers an `init` callback at priority 0, so this is the order those
+     * callbacks run in.
+     */
+    private const OPTIMIZERS = [
+        Editor::class,
+        Backend::class,
+        Frontend::class,
+        Media::class,
+        Privacy::class,
+        Revisions::class,
+        XMLRPC::class,
+        Performance::class,
+        RestAPI::class,
+        Feeds::class,
+        Updates::class,
+        AdminBar::class,
+    ];
 
     /**
      * Register.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function register() {
-        $this->app->singleton( Editor::class );
-        $this->app->singleton( Backend::class );
-        $this->app->singleton( Frontend::class );
-        $this->app->singleton( Media::class );
-        $this->app->singleton( Privacy::class );
-        $this->app->singleton( Revisions::class );
-        $this->app->singleton( XMLRPC::class );
-        $this->app->singleton( Performance::class );
-        $this->app->singleton( RestAPI::class );
-        $this->app->singleton( Feeds::class );
-        $this->app->singleton( Updates::class );
-        $this->app->singleton( AdminBar::class );
+        foreach ( self::OPTIMIZERS as $optimizer ) {
+            $this->app->singleton( $optimizer );
+        }
     }
 
     /**
@@ -36,18 +50,8 @@ class OptimizeServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $this->app->resolve( Editor::class )->boot();
-        $this->app->resolve( Backend::class )->boot();
-        $this->app->resolve( Frontend::class )->boot();
-        $this->app->resolve( Media::class )->boot();
-        $this->app->resolve( Privacy::class )->boot();
-        $this->app->resolve( Revisions::class )->boot();
-        $this->app->resolve( XMLRPC::class )->boot();
-        $this->app->resolve( Performance::class )->boot();
-        $this->app->resolve( RestAPI::class )->boot();
-        $this->app->resolve( Feeds::class )->boot();
-        $this->app->resolve( Updates::class )->boot();
-        $this->app->resolve( AdminBar::class )->boot();
+        foreach ( self::OPTIMIZERS as $optimizer ) {
+            $this->app->resolve( $optimizer )->boot();
+        }
     }
-
 }

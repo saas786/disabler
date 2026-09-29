@@ -2,7 +2,6 @@
 /**
  * Admin View: Notice - Updating.
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }

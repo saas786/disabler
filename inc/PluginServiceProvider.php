@@ -12,11 +12,11 @@ use Hybrid\Core\ServiceProvider;
  * Plugin service provider.
  */
 class PluginServiceProvider extends ServiceProvider {
-
     /**
      * Register.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function register() {
@@ -25,20 +25,20 @@ class PluginServiceProvider extends ServiceProvider {
         $this->app->singleton( PluginInstall::class );
 
         $this->app->singleton( 'hbp/disabler/assets', static function ( $app ) {
+            /** @var \Hybrid\Assets\Plugin $plugin */
             $plugin = $app->make( AssetsPlugin::class );
             $plugin->setPluginFile( DISABLER_FILE );
+            // Override plugin assets from `{theme}/public/hbp-disabler`.
+            // Use this filter to customize the theme override directory.
+            $plugin->setOverrideAssetsDirectory( apply_filters( 'hbp/disabler/assets/override-path', '/public/hbp-disabler' ) );
 
             return $plugin;
         } );
-
-        $this->app->singleton( 'disabler/usage/tracker', static fn( $app ) => new Tracker( $app ) );
 
         $this->app->singleton( Tracker::class, static fn() => new Tracker(
             'https://tracking.hybopressthemes.com/api/v1/track/',
             MONTH_IN_SECONDS * 3
         ) );
-
-        $this->app->alias( Tracker::class, 'disabler/usage/tracker' );
     }
 
     /**
@@ -49,8 +49,6 @@ class PluginServiceProvider extends ServiceProvider {
     public function boot() {
         $this->app->resolve( Notices::class )->boot();
         $this->app->resolve( PluginInstall::class )->boot();
-
-        $this->app->resolve( 'disabler/usage/tracker' )->boot();
+        $this->app->resolve( Tracker::class )->boot();
     }
-
 }

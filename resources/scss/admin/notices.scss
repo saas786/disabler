@@ -1,22 +1,24 @@
 .hbp-disabler-message {
   position: relative;
-}
 
-.hbp-disabler-message-close {
-  position: static;
-  top: 0;
-  right: 0;
-  float: right;
-  padding: 0 15px 10px 28px;
-  margin-top: -10px;
-  font-size: 13px;
-  line-height: 1.23076923;
-  text-decoration: none;
-}
+  // Core styles .notice-dismiss as an underlined flex box, which drops the
+  // icon below the text; this selector outranks it, as WooCommerce's does.
+  a.hbp-disabler-message-close {
+    position: static;
+    display: block;
+    float: right;
+    padding: 0 15px 10px 28px;
+    margin-top: -10px;
+    font-size: 13px;
+    line-height: 1.23076923;
+    color: #1e1e1e;
+    text-decoration: none;
 
-.hbp-disabler-message-close::before {
-  position: relative;
-  top: 18px;
-  left: -20px;
-  transition: all .1s ease-in-out;
+    &::before {
+      position: relative;
+      top: 18px;
+      left: -20px;
+      transition: all .1s ease-in-out;
+    }
+  }
 }
